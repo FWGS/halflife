@@ -2331,9 +2331,16 @@ int CRestore::ReadField( void *pBaseData, TYPEDESCRIPTION *pFields, int fieldCou
 						((float *)pOutputData)[2] = ((float *)pInputData)[2];
 					break;
 					case FIELD_POSITION_VECTOR:
-						((float *)pOutputData)[0] = ((float *)pInputData)[0] + position.x;
-						((float *)pOutputData)[1] = ((float *)pInputData)[1] + position.y;
-						((float *)pOutputData)[2] = ((float *)pInputData)[2] + position.z;
+						float tmp;
+						tmp = *((float *)pInputData + 0);
+						tmp += position.x;
+						*((float *)pOutputData + 0)=tmp;
+						tmp = *((float *)pInputData + 1);
+						tmp += position.y;
+						*((float *)pOutputData + 1)=tmp;
+						tmp = *((float *)pInputData + 2);
+						tmp += position.z;
+						*((float *)pOutputData + 2)=tmp;
 					break;
 
 					case FIELD_BOOLEAN:
