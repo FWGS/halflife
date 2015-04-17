@@ -7,9 +7,13 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := server
 
-LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS -D_DEBUG \
+LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS \
 	-Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf \
-	-msoft-float -fno-exceptions -fsigned-char
+	-fno-exceptions -fsigned-char 
+
+ifneq ($(TARGET_ARCH),x86)
+	LOCAL_CFLAGS += -msoft-float
+endif
 
 LOCAL_CPPFLAGS := $(LOCAL_CFLAGS) -frtti
 
