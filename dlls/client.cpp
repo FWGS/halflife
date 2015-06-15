@@ -1,6 +1,6 @@
 /***
 *
-*	Copyright (c) 1996-2001, Valve LLC. All rights reserved.
+*	Copyright (c) 1999, 2000 Valve LLC. All rights reserved.
 *	
 *	This product contains software technology licensed from Id 
 *	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
@@ -32,17 +32,11 @@
 #include "client.h"
 #include "soundent.h"
 #include "gamerules.h"
-#include "game.h"
 #include "customentity.h"
 #include "weapons.h"
 #include "weaponinfo.h"
 #include "usercmd.h"
 #include "netadr.h"
-#include "pm_shared.h"
-
-#if !defined ( _WIN32 )
-#include <ctype.h>
-#endif
 
 extern DLL_GLOBAL ULONG		g_ulModelIndexPlayer;
 extern DLL_GLOBAL BOOL		g_fGameOver;
@@ -53,12 +47,7 @@ extern void CopyToBodyQue(entvars_t* pev);
 extern int giPrecacheGrunt;
 extern int gmsgSayText;
 
-extern cvar_t allow_spectators;
-
-extern int g_teamplay;
-
 void LinkUserMessages( void );
-
 /*
  * used by kill command and disconnect command
  * ROBIN: Moved here from player.cpp, to allow multiple player models
@@ -108,10 +97,8 @@ void ClientDisconnect( edict_t *pEntity )
 	if (g_fGameOver)
 		return;
 
-	char text[256] = "" ;
-	if ( pEntity->v.netname )
-		_snprintf( text, sizeof(text), "- %s has left the game\n", STRING(pEntity->v.netname) );
-	text[ sizeof(text) - 1 ] = 0;
+	char text[256];
+	sprintf( text, "- %s has left the game\n", STRING(pEntity->v.netname) );
 	MESSAGE_BEGIN( MSG_ALL, gmsgSayText, NULL );
 		WRITE_BYTE( ENTINDEX(pEntity) );
 		WRITE_STRING( text );
@@ -202,19 +189,11 @@ void ClientPutInServer( edict_t *pEntity )
 	pPlayer->SetCustomDecalFrames(-1); // Assume none;
 
 	// Allocate a CBasePlayer for pev, and call spawn
-	pPlayer->Spawn() ;
+	pPlayer->Spawn();
 
 	// Reset interpolation during first frame
 	pPlayer->pev->effects |= EF_NOINTERP;
-
-	pPlayer->pev->iuser1 = 0;	// disable any spec modes
-	pPlayer->pev->iuser2 = 0; 
 }
-
-#include "voice_gamemgr.h"
-extern CVoiceGameMgr g_VoiceGameMgr;
-
-
 
 #if defined( _MSC_VER ) || defined( WIN32 )
 typedef wchar_t	uchar16;
@@ -329,6 +308,7 @@ bool Q_UnicodeValidate( const char *pUTF8 )
 	return true;
 }
 
+
 //// HOST_SAY
 // String comes in as
 // say blah blah blah
@@ -349,13 +329,6 @@ void Host_Say( edict_t *pEntity, int teamonly )
 	// We can get a raw string now, without the "say " prepended
 	if ( CMD_ARGC() == 0 )
 		return;
-
-	entvars_t *pev = &pEntity->v;
-	CBasePlayer* player = GetClassPtr((CBasePlayer *)pev);
-
-	//Not yet.
-	if ( player->m_flNextChatTime > gpGlobals->time )
-		 return;
 
 	if ( !stricmp( pcmd, cpSay) || !stricmp( pcmd, cpSayTeam ) )
 	{
@@ -390,16 +363,13 @@ void Host_Say( edict_t *pEntity, int teamonly )
 		p[strlen(p)-1] = 0;
 	}
 
-// make sure the text has content
+	// make sure the text has content
 
 	if ( !p || !p[0] || !Q_UnicodeValidate ( p ) )
 		return;  // no character found, so say nothing
 
 // turn on color set 2  (color on,  no sound)
-	// turn on color set 2  (color on,  no sound)
-	if ( player->IsObserver() && ( teamonly ) )
-		sprintf( text, "%c(SPEC) %s: ", 2, STRING( pEntity->v.netname ) );
-	else if ( teamonly )
+	if ( teamonly )
 		sprintf( text, "%c(TEAM) %s: ", 2, STRING( pEntity->v.netname ) );
 	else
 		sprintf( text, "%c%s: ", 2, STRING( pEntity->v.netname ) );
@@ -410,9 +380,6 @@ void Host_Say( edict_t *pEntity, int teamonly )
 
 	strcat( text, p );
 	strcat( text, "\n" );
-
-
-	player->m_flNextChatTime = gpGlobals->time + CHAT_INTERVAL;
 
 	// loop through all players
 	// Start with the first player.
@@ -431,17 +398,8 @@ void Host_Say( edict_t *pEntity, int teamonly )
 		if ( !(client->IsNetClient()) )	// Not a client ? (should never be true)
 			continue;
 
-		// can the receiver hear the sender? or has he muted him?
-		if ( g_VoiceGameMgr.PlayerHasBlockedPlayer( client, player ) )
+		if ( teamonly && g_pGameRules->PlayerRelationship(client, CBaseEntity::Instance(pEntity)) != GR_TEAMMATE )
 			continue;
-
-		if ( !player->IsObserver() && teamonly && g_pGameRules->PlayerRelationship(client, CBaseEntity::Instance(pEntity)) != GR_TEAMMATE )
-			continue;
-
-		// Spectators can only talk to other specs
-		if ( player->IsObserver() && teamonly )
-			if ( !client->IsObserver() )
-				continue;
 
 		MESSAGE_BEGIN( MSG_ONE, gmsgSayText, NULL, client->pev );
 			WRITE_BYTE( ENTINDEX(pEntity) );
@@ -458,34 +416,6 @@ void Host_Say( edict_t *pEntity, int teamonly )
 
 	// echo to server console
 	g_engfuncs.pfnServerPrint( text );
-
-	char * temp;
-	if ( teamonly )
-		temp = "say_team";
-	else
-		temp = "say";
-	
-	// team match?
-	if ( g_teamplay )
-	{
-		UTIL_LogPrintf( "\"%s<%i><%s><%s>\" %s \"%s\"\n", 
-			STRING( pEntity->v.netname ), 
-			GETPLAYERUSERID( pEntity ),
-			GETPLAYERAUTHID( pEntity ),
-			g_engfuncs.pfnInfoKeyValue( g_engfuncs.pfnGetInfoKeyBuffer( pEntity ), "model" ),
-			temp,
-			p );
-	}
-	else
-	{
-		UTIL_LogPrintf( "\"%s<%i><%s><%i>\" %s \"%s\"\n", 
-			STRING( pEntity->v.netname ), 
-			GETPLAYERUSERID( pEntity ),
-			GETPLAYERAUTHID( pEntity ),
-			GETPLAYERUSERID( pEntity ),
-			temp,
-			p );
-	}
 }
 
 
@@ -516,10 +446,6 @@ void ClientCommand( edict_t *pEntity )
 	else if ( FStrEq(pcmd, "say_team" ) )
 	{
 		Host_Say( pEntity, 1 );
-	}
-	else if ( FStrEq(pcmd, "fullupdate" ) )
-	{
-		GetClassPtr((CBasePlayer *)pev)->ForceClientDllUpdate(); 
 	}
 	else if ( FStrEq(pcmd, "give" ) )
 	{
@@ -558,42 +484,6 @@ void ClientCommand( edict_t *pEntity )
 	{
 		GetClassPtr((CBasePlayer *)pev)->SelectLastItem();
 	}
-	else if ( FStrEq( pcmd, "spectate" ) )	// clients wants to become a spectator
-	{
-			// always allow proxies to become a spectator
-		if ( (pev->flags & FL_PROXY) || allow_spectators.value  )
-		{
-			CBasePlayer * pPlayer = GetClassPtr((CBasePlayer *)pev);
-
-			edict_t *pentSpawnSpot = g_pGameRules->GetPlayerSpawnSpot( pPlayer );
-			pPlayer->StartObserver( pev->origin, VARS(pentSpawnSpot)->angles);
-
-			// notify other clients of player switching to spectator mode
-			UTIL_ClientPrintAll( HUD_PRINTNOTIFY, UTIL_VarArgs( "%s switched to spectator mode\n", 
-			 	( pev->netname && STRING(pev->netname)[0] != 0 ) ? STRING(pev->netname) : "unconnected" ) );
-		}
-		else
-			ClientPrint( pev, HUD_PRINTCONSOLE, "Spectator mode is disabled.\n" );
-			
-	}	
-	else if ( FStrEq( pcmd, "specmode" )  )	// new spectator mode
-	{
-		CBasePlayer * pPlayer = GetClassPtr((CBasePlayer *)pev);
-
-		if ( pPlayer->IsObserver() )
-			pPlayer->Observer_SetMode( atoi( CMD_ARGV(1) ) );
-	}
-	else if ( FStrEq(pcmd, "closemenus" ) )
-	{
-		// just ignore it
-	}
-	else if ( FStrEq( pcmd, "follownext" )  )	// follow next player
-	{
-		CBasePlayer * pPlayer = GetClassPtr((CBasePlayer *)pev);
-
-		if ( pPlayer->IsObserver() )
-			pPlayer->Observer_FindNextPlayer( atoi( CMD_ARGV(1) )?true:false );
-	}
 	else if ( g_pGameRules->ClientCommand( GetClassPtr((CBasePlayer *)pev), pcmd ) )
 	{
 		// MenuSelect returns true only if the command is properly handled,  so don't print a warning
@@ -601,15 +491,7 @@ void ClientCommand( edict_t *pEntity )
 	else
 	{
 		// tell the user they entered an unknown command
-		char command[128];
-
-		// check the length of the command (prevents crash)
-		// max total length is 192 ...and we're adding a string below ("Unknown command: %s\n")
-		strncpy( command, pcmd, 127 );
-		command[127] = '\0';
-
-		// tell the user they entered an unknown command
-		ClientPrint( &pEntity->v, HUD_PRINTCONSOLE, UTIL_VarArgs( "Unknown command: %s\n", command ) );
+		ClientPrint( &pEntity->v, HUD_PRINTCONSOLE, UTIL_VarArgs( "Unknown command: %s\n", pcmd ) );
 	}
 }
 
@@ -632,51 +514,14 @@ void ClientUserInfoChanged( edict_t *pEntity, char *infobuffer )
 	// msg everyone if someone changes their name,  and it isn't the first time (changing no name to current name)
 	if ( pEntity->v.netname && STRING(pEntity->v.netname)[0] != 0 && !FStrEq( STRING(pEntity->v.netname), g_engfuncs.pfnInfoKeyValue( infobuffer, "name" )) )
 	{
-		char sName[256];
-		char *pName = g_engfuncs.pfnInfoKeyValue( infobuffer, "name" );
-		strncpy( sName, pName, sizeof(sName) - 1 );
-		sName[ sizeof(sName) - 1 ] = '\0';
+		char text[256];
+		sprintf( text, "* %s changed name to %s\n", STRING(pEntity->v.netname), g_engfuncs.pfnInfoKeyValue( infobuffer, "name" ) );
+		MESSAGE_BEGIN( MSG_ALL, gmsgSayText, NULL );
+			WRITE_BYTE( ENTINDEX(pEntity) );
+			WRITE_STRING( text );
+		MESSAGE_END();
 
-		// First parse the name and remove any %'s
-		for ( char *pApersand = sName; pApersand != NULL && *pApersand != 0; pApersand++ )
-		{
-			// Replace it with a space
-			if ( *pApersand == '%' )
-				*pApersand = ' ';
-		}
-
-		// Set the name
-		g_engfuncs.pfnSetClientKeyValue( ENTINDEX(pEntity), infobuffer, "name", sName );
-
-		if (gpGlobals->maxClients > 1)
-		{
-			char text[256];
-			sprintf( text, "* %s changed name to %s\n", STRING(pEntity->v.netname), g_engfuncs.pfnInfoKeyValue( infobuffer, "name" ) );
-			MESSAGE_BEGIN( MSG_ALL, gmsgSayText, NULL );
-				WRITE_BYTE( ENTINDEX(pEntity) );
-				WRITE_STRING( text );
-			MESSAGE_END();
-		}
-
-		// team match?
-		if ( g_teamplay )
-		{
-			UTIL_LogPrintf( "\"%s<%i><%s><%s>\" changed name to \"%s\"\n", 
-				STRING( pEntity->v.netname ), 
-				GETPLAYERUSERID( pEntity ), 
-				GETPLAYERAUTHID( pEntity ),
-				g_engfuncs.pfnInfoKeyValue( infobuffer, "model" ), 
-				g_engfuncs.pfnInfoKeyValue( infobuffer, "name" ) );
-		}
-		else
-		{
-			UTIL_LogPrintf( "\"%s<%i><%s><%i>\" changed name to \"%s\"\n", 
-				STRING( pEntity->v.netname ), 
-				GETPLAYERUSERID( pEntity ), 
-				GETPLAYERAUTHID( pEntity ),
-				GETPLAYERUSERID( pEntity ), 
-				g_engfuncs.pfnInfoKeyValue( infobuffer, "name" ) );
-		}
+		UTIL_LogPrintf( "\"%s<%i>\" changed name to \"%s<%i>\"\n", STRING( pEntity->v.netname ), GETPLAYERUSERID( pEntity ), g_engfuncs.pfnInfoKeyValue( infobuffer, "name" ), GETPLAYERUSERID( pEntity ) );
 	}
 
 	g_pGameRules->ClientUserInfoChanged( GetClassPtr((CBasePlayer *)&pEntity->v), infobuffer );
@@ -794,7 +639,8 @@ void StartFrame( void )
 	if ( g_fGameOver )
 		return;
 
-	gpGlobals->teamplay = teamplay.value;
+	gpGlobals->teamplay = CVAR_GET_FLOAT("teamplay");
+	g_iSkillLevel = CVAR_GET_FLOAT("skill");
 	g_ulFrameCount++;
 }
 
@@ -915,8 +761,20 @@ void ClientPrecache( void )
 }
 
 /*
+================
+Sys_Error
+
+Engine is going to shut down, allows setting a breakpoint in game .dll to catch that occasion
+================
+*/
+void Sys_Error( const char *error_string )
+{
+	// Default case, do nothing.  MOD AUTHORS:  Add code ( e.g., _asm { int 3 }; here to cause a breakpoint for debugging your game .dlls
+}
+
+/*
 ===============
-GetGameDescription
+const char *GetGameDescription()
 
 Returns the descriptive name of this .dll.  E.g., Half-Life, or Team Fortress 2
 ===============
@@ -927,18 +785,6 @@ const char *GetGameDescription()
 		return g_pGameRules->GetGameDescription();
 	else
 		return "Half-Life";
-}
-
-/*
-================
-Sys_Error
-
-Engine is going to shut down, allows setting a breakpoint in game .dll to catch that occasion
-================
-*/
-void Sys_Error( const char *error_string )
-{
-	// Default case, do nothing.  MOD AUTHORS:  Add code ( e.g., _asm { int 3 }; here to cause a breakpoint for debugging your game .dlls
 }
 
 /*
@@ -1060,13 +906,6 @@ void SetupVisibility( edict_t *pViewEntity, edict_t *pClient, unsigned char **pv
 		pView = pViewEntity;
 	}
 
-	if ( pClient->v.flags & FL_PROXY )
-	{
-		*pvs = NULL;	// the spectator proxy sees
-		*pas = NULL;	// and hears everything
-		return;
-	}
-
 	org = pView->v.origin + pView->v.view_ofs;
 	if ( pView->v.flags & FL_DUCKING )
 	{
@@ -1097,7 +936,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	int					i;
 
 	// don't send if flagged for NODRAW and it's not the host getting the message
-	if ( ( ent->v.effects & EF_NODRAW ) &&
+	if ( ( ent->v.effects == EF_NODRAW ) &&
 		 ( ent != host ) )
 		return 0;
 
@@ -1191,19 +1030,13 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 
 	// This non-player entity is being moved by the game .dll and not the physics simulation system
 	//  make sure that we interpolate it's position on the client if it moves
-	if ( !player &&
-		 ent->v.animtime &&
-		 ent->v.velocity[ 0 ] == 0 && 
-		 ent->v.velocity[ 1 ] == 0 && 
-		 ent->v.velocity[ 2 ] == 0 )
-	{
+	if(ent->v.flags & FL_FLY )
 		state->eflags |= EFLAG_SLERP;
-	}
+	else	state->eflags &= ~EFLAG_SLERP; 
 
 	state->scale	  = ent->v.scale;
 	state->solid	  = ent->v.solid;
 	state->colormap   = ent->v.colormap;
-
 	state->movetype   = ent->v.movetype;
 	state->sequence   = ent->v.sequence;
 	state->framerate  = ent->v.framerate;
@@ -1222,9 +1055,9 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	state->rendermode    = ent->v.rendermode;
 	state->renderamt     = ent->v.renderamt; 
 	state->renderfx      = ent->v.renderfx;
-	state->rendercolor.r = ent->v.rendercolor.x;
-	state->rendercolor.g = ent->v.rendercolor.y;
-	state->rendercolor.b = ent->v.rendercolor.z;
+	state->rendercolor.r = ent->v.rendercolor[0];
+	state->rendercolor.g = ent->v.rendercolor[1];
+	state->rendercolor.b = ent->v.rendercolor[2];
 
 	state->aiment = 0;
 	if ( ent->v.aiment )
@@ -1263,7 +1096,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 
 		state->gravity      = ent->v.gravity;
 //		state->team			= ent->v.team;
-//		
+//		state->playerclass  = ent->v.playerclass;
 		state->usehull      = ( ent->v.flags & FL_DUCKING ) ? 1 : 0;
 		state->health		= ent->v.health;
 	}
@@ -1291,9 +1124,9 @@ void CreateBaseline( int player, int eindex, struct entity_state_s *baseline, st
 	// render information
 	baseline->rendermode	= (byte)entity->v.rendermode;
 	baseline->renderamt		= (byte)entity->v.renderamt;
-	baseline->rendercolor.r	= (byte)entity->v.rendercolor.x;
-	baseline->rendercolor.g	= (byte)entity->v.rendercolor.y;
-	baseline->rendercolor.b	= (byte)entity->v.rendercolor.z;
+	baseline->rendercolor.r	= (byte)entity->v.rendercolor[0];
+	baseline->rendercolor.g	= (byte)entity->v.rendercolor[1];
+	baseline->rendercolor.b	= (byte)entity->v.rendercolor[2];
 	baseline->renderfx		= (byte)entity->v.renderfx;
 
 	if ( player )
@@ -1372,6 +1205,7 @@ FIXME:  Move to script
 void Entity_Encode( struct delta_s *pFields, const unsigned char *from, const unsigned char *to )
 {
 	entity_state_t *f, *t;
+
 	int localplayer = 0;
 	static int initialized = 0;
 
@@ -1584,67 +1418,7 @@ void RegisterEncoders( void )
 
 int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 {
-#if defined( CLIENT_WEAPONS )
-	int i;
-	weapon_data_t *item;
-	entvars_t *pev = &player->v;
-	CBasePlayer *pl = dynamic_cast< CBasePlayer *>( CBasePlayer::Instance( pev ) );
-	CBasePlayerWeapon *gun;
-	
-	ItemInfo II;
-
 	memset( info, 0, 32 * sizeof( weapon_data_t ) );
-
-	if ( !pl )
-		return 1;
-
-	// go through all of the weapons and make a list of the ones to pack
-	for ( i = 0 ; i < MAX_ITEM_TYPES ; i++ )
-	{
-		if ( pl->m_rgpPlayerItems[ i ] )
-		{
-			// there's a weapon here. Should I pack it?
-			CBasePlayerItem *pPlayerItem = pl->m_rgpPlayerItems[ i ];
-
-			while ( pPlayerItem )
-			{
-				gun = dynamic_cast<CBasePlayerWeapon *>( pPlayerItem->GetWeaponPtr() );
-				if ( gun && gun->UseDecrement() )
-				{
-					// Get The ID.
-					memset( &II, 0, sizeof( II ) );
-					gun->GetItemInfo( &II );
-
-					if ( II.iId >= 0 && II.iId < 32 )
-					{
-						item = &info[ II.iId ];
-					 	
-						item->m_iId						= II.iId;
-						item->m_iClip					= gun->m_iClip;
-
-						item->m_flTimeWeaponIdle		= max( gun->m_flTimeWeaponIdle, -0.001 );
-						item->m_flNextPrimaryAttack		= max( gun->m_flNextPrimaryAttack, -0.001 );
-						item->m_flNextSecondaryAttack	= max( gun->m_flNextSecondaryAttack, -0.001 );
-						item->m_fInReload				= gun->m_fInReload;
-						item->m_fInSpecialReload		= gun->m_fInSpecialReload;
-						item->fuser1					= max( gun->pev->fuser1, -0.001 );
-						item->fuser2					= gun->m_flStartThrow;
-						item->fuser3					= gun->m_flReleaseThrow;
-						item->iuser1					= gun->m_chargeReady;
-						item->iuser2					= gun->m_fInAttack;
-						item->iuser3					= gun->m_fireState;
-						
-											
-//						item->m_flPumpTime				= max( gun->m_flPumpTime, -0.001 );
-					}
-				}
-				pPlayerItem = pPlayerItem->m_pNext;
-			}
-		}
-	}
-#else
-	memset( info, 0, 32 * sizeof( weapon_data_t ) );
-#endif
 	return 1;
 }
 
@@ -1656,114 +1430,35 @@ Data sent to current client only
 engine sets cd to 0 before calling.
 =================
 */
-void UpdateClientData ( const edict_t *ent, int sendweapons, struct clientdata_s *cd )
+void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clientdata_s *cd )
 {
-	if ( !ent || !ent->pvPrivateData )
-		return;
-	entvars_t *		pev	= (entvars_t *)&ent->v;
-	CBasePlayer *	pl	= dynamic_cast< CBasePlayer *>(CBasePlayer::Instance( pev ));
-	entvars_t *		pevOrg = NULL;
+	cd->flags			= ent->v.flags;
+	cd->health			= ent->v.health;
 
-	// if user is spectating different player in First person, override some vars
-	if ( pl && pl->pev->iuser1 == OBS_IN_EYE )
-	{
-		if ( pl->m_hObserverTarget )
-		{
-			pevOrg = pev;
-			pev = pl->m_hObserverTarget->pev;
-			pl = dynamic_cast< CBasePlayer *>(CBasePlayer::Instance( pev ) );
-		}
-	}
-
-	cd->flags			= pev->flags;
-	cd->health			= pev->health;
-
-	cd->viewmodel		= MODEL_INDEX( STRING( pev->viewmodel ) );
-
-	cd->waterlevel		= pev->waterlevel;
-	cd->watertype		= pev->watertype;
-	cd->weapons			= pev->weapons;
+	cd->viewmodel		= MODEL_INDEX( STRING( ent->v.viewmodel ) );
+	cd->waterlevel		= ent->v.waterlevel;
+	cd->watertype		= ent->v.watertype;
+	cd->weapons			= ent->v.weapons;
 
 	// Vectors
-	cd->origin			= pev->origin;
-	cd->velocity		= pev->velocity;
-	cd->view_ofs		= pev->view_ofs;
-	cd->punchangle		= pev->punchangle;
+	cd->origin			= ent->v.origin;
+	cd->velocity		= ent->v.velocity;
+	cd->view_ofs		= ent->v.view_ofs;
+	cd->punchangle		= ent->v.punchangle;
 
-	cd->bInDuck			= pev->bInDuck;
-	cd->flTimeStepSound = pev->flTimeStepSound;
-	cd->flDuckTime		= pev->flDuckTime;
-	cd->flSwimTime		= pev->flSwimTime;
-	cd->waterjumptime	= pev->teleport_time;
+	cd->bInDuck			= ent->v.bInDuck;
+	cd->flTimeStepSound = ent->v.flTimeStepSound;
+	cd->flDuckTime		= ent->v.flDuckTime;
+	cd->flSwimTime		= ent->v.flSwimTime;
+	cd->waterjumptime	= ent->v.teleport_time;
 
 	strcpy( cd->physinfo, ENGINE_GETPHYSINFO( ent ) );
 
-	cd->maxspeed		= pev->maxspeed;
-	cd->fov				= pev->fov;
-	cd->weaponanim		= pev->weaponanim;
+	cd->maxspeed		= ent->v.maxspeed;
+	cd->fov				= ent->v.fov;
+	cd->weaponanim		= ent->v.weaponanim;
 
-	cd->pushmsec		= pev->pushmsec;
-
-	//Spectator mode
-	if ( pevOrg != NULL )
-	{
-		// don't use spec vars from chased player
-		cd->iuser1			= pevOrg->iuser1;
-		cd->iuser2			= pevOrg->iuser2;
-	}
-	else
-	{
-		cd->iuser1			= pev->iuser1;
-		cd->iuser2			= pev->iuser2;
-	}
-
-	
-
-#if defined( CLIENT_WEAPONS )
-	if ( sendweapons )
-	{
-		if ( pl )
-		{
-			cd->m_flNextAttack	= pl->m_flNextAttack;
-			cd->fuser2			= pl->m_flNextAmmoBurn;
-			cd->fuser3			= pl->m_flAmmoStartCharge;
-			cd->vuser1.x		= pl->ammo_9mm;
-			cd->vuser1.y		= pl->ammo_357;
-			cd->vuser1.z		= pl->ammo_argrens;
-			cd->ammo_nails		= pl->ammo_bolts;
-			cd->ammo_shells		= pl->ammo_buckshot;
-			cd->ammo_rockets	= pl->ammo_rockets;
-			cd->ammo_cells		= pl->ammo_uranium;
-			cd->vuser2.x		= pl->ammo_hornets;
-			
-
-			if ( pl->m_pActiveItem )
-			{
-				CBasePlayerWeapon *gun;
-				gun = (CBasePlayerWeapon *)pl->m_pActiveItem->GetWeaponPtr();
-				if ( gun && gun->UseDecrement() )
-				{
-					ItemInfo II;
-					memset( &II, 0, sizeof( II ) );
-					gun->GetItemInfo( &II );
-
-					cd->m_iId = II.iId;
-
-					cd->vuser3.z	= gun->m_iSecondaryAmmoType;
-					cd->vuser4.x	= gun->m_iPrimaryAmmoType;
-					cd->vuser4.y	= pl->m_rgAmmo[gun->m_iPrimaryAmmoType];
-					cd->vuser4.z	= pl->m_rgAmmo[gun->m_iSecondaryAmmoType];
-					
-					if ( pl->m_pActiveItem->m_iId == WEAPON_RPG )
-					{
-						cd->vuser2.y = ( ( CRpg * )pl->m_pActiveItem)->m_fSpotActive;
-						cd->vuser2.z = ( ( CRpg * )pl->m_pActiveItem)->m_cActiveRockets;
-					}
-				}
-			}
-		}
-	} 
-#endif
+	cd->pushmsec		= ent->v.pushmsec;
 }
 
 /*
@@ -1777,7 +1472,7 @@ This is the time to examine the usercmd for anything extra.  This call happens e
 void CmdStart( const edict_t *player, const struct usercmd_s *cmd, unsigned int random_seed )
 {
 	entvars_t *pev = (entvars_t *)&player->v;
-	CBasePlayer *pl = dynamic_cast< CBasePlayer *>( CBasePlayer::Instance( pev ) );
+	CBasePlayer *pl = ( CBasePlayer *) CBasePlayer::Instance( pev );
 
 	if( !pl )
 		return;
@@ -1800,7 +1495,7 @@ Each cmdstart is exactly matched with a cmd end, clean up any group trace flags,
 void CmdEnd ( const edict_t *player )
 {
 	entvars_t *pev = (entvars_t *)&player->v;
-	CBasePlayer *pl = dynamic_cast< CBasePlayer *>( CBasePlayer::Instance( pev ) );
+	CBasePlayer *pl = ( CBasePlayer *) CBasePlayer::Instance( pev );
 
 	if( !pl )
 		return;
@@ -1921,5 +1616,6 @@ AllowLagCompensation
 */
 int AllowLagCompensation( void )
 {
-	return 1;
+	return 0;
 }
+

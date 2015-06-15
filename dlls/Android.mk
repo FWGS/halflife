@@ -7,17 +7,21 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := server
 
-LOCAL_CFLAGS += $(CFLAGS_OPT)
-ifeq ($(TARGET_ARCH),arm)
-LOCAL_CFLAGS += $(CFLAGS_OPT_ARM)
-endif
-ifeq ($(TARGET_ARCH),x86)
-LOCAL_CFLAGS += $(CFLAGS_OPT_X86)
-endif
-
-LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS -D_DEBUG \
+LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS \
 	-Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf \
-	-fno-exceptions
+	-fno-exceptions -fpermissive -fno-strict-aliasing -fexpensive-optimizations -fsigned-char -w
+
+ifneq ($(TARGET_ARCH),x86)
+ifeq ($(HARD_FLOAT),1)
+LOCAL_CFLAGS += -mhard-float -mfpu=vfp -mfloat-abi=softfp
+endif
+ifeq ($(HARD_FLOAT),2)
+LOCAL_CFLAGS += -mhard-float -mfpu=neon -mfloat-abi=softfp
+endif
+ifeq ($(HARD_FLOAT),0)
+	LOCAL_CFLAGS += -msoft-float
+endif
+endif
 
 LOCAL_CPPFLAGS := $(LOCAL_CFLAGS) -frtti
 

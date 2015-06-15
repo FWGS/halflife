@@ -1,6 +1,6 @@
 /***
 *
-*	Copyright (c) 1996-2001, Valve LLC. All rights reserved.
+*	Copyright (c) 1999, 2000 Valve LLC. All rights reserved.
 *	
 *	This product contains software technology licensed from Id 
 *	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
@@ -927,8 +927,9 @@ int CTalkMonster :: FOkToSpeak( void )
 	// if someone else is talking, don't speak
 	if (gpGlobals->time <= CTalkMonster::g_talkWaitTime)
 		return FALSE;
-
-	if ( pev->spawnflags & SF_MONSTER_GAG )
+          
+	//monster generic can speak always
+	if ( pev->spawnflags & SF_MONSTER_GAG && !FClassnameIs(pev, "monster_generic") )
 		return FALSE;
 
 	if ( m_MonsterState == MONSTERSTATE_PRONE )

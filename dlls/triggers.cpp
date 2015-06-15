@@ -1,6 +1,6 @@
 /***
 *
-*	Copyright (c) 1996-2001, Valve LLC. All rights reserved.
+*	Copyright (c) 1999, 2000 Valve LLC. All rights reserved.
 *	
 *	This product contains software technology licensed from Id 
 *	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
@@ -712,7 +712,7 @@ void PlayCDTrack( int iTrack )
 
 	if ( iTrack == -1 )
 	{
-		CLIENT_COMMAND ( pClient, "cd stop\n");
+		CLIENT_COMMAND ( pClient, "cd pause\n");
 	}
 	else
 	{
@@ -1218,9 +1218,8 @@ void CBaseTrigger::CounterUse( CBaseEntity *pActivator, CBaseEntity *pCaller, US
 		return;
 	
 	BOOL fTellActivator =
-		(m_hActivator != 0) &&
-		FClassnameIs(m_hActivator->pev, "player") &&
-		!FBitSet(pev->spawnflags, SPAWNFLAG_NOMESSAGE);
+		(FClassnameIs(m_hActivator->pev, "player") &&
+		!FBitSet(pev->spawnflags, SPAWNFLAG_NOMESSAGE));
 	if (m_cTriggersLeft != 0)
 	{
 		if (fTellActivator)
@@ -2073,8 +2072,23 @@ void CTriggerGravity::GravityTouch( CBaseEntity *pOther )
 }
 
 
+class CTriggerPlayerFreeze : public CBaseDelay
+{
+public:
+	void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
+	int ObjectCaps( void ) { return CBaseDelay::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
+};
+LINK_ENTITY_TO_CLASS( trigger_playerfreeze, CTriggerPlayerFreeze );
 
+void CTriggerPlayerFreeze::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
+{
+	if ( !pActivator || !pActivator->IsPlayer() )
+		pActivator = CBaseEntity::Instance(g_engfuncs.pfnPEntityOfEntIndex( 1 ));
 
+		if (pActivator->pev->flags & FL_FROZEN)
+			((CBasePlayer *)((CBaseEntity *)pActivator))->EnableControl(TRUE);
+		else	((CBasePlayer *)((CBaseEntity *)pActivator))->EnableControl(FALSE);
+}
 
 
 
