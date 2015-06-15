@@ -2247,13 +2247,24 @@ int CRestore::ReadField( void *pBaseData, TYPEDESCRIPTION *pFields, int fieldCou
 					switch( pTest->fieldType )
 					{
 					case FIELD_TIME:
+						#ifdef __VFP_FP__
+						memcpy(&timeData, pInputData, 4);
+						// Re-base time variables
+						timeData += time;
+						memcpy(pOutputData, &timeData, 4);
+						#else
 						timeData = *(float *)pInputData;
 						// Re-base time variables
 						timeData += time;
 						*((float *)pOutputData) = timeData;
+						#endif
 					break;
 					case FIELD_FLOAT:
+#ifdef __VFP_FP__
+						memcpy(pOutputData, pInputData, 4);
+#else
 						*((float *)pOutputData) = *(float *)pInputData;
+#endif
 					break;
 					case FIELD_MODELNAME:
 					case FIELD_SOUNDNAME:
@@ -2331,6 +2342,18 @@ int CRestore::ReadField( void *pBaseData, TYPEDESCRIPTION *pFields, int fieldCou
 						((float *)pOutputData)[2] = ((float *)pInputData)[2];
 					break;
 					case FIELD_POSITION_VECTOR:
+						#ifdef  __VFP_FP__
+						float tmp;
+						memcpy(&tmp, (char *)pInputData + 0, 4);
+						tmp += position.x;
+						memcpy((char *)pOutputData + 0, &tmp, 4);
+						memcpy(&tmp, (char *)pInputData + 4, 4);
+						tmp += position.y;
+						memcpy((char *)pOutputData + 4, &tmp, 4);
+						memcpy(&tmp, (char *)pInputData + 8, 4);
+						tmp += position.z;
+						memcpy((char *)pOutputData + 8, &tmp, 4);
+						#else
 						float tmp;
 						tmp = *((float *)pInputData + 0);
 						tmp += position.x;
@@ -2341,6 +2364,7 @@ int CRestore::ReadField( void *pBaseData, TYPEDESCRIPTION *pFields, int fieldCou
 						tmp = *((float *)pInputData + 2);
 						tmp += position.z;
 						*((float *)pOutputData + 2) = tmp;
+						#endif
 					break;
 
 					case FIELD_BOOLEAN:
