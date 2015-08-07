@@ -20,8 +20,15 @@
 // CHud handles the message, calculation, and drawing the HUD
 //
 
-
+#if defined ( BSHIFT_DLL ) || defined ( BSHIFT_CLIENT_DLL )
+#define RGB_YELLOWISH 0x00555EC8 //85,94,200
+#elif defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+#define RGB_YELLOWISH 0x0000A000 //0,160,0
+#else
 #define RGB_YELLOWISH 0x00FFA000 //255,160,0
+#endif
+
+//#define RGB_YELLOWISH 0x00FFA000 //255,160,0
 #define RGB_REDISH 0x00FF1010 //255,160,0
 #define RGB_GREENISH 0x0000A000 //0,160,0
 

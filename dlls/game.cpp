@@ -450,6 +450,11 @@ cvar_t	sk_player_leg3	= { "sk_player_leg3","1" };
 
 // END Cvars for Skill Level settings
 
+#if defined ( GEARBOX_DLL )
+void Game_Op4_RegisterCVars(void);
+void Game_Op4_ExecSkills(void);
+#endif
+
 // Register your console variables here
 // This gets called one time when the game is initialied
 void GameDLLInit( void )
@@ -883,8 +888,21 @@ void GameDLLInit( void )
 	CVAR_REGISTER ( &sk_player_leg1 );
 	CVAR_REGISTER ( &sk_player_leg2 );
 	CVAR_REGISTER ( &sk_player_leg3 );
+
+
+#if defined ( GEARBOX_DLL )
+	// Half-Life : Opposing force cvars.
+	Game_Op4_RegisterCVars();
+
+#endif
+
 // END REGISTER CVARS FOR SKILL LEVEL STUFF
 
 	SERVER_COMMAND( "exec skill.cfg\n" );
+
+#if defined ( GEARBOX_DLL )
+	// Exec skillopfor.cfg
+	Game_Op4_ExecSkills();
+#endif
 }
 

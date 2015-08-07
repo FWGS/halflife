@@ -308,6 +308,8 @@ void CGameRules::RefreshSkillData ( void )
 // instantiate the proper game rules object
 //=========================================================
 
+#if !defined ( GEARBOX_DLL )
+
 CGameRules *InstallGameRules( void )
 {
 	SERVER_COMMAND( "exec game.cfg\n" );
@@ -343,5 +345,5 @@ CGameRules *InstallGameRules( void )
 	}
 }
 
-
+#endif // !defined ( GEARBOX_DLL )
 
