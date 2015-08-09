@@ -24,8 +24,6 @@
 #include "customentity.h"
 #include "osprey.h"
 
-#if defined ( GEARBOX_DLL )
-
 #define SF_WAITFORTRIGGER	0x40
 
 #define MAX_CARRY	OSPREY_MAX_CARRY
@@ -169,7 +167,3 @@ CBaseMonster *CBlkopOsprey::MakeGrunt(Vector vecSrc)
 	// ALERT( at_console, "none dead\n");
 	return NULL;
 }
-
-
-
-#endif // GEARBOX_DLL

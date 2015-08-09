@@ -352,6 +352,14 @@ public:
 	int ammo_uranium;
 	int ammo_hornets;
 	int ammo_argrens;
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	int ammo_556;
+	int ammo_762;
+	int ammo_shocks;
+	int ammo_spores;
+#endif
+
 	//Special stuff for grenades and satchels.
 	float m_flStartThrow;
 	float m_flReleaseThrow;

@@ -23,7 +23,6 @@
 #include	"schedule.h"
 #include	"genericmonster.h"
 
-#if defined ( GEARBOX_DLL )
 
 //=========================================================
 // Monster's Anim Events Go Here
@@ -68,5 +67,3 @@ void CPitWorm::Precache()
 {
 	PRECACHE_MODEL("models/pit_worm_up.mdl");
 }
-
-#endif // 

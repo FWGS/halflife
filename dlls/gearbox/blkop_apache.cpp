@@ -22,8 +22,6 @@
 #include "effects.h"
 #include "apache.h"
 
-#if defined ( GEARBOX_DLL )
-
 #define SF_WAITFORTRIGGER	(0x04 | 0x40) // UNDONE: Fix!
 #define SF_NOWRECKAGE		0x08
 
@@ -98,5 +96,3 @@ void CBlkopApache::Precache(void)
 
 	UTIL_PrecacheOther("hvr_rocket");
 }
-
-#endif // GEARBOX_DLL

@@ -31,8 +31,6 @@
 #include	"customentity.h"
 #include	"hgrunt.h"
 
-#if defined ( GEARBOX_DLL )
-
 //=========================================================
 // monster-specific DEFINE's
 //=========================================================
@@ -376,5 +374,3 @@ void CAssassinRepel::RepelUse(CBaseEntity *pActivator, CBaseEntity *pCaller, USE
 
 	UTIL_Remove(this);
 }
-
-#endif // GEARBOX_DLL

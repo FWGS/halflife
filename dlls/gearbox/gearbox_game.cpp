@@ -18,8 +18,6 @@
 #include "util.h"
 #include "game.h"
 
-#if defined ( GEARBOX_DLL )
-
 // Otis
 cvar_t	sk_otis_health1 = { "sk_otis_health1", "0" };
 cvar_t	sk_otis_health2 = { "sk_otis_health2", "0" };
@@ -286,7 +284,7 @@ cvar_t	sk_plr_spore1 = { "sk_plr_spore1", "0" };
 cvar_t	sk_plr_spore2 = { "sk_plr_spore2", "0" };
 cvar_t	sk_plr_spore3 = { "sk_plr_spore3", "0" };
 
-void Game_Op4_RegisterCVars( void )
+void CvarRegister_Op4(void)
 {
 // REGISTER CVARS FOR SKILL LEVEL STUFF
 	// Otis
@@ -557,9 +555,7 @@ void Game_Op4_RegisterCVars( void )
 // END REGISTER CVARS FOR SKILL LEVEL STUFF
 }
 
-void Game_Op4_ExecSkills( void )
+void ExecSkills_Op4( void )
 {
 	SERVER_COMMAND("exec skillopfor.cfg\n");
 }
-
-#endif // GEARBOX_DLL

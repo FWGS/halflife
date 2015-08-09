@@ -25,8 +25,6 @@
 #include	"soundent.h"
 #include	"scientist.h"
 
-#if defined ( GEARBOX_DLL )
-
 //=========================================================
 // Cleansuit scientist
 //=========================================================
@@ -198,6 +196,3 @@ void CSittingCleansuitScientist::Spawn(void)
 
 	DROP_TO_FLOOR(ENT(pev));
 }
-
-
-#endif // GEARBOX_DLL

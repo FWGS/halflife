@@ -22,8 +22,6 @@
 #include	"monsters.h"
 #include	"schedule.h"
 
-#if defined ( GEARBOX_DLL )
-
 //=========================================================
 // DEAD HOUNDEYE PROP
 //=========================================================
@@ -82,6 +80,3 @@ void CDeadHoundeye::Spawn(void)
 
 	MonsterInitDead();
 }
-
-
-#endif // GEARBOX_DLL

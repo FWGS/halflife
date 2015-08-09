@@ -308,8 +308,6 @@ void CGameRules::RefreshSkillData ( void )
 // instantiate the proper game rules object
 //=========================================================
 
-#if !defined ( GEARBOX_DLL )
-
 CGameRules *InstallGameRules( void )
 {
 	SERVER_COMMAND( "exec game.cfg\n" );
@@ -319,7 +317,12 @@ CGameRules *InstallGameRules( void )
 	{
 		// generic half-life
 		g_teamplay = 0;
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+		return new CGearboxRules;
+#else
 		return new CHalfLifeRules;
+#endif
 	}
 	else
 	{
@@ -334,16 +337,21 @@ CGameRules *InstallGameRules( void )
 		{
 			// vanilla deathmatch
 			g_teamplay = 0;
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+			return new CGearboxMultiplay;
+#else
 			return new CHalfLifeMultiplay;
+#endif
 		}
 		else
 		{
 			// vanilla deathmatch??
 			g_teamplay = 0;
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+			return new CGearboxMultiplay;
+#else
 			return new CHalfLifeMultiplay;
+#endif
 		}
 	}
 }
-
-#endif // !defined ( GEARBOX_DLL )
-

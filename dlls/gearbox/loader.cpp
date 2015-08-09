@@ -23,7 +23,6 @@
 #include	"schedule.h"
 #include	"genericmonster.h"
 
-#if defined ( GEARBOX_DLL )
 
 // For holograms, make them not solid so the player can walk through them
 #define	SF_LOADER_NOTSOLID					4 
@@ -77,5 +76,3 @@ void CLoader::Precache()
 {
 	PRECACHE_MODEL("models/loader.mdl");
 }
-
-#endif // GEARBOX_DLL

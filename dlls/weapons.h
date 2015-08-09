@@ -79,6 +79,21 @@ public:
 #define	WEAPON_SATCHEL			14
 #define	WEAPON_SNARK			15
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
+#define WEAPON_DISPLACER		16
+#define WEAPON_EAGLE			17
+#define WEAPON_GRAPPLE			18
+#define WEAPON_KNIFE			19
+#define	WEAPON_M249				20
+#define	WEAPON_PENGUIN			21
+#define WEAPON_PIPEWRENCH		22
+#define WEAPON_SHOCKRIFLE		23
+#define WEAPON_SNIPERRIFLE		24
+#define WEAPON_SPORELAUNCHER	25
+
+#endif
+
 #define WEAPON_ALLWEAPONS		(~(1<<WEAPON_SUIT))
 
 #define WEAPON_SUIT				31	// ?????
@@ -105,6 +120,20 @@ public:
 #define SATCHEL_WEIGHT		-10
 #define TRIPMINE_WEIGHT		-10
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
+#define DISPLACER_WEIGHT		20
+#define EAGLE_WEIGHT			15
+#define GRAPPLE_WEIGHT			0
+#define KNIFE_WEIGHT			0
+#define M249_WEIGHT				15
+#define PENGUIN_WEIGHT			5
+#define PIPEWRENCH_WEIGHT		0
+#define SHOCKRIFLE_WEIGHT		10
+#define SNIPERRIFLE_WEIGHT		10
+#define SPORELAUNCHER_WEIGHT	10
+
+#endif
 
 // weapon clip/carry ammo capacities
 #define URANIUM_MAX_CARRY		100
@@ -119,6 +148,16 @@ public:
 #define SNARK_MAX_CARRY			15
 #define HORNET_MAX_CARRY		8
 #define M203_GRENADE_MAX_CARRY	10
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
+#define	_556_MAX_CARRY			200
+#define _762_MAX_CARRY			15
+#define PENGUIN_MAX_CARRY		9
+#define SHOCK_MAX_CARRY			10
+#define SPORE_MAX_CARRY			20
+
+#endif
 
 // the maximum amount of ammo each weapon's clip can hold
 #define WEAPON_NOCLIP			-1
@@ -139,6 +178,17 @@ public:
 #define TRIPMINE_MAX_CLIP		WEAPON_NOCLIP
 #define SNARK_MAX_CLIP			WEAPON_NOCLIP
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
+#define EAGLE_MAX_CLIP					7
+#define M249_MAX_CLIP					50
+#define PENGUIN_MAX_CLIP				WEAPON_NOCLIP
+#define SHOCKRIFLE_MAX_CLIP				10
+#define SNIPERRIFLE_MAX_CLIP			5
+#define SPORELAUNCHER_MAX_CLIP			20
+
+#endif
+
 
 // the default amount of ammo that comes with each gun when it spawns
 #define GLOCK_DEFAULT_GIVE			17
@@ -157,6 +207,17 @@ public:
 #define SNARK_DEFAULT_GIVE			5
 #define HIVEHAND_DEFAULT_GIVE		8
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
+#define EAGLE_DEFAULT_GIVE					7
+#define M249_DEFAULT_GIVE					50
+#define PENGUIN_DEFAULT_GIVE				3
+#define SHOCKRIFLE_DEFAULT_GIVE				10
+#define SNIPERRIFLE_DEFAULT_GIVE			5
+#define SPORELAUNCHER_DEFAULT_GIVE			5
+
+#endif
+
 // The amount of ammo given to a player by an ammo item.
 #define AMMO_URANIUMBOX_GIVE	20
 #define AMMO_GLOCKCLIP_GIVE		GLOCK_MAX_CLIP
@@ -170,6 +231,14 @@ public:
 #define AMMO_URANIUMBOX_GIVE	20
 #define AMMO_SNARKBOX_GIVE		5
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
+#define AMMO_556CLIP_GIVE		50
+#define AMMO_762BOX_GIVE		5
+#define AMMO_PENGUINBOX_GIVE	3
+
+#endif
+
 // bullet types
 typedef	enum
 {
@@ -180,9 +249,21 @@ typedef	enum
 	BULLET_PLAYER_BUCKSHOT, // shotgun
 	BULLET_PLAYER_CROWBAR, // crowbar swipe
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	BULLET_PLAYER_556,		// m249 
+	BULLET_PLAYER_762,		// sniperrifle
+#endif
+
 	BULLET_MONSTER_9MM,
 	BULLET_MONSTER_MP5,
 	BULLET_MONSTER_12MM,
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	BULLET_MONSTER_357,
+	BULLET_MONSTER_556,		// m249 
+	BULLET_MONSTER_762,		// sniperrifle
+#endif
+
 } Bullet;
 
 
@@ -1015,5 +1096,202 @@ private:
 	unsigned short m_usSnarkFire;
 };
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
+//
+//
+//
+
+class CEagle : public CBasePlayerWeapon
+{
+public:
+
+#ifndef CLIENT_DLL
+	int		Save(CSave &save);
+	int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+#endif
+
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot(void) { return 2; }
+	int GetItemInfo(ItemInfo *p);
+
+	void PrimaryAttack(void);
+	void SecondaryAttack(void);
+	BOOL Deploy(void);
+	void Holster(int skiplocal = 0);
+
+	void Reload(void);
+	void WeaponIdle(void);
+
+	void UpdateSpot(void);
+	BOOL ShouldWeaponIdle(void) { return TRUE; };
+
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+
+	CLaserSpot *m_pSpot;
+	int m_fSpotActive;
+
+private:
+	int m_iShell;
+
+	unsigned short m_usFireEagle;
+};
+
+
+class CKnife : public CBasePlayerWeapon
+{
+public:
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot(void) { return 1; }
+	void EXPORT SwingAgain(void);
+	void EXPORT Smack(void);
+	int GetItemInfo(ItemInfo *p);
+
+	void PrimaryAttack(void);
+	int Swing(int fFirst);
+	BOOL Deploy(void);
+	void Holster(int skiplocal = 0);
+	int m_iSwing;
+	TraceResult m_trHit;
+
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+private:
+	unsigned short m_usKnife;
+};
+
+
+class CM249 : public CBasePlayerWeapon
+{
+public:
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot(void) { return 6; }
+	int GetItemInfo(ItemInfo *p);
+	int AddToPlayer(CBasePlayer *pPlayer);
+
+	void PrimaryAttack(void);
+	BOOL Deploy(void);
+	void Reload(void);
+	void WeaponIdle(void);
+	float m_flNextAnimTime;
+	int m_iShell;
+
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+
+private:
+	unsigned short m_usM249;
+};
+
+class CPenguin : public CBasePlayerWeapon
+{
+public:
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot(void) { return 5; }
+	int GetItemInfo(ItemInfo *p);
+
+	void PrimaryAttack(void);
+	void SecondaryAttack(void);
+	BOOL Deploy(void);
+	void Holster(int skiplocal = 0);
+	void WeaponIdle(void);
+	int m_fJustThrown;
+
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+
+private:
+	unsigned short m_usPenguinFire;
+};
+
+class CPipeWrench : public CBasePlayerWeapon
+{
+public:
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot(void) { return 1; }
+	void EXPORT SwingAgain(void);
+	void EXPORT Smack(void);
+	int GetItemInfo(ItemInfo *p);
+
+	void PrimaryAttack(void);
+	int Swing(int fFirst);
+	BOOL Deploy(void);
+	void Holster(int skiplocal = 0);
+	int m_iSwing;
+	TraceResult m_trHit;
+
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+private:
+	unsigned short m_usPWrench;
+};
+
+class CSniperrifle : public CBasePlayerWeapon
+{
+public:
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot(void) { return 6; }
+	int GetItemInfo(ItemInfo *p);
+	int AddToPlayer(CBasePlayer *pPlayer);
+	void PrimaryAttack(void);
+	void SecondaryAttack(void);
+	BOOL Deploy(void);
+	void Holster(int skiplocal = 0);
+	void Reload(void);
+	void WeaponIdle(void);
+
+	BOOL m_fInZoom;// don't save this. 
+
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+
+private:
+	unsigned short m_usSniper;
+};
+#endif
 
 #endif // WEAPONS_H

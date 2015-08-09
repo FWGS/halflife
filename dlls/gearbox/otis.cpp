@@ -28,8 +28,6 @@
 #include	"weapons.h"
 #include	"soundent.h"
 
-#if defined ( GEARBOX_DLL )
-
 #define		NUM_OTIS_HEADS		2 // heads available for otis model
 
 enum { HEAD_BALD = 0, HEAD_HAIR = 1 };
@@ -364,7 +362,7 @@ void COtis::OtisFirePistol(void)
 	SetBlending(0, angDir.x);
 	pev->effects = EF_MUZZLEFLASH;
 
-	FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_2DEGREES, 1024, BULLET_MONSTER_9MM);
+	FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_2DEGREES, 1024, BULLET_MONSTER_357);
 
 	int pitchShift = RANDOM_LONG(0, 20);
 
@@ -373,7 +371,7 @@ void COtis::OtisFirePistol(void)
 		pitchShift = 0;
 	else
 		pitchShift -= 5;
-	EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, "barney/ba_attack2.wav", 1, ATTN_NORM, 0, 100 + pitchShift);
+	EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, "weapons/desert_eagle_fire.wav", 1, ATTN_NORM, 0, 100 + pitchShift);
 
 	CSoundEnt::InsertSound(bits_SOUND_COMBAT, pev->origin, 384, 0.3);
 
@@ -456,8 +454,7 @@ void COtis::Precache()
 {
 	PRECACHE_MODEL("models/otis.mdl");
 
-	PRECACHE_SOUND("barney/ba_attack1.wav");
-	PRECACHE_SOUND("barney/ba_attack2.wav");
+	PRECACHE_SOUND("barney/desert_eagle_fire.wav");
 
 	PRECACHE_SOUND("barney/ba_pain1.wav");
 	PRECACHE_SOUND("barney/ba_pain2.wav");
@@ -859,5 +856,3 @@ void CDeadOtis::Spawn()
 
 	MonsterInitDead();
 }
-
-#endif // GEARBOX_DLL

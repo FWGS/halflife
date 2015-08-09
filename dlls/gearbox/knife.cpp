@@ -24,62 +24,56 @@
 
 void FindHullIntersection(const Vector &vecSrc, TraceResult &tr, float *mins, float *maxs, edict_t *pEntity);
 
-#define	PIPEWRENCH_BODYHIT_VOLUME 128
-#define	PIPEWRENCH_WALLHIT_VOLUME 512
+#define	KNIFE_BODYHIT_VOLUME 128
+#define	KNIFE_WALLHIT_VOLUME 512
 
-LINK_ENTITY_TO_CLASS(weapon_pipewrench, CPipeWrench);
+LINK_ENTITY_TO_CLASS(weapon_knife, CKnife);
 
-enum pwrench_e {
-	PIPEWRENCH_IDLE1 = 0,
-	PIPEWRENCH_IDLE2,
-	PIPEWRENCH_IDLE3,
-	PIPEWRENCH_DRAW,
-	PIPEWRENCH_HOLSTER,
-	PIPEWRENCH_ATTACK1HIT,
-	PIPEWRENCH_ATTACK1MISS,
-	PIPEWRENCH_ATTACK2HIT,
-	PIPEWRENCH_ATTACK2MISS,
-	PIPEWRENCH_ATTACK3HIT,
-	PIPEWRENCH_ATTACK3MISS,
-	PIPEWRENCH_ATTACKBIGWIND,
-	PIPEWRENCH_ATTACKBIGHIT,
-	PIPEWRENCH_ATTACKBIGMISS,
-	PIPEWRENCH_ATTACKBIGLOOP,
+enum knife_e {
+	KNIFE_IDLE1 = 0,
+	KNIFE_DRAW,
+	KNIFE_HOLSTER,
+	KNIFE_ATTACK1HIT,
+	KNIFE_ATTACK1MISS,
+	KNIFE_ATTACK2MISS,
+	KNIFE_ATTACK2HIT,
+	KNIFE_ATTACK3MISS,
+	KNIFE_ATTACK3HIT,
+	KNIFE_IDLE2,
+	KNIFE_IDLE3,
+	KNIFE_CHARGE,
+	KNIFE_STAB,
 };
 
 
-void CPipeWrench::Spawn()
+void CKnife::Spawn()
 {
 	Precache();
-	m_iId = WEAPON_PIPEWRENCH;
-	SET_MODEL(ENT(pev), "models/w_pipe_wrench.mdl");
+	m_iId = WEAPON_KNIFE;
+	SET_MODEL(ENT(pev), "models/w_knife.mdl");
 	m_iClip = -1;
 
 	FallInit();// get ready to fall down.
 }
 
 
-void CPipeWrench::Precache(void)
+void CKnife::Precache(void)
 {
-	PRECACHE_MODEL("models/v_pipe_wrench.mdl");
-	PRECACHE_MODEL("models/w_pipe_wrench.mdl");
-	PRECACHE_MODEL("models/p_pipe_wrench.mdl");
+	PRECACHE_MODEL("models/v_knife.mdl");
+	PRECACHE_MODEL("models/w_knife.mdl");
+	PRECACHE_MODEL("models/p_knife.mdl");
+	PRECACHE_SOUND("weapons/knife_hit_flesh1.wav");
+	PRECACHE_SOUND("weapons/knife_hit_flesh2.wav");
+	PRECACHE_SOUND("weapons/knife_hit_wall1.wav");
+	PRECACHE_SOUND("weapons/knife_hit_wall2.wav");
+	PRECACHE_SOUND("weapons/knife1.wav");
+	PRECACHE_SOUND("weapons/knife2.wav");
+	PRECACHE_SOUND("weapons/knife3.wav");
 
-	PRECACHE_SOUND("weapons/pwrench_hit1.wav");
-	PRECACHE_SOUND("weapons/pwrench_hit2.wav");
-	PRECACHE_SOUND("weapons/pwrench_hitbod1.wav");
-	PRECACHE_SOUND("weapons/pwrench_hitbod2.wav");
-	PRECACHE_SOUND("weapons/pwrench_hitbod3.wav");
-	PRECACHE_SOUND("weapons/pwrench_miss1.wav");
-
-	PRECACHE_SOUND("weapons/pwrench_big_hitbod1.wav");
-	PRECACHE_SOUND("weapons/pwrench_big_hitbod2.wav");
-	PRECACHE_SOUND("weapons/pwrench_big_miss.wav");
-
-	m_usPWrench = PRECACHE_EVENT(1, "events/pipewrench.sc");
+	m_usKnife = PRECACHE_EVENT(1, "events/knife.sc");
 }
 
-int CPipeWrench::GetItemInfo(ItemInfo *p)
+int CKnife::GetItemInfo(ItemInfo *p)
 {
 	p->pszName = STRING(pev->classname);
 	p->pszAmmo1 = NULL;
@@ -88,48 +82,48 @@ int CPipeWrench::GetItemInfo(ItemInfo *p)
 	p->iMaxAmmo2 = -1;
 	p->iMaxClip = WEAPON_NOCLIP;
 	p->iSlot = 0;
-	p->iPosition = 1;
-	p->iId = WEAPON_PIPEWRENCH;
-	p->iWeight = PIPEWRENCH_WEIGHT;
+	p->iPosition = 2;
+	p->iId = WEAPON_KNIFE;
+	p->iWeight = KNIFE_WEIGHT;
 	return 1;
 }
 
 
 
-BOOL CPipeWrench::Deploy()
+BOOL CKnife::Deploy()
 {
-	return DefaultDeploy("models/v_pipe_wrench.mdl", "models/p_pipe_wrench.mdl", PIPEWRENCH_DRAW, "pipewrench");
+	return DefaultDeploy("models/v_knife.mdl", "models/p_knife.mdl", KNIFE_DRAW, "knife");
 }
 
-void CPipeWrench::Holster(int skiplocal /* = 0 */)
+void CKnife::Holster(int skiplocal /* = 0 */)
 {
 	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
-	SendWeaponAnim(PIPEWRENCH_HOLSTER);
+	SendWeaponAnim(KNIFE_HOLSTER);
 }
 
-void CPipeWrench::PrimaryAttack()
+void CKnife::PrimaryAttack()
 {
 	if (!Swing(1))
 	{
-		SetThink(&CPipeWrench::SwingAgain);
+		SetThink(&CKnife::SwingAgain);
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 }
 
 
-void CPipeWrench::Smack()
+void CKnife::Smack()
 {
 	DecalGunshot(&m_trHit, BULLET_PLAYER_CROWBAR);
 }
 
 
-void CPipeWrench::SwingAgain(void)
+void CKnife::SwingAgain(void)
 {
 	Swing(0);
 }
 
 
-int CPipeWrench::Swing(int fFirst)
+int CKnife::Swing(int fFirst)
 {
 	int fDidHit = FALSE;
 
@@ -157,29 +151,32 @@ int CPipeWrench::Swing(int fFirst)
 	}
 #endif
 
-	PLAYBACK_EVENT_FULL(FEV_NOTHOST, m_pPlayer->edict(), m_usPWrench,
+	PLAYBACK_EVENT_FULL(FEV_NOTHOST, m_pPlayer->edict(), m_usKnife,
 		0.0, (float *)&g_vecZero, (float *)&g_vecZero, 0, 0, 0,
 		0.0, 0, 0.0);
 
 
 	if (tr.flFraction >= 1.0)
 	{
-		// miss
-		m_flNextPrimaryAttack = GetNextAttackDelay(0.35f);
+		if (fFirst)
+		{
+			// miss
+			m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
 
-		// player "shoot" animation
-		m_pPlayer->SetAnimation(PLAYER_ATTACK1);
+			// player "shoot" animation
+			m_pPlayer->SetAnimation(PLAYER_ATTACK1);
+		}
 	}
 	else
 	{
 		switch (((m_iSwing++) % 2) + 1)
 		{
 		case 0:
-			SendWeaponAnim(PIPEWRENCH_ATTACK1HIT); break;
+			SendWeaponAnim(KNIFE_ATTACK1HIT); break;
 		case 1:
-			SendWeaponAnim(PIPEWRENCH_ATTACK2HIT); break;
+			SendWeaponAnim(KNIFE_ATTACK2HIT); break;
 		case 2:
-			SendWeaponAnim(PIPEWRENCH_ATTACK3HIT); break;
+			SendWeaponAnim(KNIFE_ATTACK3HIT); break;
 		}
 
 		// player "shoot" animation
@@ -196,12 +193,12 @@ int CPipeWrench::Swing(int fFirst)
 		if ((m_flNextPrimaryAttack + 1 < UTIL_WeaponTimeBase()) || g_pGameRules->IsMultiplayer())
 		{
 			// first swing does full damage
-			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgPWrench, gpGlobals->v_forward, &tr, DMG_CLUB);
+			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgKnife, gpGlobals->v_forward, &tr, DMG_CLUB);
 		}
 		else
 		{
 			// subsequent swings do half
-			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgPWrench / 2, gpGlobals->v_forward, &tr, DMG_CLUB);
+			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgKnife / 2, gpGlobals->v_forward, &tr, DMG_CLUB);
 		}
 		ApplyMultiDamage(m_pPlayer->pev, m_pPlayer->pev);
 
@@ -214,16 +211,14 @@ int CPipeWrench::Swing(int fFirst)
 			if (pEntity->Classify() != CLASS_NONE && pEntity->Classify() != CLASS_MACHINE)
 			{
 				// play thwack or smack sound
-				switch (RANDOM_LONG(0, 2))
+				switch (RANDOM_LONG(0, 1))
 				{
 				case 0:
-					EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hitbod1.wav", 1, ATTN_NORM); break;
+					EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/knife_hit_flesh1.wav", 1, ATTN_NORM); break;
 				case 1:
-					EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hitbod2.wav", 1, ATTN_NORM); break;
-				case 2:
-					EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hitbod3.wav", 1, ATTN_NORM); break;
+					EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/knife_hit_flesh2.wav", 1, ATTN_NORM); break;
 				}
-				m_pPlayer->m_iWeaponVolume = PIPEWRENCH_BODYHIT_VOLUME;
+				m_pPlayer->m_iWeaponVolume = KNIFE_BODYHIT_VOLUME;
 				if (!pEntity->IsAlive())
 					return TRUE;
 				else
@@ -252,10 +247,10 @@ int CPipeWrench::Swing(int fFirst)
 			switch (RANDOM_LONG(0, 1))
 			{
 			case 0:
-				EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hit1.wav", fvolbar, ATTN_NORM, 0, 98 + RANDOM_LONG(0, 3));
+				EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/knife_hit_wall1.wav", fvolbar, ATTN_NORM, 0, 98 + RANDOM_LONG(0, 3));
 				break;
 			case 1:
-				EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hit1.wav", fvolbar, ATTN_NORM, 0, 98 + RANDOM_LONG(0, 3));
+				EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/knife_hit_wall2.wav", fvolbar, ATTN_NORM, 0, 98 + RANDOM_LONG(0, 3));
 				break;
 			}
 
@@ -263,11 +258,11 @@ int CPipeWrench::Swing(int fFirst)
 			m_trHit = tr;
 		}
 
-		m_pPlayer->m_iWeaponVolume = flVol * PIPEWRENCH_WALLHIT_VOLUME;
+		m_pPlayer->m_iWeaponVolume = flVol * KNIFE_WALLHIT_VOLUME;
 #endif
-		m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+		m_flNextPrimaryAttack = GetNextAttackDelay(0.25);
 
-		SetThink(&CPipeWrench::Smack);
+		SetThink(&CKnife::Smack);
 		pev->nextthink = UTIL_WeaponTimeBase() + 0.2;
 
 

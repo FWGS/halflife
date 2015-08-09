@@ -23,8 +23,6 @@
 #include	"schedule.h"
 #include	"zombie.h"
 
-#if defined ( GEARBOX_DLL )
-
 class CZBarney : public CZombie
 {
 public:
@@ -224,5 +222,3 @@ void CZBarney::HandleAnimEvent(MonsterEvent_t *pEvent)
 		break;
 	}
 }
-
-#endif // GEARBOX_DLL

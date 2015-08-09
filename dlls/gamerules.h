@@ -357,4 +357,32 @@ protected:
 	void SendMOTDToClient( edict_t *client );
 };
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
+//=========================================================
+// CGearboxRules - rules for the single player 
+// Half-Life : Opposing Force game.
+//=========================================================
+class CGearboxRules : public CHalfLifeRules
+{
+public:
+	CGearboxRules(void);
+
+	virtual void RefreshSkillData(void);
+};
+
+//=========================================================
+// CGearboxMultiplay - rules for the basic half life multiplayer
+// competition
+//=========================================================
+class CGearboxMultiplay : public CHalfLifeMultiplay
+{
+public:
+	CGearboxMultiplay();
+
+	virtual void RefreshSkillData(void);
+};
+
+#endif //  defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
 extern DLL_GLOBAL CGameRules*	g_pGameRules;

@@ -23,8 +23,6 @@
 #include	"schedule.h"
 #include	"zombie.h"
 
-#if defined ( GEARBOX_DLL )
-
 class CZGrunt : public CZombie
 {
 public:
@@ -283,6 +281,3 @@ void CDeadZGrunt::Spawn(void)
 
 	MonsterInitDead();
 }
-
-
-#endif // GEARBOX_DLL

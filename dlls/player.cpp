@@ -1134,6 +1134,12 @@ void CBasePlayer::TabulateAmmo()
 	ammo_rockets = AmmoInventory( GetAmmoIndex( "rockets" ) );
 	ammo_uranium = AmmoInventory( GetAmmoIndex( "uranium" ) );
 	ammo_hornets = AmmoInventory( GetAmmoIndex( "Hornets" ) );
+
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	ammo_556 = AmmoInventory( GetAmmoIndex( "556" ) );
+	ammo_762 = AmmoInventory( GetAmmoIndex( "762" ) );
+#endif
 }
 
 
@@ -3561,6 +3567,17 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 		GiveNamedItem( "weapon_snark" );
 		GiveNamedItem( "weapon_hornetgun" );
 #endif
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+		GiveNamedItem("weapon_eagle");
+		GiveNamedItem("weapon_knife");
+		GiveNamedItem("weapon_m249");
+		GiveNamedItem("ammo_556");
+		GiveNamedItem("weapon_penguin");
+		GiveNamedItem("weapon_pipewrench");
+		GiveNamedItem("weapon_sniperrifle");
+		GiveNamedItem("ammo_762");
+#endif
+
 		gEvilImpulse101 = FALSE;
 		break;
 

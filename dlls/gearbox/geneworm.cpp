@@ -23,8 +23,6 @@
 #include	"schedule.h"
 #include	"genericmonster.h"
 
-#if defined ( GEARBOX_DLL )
-
 //=========================================================
 // Monster's Anim Events Go Here
 //=========================================================
@@ -68,5 +66,3 @@ void CGeneWorm::Precache()
 {
 	PRECACHE_MODEL("models/geneworm.mdl");
 }
-
-#endif // 

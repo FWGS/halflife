@@ -18,16 +18,9 @@
 #include	"cbase.h"
 #include	"player.h"
 #include	"weapons.h"
-#include	"gearbox_gamerules.h"
+#include	"gamerules.h"
 #include	"skill.h"
 #include	"items.h"
-#include	"teamplay_gamerules.h"
-
-#if defined ( GEARBOX_DLL )
-
-extern int		g_teamplay;
-
-extern cvar_t	teamplay;
 
 //---------------------------------------------------------
 // Purpose:
@@ -135,6 +128,8 @@ void CGearboxRules::RefreshSkillData(void)
 	gSkillData.plrDmgDisplacer = GetSkillCvar("sk_plr_displacer_self");
 	gSkillData.plrDmgShockroach = GetSkillCvar("sk_plr_shockroachs");
 	gSkillData.plrDmgSpore = GetSkillCvar("sk_plr_spore");
+	gSkillData.plrDmg762 = GetSkillCvar("sk_plr_762_bullet");
+	gSkillData.plrDmg556 = GetSkillCvar("sk_plr_556_bullet");
 
 	gSkillData.monDmg762 = GetSkillCvar("sk_plr_762_bullet");
 	gSkillData.monDmg556 = GetSkillCvar("sk_plr_556_bullet");
@@ -143,106 +138,3 @@ void CGearboxRules::RefreshSkillData(void)
 
 	gSkillData.displacerDmgRadius = GetSkillCvar("sk_plr_displacer_radius");
 }
-
-
-//---------------------------------------------------------
-// Purpose:
-//---------------------------------------------------------
-CGearboxMultiplay::CGearboxMultiplay() : CHalfLifeMultiplay()
-{
-
-}
-
-
-//=========================================================
-//=========================================================
-void CGearboxMultiplay::RefreshSkillData(void)
-{
-	// load all default values
-	CHalfLifeMultiplay::RefreshSkillData();
-
-	// override some values for multiplay.
-
-	// Pipe wrench
-	gSkillData.plrDmgPWrench		= 20;
-
-	// Knife
-	gSkillData.plrDmgKnife			= 10;
-
-	// Grapple
-	gSkillData.plrDmgGrapple		= 25;
-
-	// Eagle
-	gSkillData.plrDmgEagle			= 34;
-
-	// Displacer player damage
-	gSkillData.plrDmgDisplacer		= 5;
-
-	// Shockroach
-	gSkillData.plrDmgShockroach		= 10;
-
-	// Spore
-	gSkillData.plrDmgSpore			= 50;
-
-	// 762
-	gSkillData.monDmg762			= 100;
-
-	// 556
-	gSkillData.monDmg556			= 15;
-
-	// Displacer monster damage
-	gSkillData.monDmgDisplacer		= 250;
-
-	// Shockroach
-	gSkillData.monDmgShockroach		= 15;
-
-	// Displacer radius
-	gSkillData.displacerDmgRadius	= 300;
-
-
-}
-
-//=========================================================
-// instantiate the proper game rules object
-//=========================================================
-
-#if defined ( GEARBOX_DLL )
-
-CGameRules *InstallGameRules(void)
-{
-	SERVER_COMMAND("exec game.cfg\n");
-	SERVER_EXECUTE();
-
-	if (!gpGlobals->deathmatch)
-	{
-		// generic Op4
-		g_teamplay = 0;
-		return new CGearboxRules;
-	}
-	else
-	{
-		if (teamplay.value > 0)
-		{
-			// teamplay
-
-			g_teamplay = 1;
-			return new CHalfLifeTeamplay;
-		}
-		if ((int)gpGlobals->deathmatch == 1)
-		{
-			// vanilla Op4 deathmatch
-			g_teamplay = 0;
-			return new CGearboxMultiplay;
-		}
-		else
-		{
-			// vanilla Op4 deathmatch??
-			g_teamplay = 0;
-			return new CGearboxMultiplay;
-		}
-	}
-}
-
-#endif // !defined ( GEARBOX_DLL )
-
-#endif // GEARBOX_DLL
