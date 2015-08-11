@@ -43,7 +43,7 @@ public:
 	void Shoot(void);
 	void Shotgun(void);
 	void PrescheduleThink(void);
-	void GibMonster(void);
+	virtual void GibMonster(void);
 	void SpeakSentence(void);
 
 	int	Save(CSave &save);

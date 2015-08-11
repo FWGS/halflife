@@ -185,7 +185,7 @@ public:
 #define PENGUIN_MAX_CLIP				WEAPON_NOCLIP
 #define SHOCKRIFLE_MAX_CLIP				10
 #define SNIPERRIFLE_MAX_CLIP			5
-#define SPORELAUNCHER_MAX_CLIP			20
+#define SPORELAUNCHER_MAX_CLIP			5
 
 #endif
 
@@ -236,6 +236,7 @@ public:
 #define AMMO_556CLIP_GIVE		50
 #define AMMO_762BOX_GIVE		5
 #define AMMO_PENGUINBOX_GIVE	3
+#define AMMO_SPORE_GIVE			1
 
 #endif
 
@@ -1101,6 +1102,60 @@ private:
 //
 //
 //
+class CDisplacer : public CBasePlayerWeapon
+{
+public:
+
+#ifndef CLIENT_DLL
+	int		Save(CSave &save);
+	int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+#endif
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot(void) { return 5; }
+	int GetItemInfo(ItemInfo *p);
+	int AddToPlayer(CBasePlayer *pPlayer);
+	void PrimaryAttack(void);
+	void SecondaryAttack(void);
+	BOOL Deploy(void);
+	void Holster(int skiplocal = 0);
+	void WeaponIdle(void); 
+
+	BOOL PlayEmptySound(void);
+
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+
+	int		m_iFireState;
+	int		m_iFireMode;
+	CBaseEntity* m_hTargetEarth;
+	CBaseEntity* m_hTargetXen;
+
+	BOOL HasAmmo(void);
+	void UseAmmo(int count);
+	BOOL CanFireDisplacer() const;
+
+	enum DISPLACER_FIRESTATE { FIRESTATE_NONE = 0, FIRESTATE_SPINUP, FIRESTATE_SPIN, FIRESTATE_FIRE };
+	enum DISPLACER_FIREMODE { FIREMODE_NONE = 0, FIREMODE_FORWARD, FIREMODE_BACKWARD };
+
+private:
+	void ClearSpin( void );
+	void SpinUp(int iFireMode);
+	void Spin( void );
+	void Fire( BOOL fIsPrimary );
+	void Teleport( void );
+	void Displace();
+
+private:
+	unsigned short m_usDisplacer;
+};
 
 class CEagle : public CBasePlayerWeapon
 {
@@ -1263,6 +1318,48 @@ private:
 	unsigned short m_usPWrench;
 };
 
+
+class CShockrifle : public CHgun
+{
+public:
+
+#ifndef CLIENT_DLL
+	int		Save(CSave &save);
+	int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+#endif
+
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot(void) { return 7; }
+	int GetItemInfo(ItemInfo *p);
+	int AddToPlayer(CBasePlayer *pPlayer);
+
+	void PrimaryAttack(void);
+	void SecondaryAttack(void);
+	BOOL Deploy(void);
+	void Holster(int skiplocal = 0);
+	void Reload(void);
+	void WeaponIdle(void);
+	void ItemPostFrame(void);;
+
+	int m_fShouldUpdateEffects;
+	int m_flBeamLifeTime;
+
+	void UpdateEffects();
+	
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+private:
+	unsigned short m_usShockFire;
+};
+
 class CSniperrifle : public CBasePlayerWeapon
 {
 public:
@@ -1292,6 +1389,42 @@ public:
 private:
 	unsigned short m_usSniper;
 };
+
+class CSporelauncher : public CShotgun
+{
+public:
+
+#ifndef CLIENT_DLL
+	int		Save(CSave &save);
+	int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
 #endif
+
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot() { return 7; }
+	int GetItemInfo(ItemInfo *p);
+	int AddToPlayer(CBasePlayer *pPlayer);
+
+	void PrimaryAttack(void);
+	void SecondaryAttack(void);
+	BOOL Deploy();
+	void Reload(void);
+	void WeaponIdle(void);
+
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+	int m_iSquidSpitSprite;
+private:
+	unsigned short m_usSporeFire;
+};
+
+#endif // defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL ) 
 
 #endif // WEAPONS_H

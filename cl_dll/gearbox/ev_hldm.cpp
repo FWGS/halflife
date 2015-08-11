@@ -73,12 +73,15 @@ void EV_TripmineFire( struct event_args_s *args  );
 void EV_SnarkFire( struct event_args_s *args  );
 
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+void EV_Displacer(struct event_args_s *args);
 void EV_FireEagle(struct event_args_s *args);
 void EV_Knife(struct event_args_s *args);
 void EV_FireM249(struct event_args_s *args);
 void EV_PenguinFire(struct event_args_s *args);
 void EV_PipeWrench(struct event_args_s *args);
+void EV_ShockFire(struct event_args_s *args);
 void EV_FireSniper(struct event_args_s *args);
+void EV_SporeFire(struct event_args_s *args);
 #endif
 
 
@@ -1730,6 +1733,74 @@ int EV_TFC_IsAllyTeam( int iTeam1, int iTeam2 )
 
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 
+//======================
+//	   DISPLACER START 
+//======================
+
+enum displacer_e {
+	DISPLACER_IDLE1 = 0,
+	DISPLACER_IDLE2,
+	DISPLACER_SPINUP,
+	DISPLACER_SPIN,
+	DISPLACER_FIRE,
+	DISPLACER_DRAW,
+	DISPLACER_HOLSTER,
+};
+
+void EV_Displacer(event_args_t *args)
+{
+	int idx;
+	vec3_t origin;
+
+	idx = args->entindex;
+	VectorCopy(args->origin, origin);
+
+	if (EV_IsLocal(idx))
+	{
+		switch (args->iparam1)
+		{
+		case DISPLACER_SPINUP:
+			{
+				gEngfuncs.pEventAPI->EV_WeaponAnimation(DISPLACER_SPINUP, 0);
+
+				// Fire state
+				switch (args->iparam2)
+				{
+				case 1: // FIRESTATE_FORWARD (primary attack)
+					gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/displacer_spin.wav", 1, ATTN_NORM, 0, PITCH_NORM);
+					break;
+				case 2: // FIRESTATE_BACKWARD (secondary attack)
+					gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/displacer_spin2.wav", 1, ATTN_NORM, 0, PITCH_NORM);
+					break;
+				default:
+					break;
+				}
+			}
+			break;
+		case DISPLACER_SPIN:
+			{
+				gEngfuncs.pEventAPI->EV_WeaponAnimation(DISPLACER_SPIN, 0);
+			}
+			break;
+		case DISPLACER_FIRE:
+			{
+				gEngfuncs.pEventAPI->EV_WeaponAnimation(DISPLACER_FIRE, 0);
+				gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/displacer_fire.wav", 1, ATTN_NORM, 0, PITCH_NORM);
+			}
+			break;
+		default:
+			break;
+		}
+	}	
+}
+//======================
+//	    DISPLACER END 
+//======================
+
+
+//======================
+//	   DESERT EAGLE START 
+//======================
 enum eagle_e {
 	EAGLE_IDLE1 = 0,
 	EAGLE_IDLE2,
@@ -1744,10 +1815,6 @@ enum eagle_e {
 	EAGLE_HOLSTER,
 };
 
-
-//======================
-//	   DESERT EAGLE START 
-//======================
 void EV_FireEagle(event_args_t *args)
 {
 	int idx;
@@ -2052,6 +2119,91 @@ void EV_PipeWrench(event_args_t *args)
 //	   PIPEWRENCH END 
 //======================
 
+
+
+//======================
+//	   SHOCKRIFLE START
+//======================
+
+enum shockrifle_e {
+	SHOCK_IDLE1 = 0,
+	SHOCK_FIRE,
+	SHOCK_DRAW,
+	SHOCK_HOLSTER,
+	SHOCK_IDLE3,
+};
+
+void EV_ShockFire(event_args_t *args)
+{
+	int idx;
+	vec3_t origin;
+
+	idx = args->entindex;
+
+	VectorCopy(args->origin, origin);
+
+	int fPlayEffects = args->iparam1;
+
+	// Primary attack.
+	if (!fPlayEffects)
+	{
+		//Only play the weapon anims if I shot it.
+		if (EV_IsLocal(idx))
+		{
+			V_PunchAxis(0, gEngfuncs.pfnRandomLong(0, 2));
+			gEngfuncs.pEventAPI->EV_WeaponAnimation(SHOCK_FIRE, 1);
+		}
+
+		// Play fire sound.
+		gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/shock_fire.wav", 1, ATTN_NORM, 0, 100);
+	}
+	else // Play weapon effects.
+	{
+		int iBeamModelIndex = gEngfuncs.pEventAPI->EV_FindModelIndex("sprites/lgtning.spr");
+
+		cl_entity_t * vm = gEngfuncs.GetViewModel();
+		if (vm)
+		{
+			// Valid viewmodel.
+
+			gEngfuncs.pEventAPI->EV_SetUpPlayerPrediction(false, true);
+
+			// Store off the old count
+			gEngfuncs.pEventAPI->EV_PushPMStates();
+
+			for (int i = 1; i < 4; i++)
+			{
+				BEAM* pBeam =  gEngfuncs.pEfxAPI->R_BeamPoints(
+					(float*)&vm->attachment[0],
+					(float*)&vm->attachment[i],
+					iBeamModelIndex,
+					0.01f,
+					1.1f,
+					0.3f,
+					230 + gEngfuncs.pfnRandomFloat(20, 30),
+					10,
+					0,
+					10,
+					0.0f,
+					1.0f,
+					1.0f);
+
+				if (pBeam)
+				{
+					pBeam->flags |= (FBEAM_SHADEIN | FBEAM_SHADEOUT);
+					pBeam->startEntity = vm->index;
+					pBeam->endEntity = vm->index;
+				}
+			}
+
+			gEngfuncs.pEventAPI->EV_PopPMStates();
+		}
+	}
+}
+//======================
+//	   SHOCKRIFLE END
+//======================
+
 //======================
 //	   SNIPERRIFLE START 
 //======================
@@ -2106,6 +2258,79 @@ void EV_FireSniper(event_args_t *args)
 }
 //======================
 //	   SNIPERRIFLE END 
+//======================
+
+//======================
+//	   SPORELAUNCHER START
+//======================
+
+enum sporelauncher_e {
+	SPLAUNCHER_IDLE = 0,
+	SPLAUNCHER_FIDGET,
+	SPLAUNCHER_RELOAD_REACH,
+	SPLAUNCHER_RELOAD_LOAD,
+	SPLAUNCHER_RELOAD_AIM,
+	SPLAUNCHER_FIRE,
+	SPLAUNCHER_HOLSTER1,
+	SPLAUNCHER_DRAW1,
+	SPLAUNCHER_IDLE2
+};
+
+void EV_SporeFire(event_args_t *args)
+{
+	int idx;
+	vec3_t origin;
+	vec3_t angles;
+	vec3_t velocity;
+	vec3_t up, right, forward;
+
+	idx = args->entindex;
+	VectorCopy(args->origin, origin);
+	VectorCopy(args->angles, angles);
+	VectorCopy(args->velocity, velocity);
+
+	AngleVectors(angles, forward, right, up);
+
+	if (EV_IsLocal(idx))
+	{
+		gEngfuncs.pEventAPI->EV_WeaponAnimation(SPLAUNCHER_FIRE, 0);
+		V_PunchAxis(0, -5.0);
+	}
+
+	int fPrimaryFire = args->bparam2;
+
+	if (fPrimaryFire)
+		gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/splauncher_fire.wav", 1, ATTN_NORM, 0, 100);
+	else
+		gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/splauncher_altfire.wav", 1, ATTN_NORM, 0, 100);
+
+	Vector	vecSpitOffset;
+	Vector	vecSpitDir;
+	int		iSpitModelIndex;
+
+	vecSpitDir.x = forward.x;
+	vecSpitDir.y = forward.y;
+	vecSpitDir.z = forward.z;
+
+	vecSpitOffset = origin;
+
+	vecSpitOffset = vecSpitOffset + forward * 16;
+	vecSpitOffset = vecSpitOffset + right * 8;
+	vecSpitOffset = vecSpitOffset + up * 4;
+
+	iSpitModelIndex = gEngfuncs.pEventAPI->EV_FindModelIndex("sprites/tinyspit.spr");
+
+	// spew the spittle temporary ents.
+	gEngfuncs.pEfxAPI->R_Sprite_Spray(
+		(float*)&vecSpitOffset,
+		(float*)&vecSpitDir,
+		iSpitModelIndex,
+		8, 
+		210, 
+		25);
+}
+//======================
+//	   SPORELAUNCHER END
 //======================
 
 

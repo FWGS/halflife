@@ -60,13 +60,17 @@ const char *CBreakable::pSpawnObjects[] =
 	"weapon_hornetgun",	// 21
 
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	"weapon_displacer",
 	"weapon_eagle",
 	"weapon_knife",
 	"weapon_m249",
 	"ammo_556",
 	"weapon_pipewrench",
+	"weapon_shockrifle",
 	"weapon_sniperrifle",
 	"ammo_762",
+	"weapon_sniperrifle",
+	//"ammo_spore",
 #endif
 };
 

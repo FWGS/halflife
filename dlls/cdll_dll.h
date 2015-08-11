@@ -28,7 +28,7 @@
 #define MAX_ITEMS				5	// hard coded item types
 #elif defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 #define MAX_WEAPON_SLOTS		7	// hud item selection slots
-#define MAX_ITEM_TYPES			7	// hud item selection slots
+#define MAX_ITEM_TYPES			8	// hud item selection slots
 #define MAX_ITEMS				5	// hard coded item types
 #else
 #define MAX_WEAPON_SLOTS		5	// hud item selection slots

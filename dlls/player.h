@@ -57,8 +57,16 @@
 
 #define CSUITNOREPEAT		32
 
+#if defined ( BSHIFT_DLL ) || defined ( BSHIFT_CLIENT_DLL )
 #define	SOUND_FLASHLIGHT_ON		"items/flashlight1.wav"
 #define	SOUND_FLASHLIGHT_OFF	"items/flashlight1.wav"
+#elif defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+#define	SOUND_FLASHLIGHT_ON		"items/flashlight1.wav"
+#define	SOUND_FLASHLIGHT_OFF	"items/flashlight2.wav"
+#else
+#define	SOUND_FLASHLIGHT_ON		"items/flashlight1.wav"
+#define	SOUND_FLASHLIGHT_OFF	"items/flashlight1.wav"
+#endif
 
 #define TEAM_NAME_LENGTH	16
 
@@ -239,9 +247,9 @@ public:
 	virtual int		ObjectCaps( void ) { return CBaseMonster :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 	virtual void	Precache( void );
 	BOOL			IsOnLadder( void );
-	BOOL			FlashlightIsOn( void );
-	void			FlashlightTurnOn( void );
-	void			FlashlightTurnOff( void );
+	virtual BOOL	FlashlightIsOn( void );
+	virtual void	FlashlightTurnOn(void);
+	virtual void	FlashlightTurnOff(void);
 	
 	void UpdatePlayerSound ( void );
 	void DeathSound ( void );

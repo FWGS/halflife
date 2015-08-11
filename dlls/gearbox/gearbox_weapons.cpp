@@ -398,6 +398,10 @@ void W_Precache(void)
 #endif
 
 #if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
+	UTIL_PrecacheOtherWeapon("weapon_displacer");
+#endif
+
+#if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
 	UTIL_PrecacheOtherWeapon("weapon_eagle");
 #endif
 
@@ -419,8 +423,18 @@ void W_Precache(void)
 #endif
 
 #if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
+	UTIL_PrecacheOtherWeapon("weapon_shockrifle");
+#endif
+
+
+#if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
 	UTIL_PrecacheOtherWeapon("weapon_sniperrifle");
 	UTIL_PrecacheOther("ammo_762");
+#endif
+
+#if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
+	UTIL_PrecacheOtherWeapon("weapon_sporelauncher");
+	UTIL_PrecacheOther("ammo_spore");
 #endif
 
 	g_sModelIndexFireball = PRECACHE_MODEL ("sprites/zerogxplode.spr");// fireball
@@ -450,6 +464,19 @@ void W_Precache(void)
 	PRECACHE_SOUND ("weapons/bullet_hit2.wav");	// hit by bullet
 	
 	PRECACHE_SOUND ("items/weapondrop1.wav");// weapon falls to the ground
+
+
+	// Used by spore grenades.
+	PRECACHE_MODEL("models/spore.mdl");
+	PRECACHE_MODEL("sprites/spore_exp_01.spr");
+	PRECACHE_MODEL("sprites/spore_exp_b_01.spr");
+	PRECACHE_MODEL("sprites/spore_exp_c_01.spr");
+
+	PRECACHE_SOUND("weapons/splauncher_impact.wav");//explosion aftermaths
+
+	PRECACHE_SOUND("weapons/spore_hit1.wav");//sporegrenade
+	PRECACHE_SOUND("weapons/spore_hit2.wav");//sporegrenade
+	PRECACHE_SOUND("weapons/spore_hit3.wav");//sporegrenade
 
 }
 
@@ -1646,8 +1673,30 @@ TYPEDESCRIPTION	CSatchel::m_SaveData[] =
 };
 IMPLEMENT_SAVERESTORE( CSatchel, CBasePlayerWeapon );
 
+TYPEDESCRIPTION	CDisplacer::m_SaveData[] =
+{
+	DEFINE_FIELD(CDisplacer, m_iFireState, FIELD_INTEGER),
+	DEFINE_FIELD(CDisplacer, m_iFireMode, FIELD_INTEGER),
+	DEFINE_FIELD(CDisplacer, m_hTargetEarth, FIELD_CLASSPTR),
+	DEFINE_FIELD(CDisplacer, m_hTargetXen, FIELD_CLASSPTR),
+};
+IMPLEMENT_SAVERESTORE(CDisplacer, CBasePlayerWeapon);
+
 TYPEDESCRIPTION	CEagle::m_SaveData[] =
 {
 	DEFINE_FIELD(CEagle, m_fSpotActive, FIELD_INTEGER),
 };
 IMPLEMENT_SAVERESTORE(CEagle, CBasePlayerWeapon);
+
+TYPEDESCRIPTION	CShockrifle::m_SaveData[] =
+{
+	DEFINE_FIELD(CShockrifle, m_fShouldUpdateEffects, FIELD_BOOLEAN),
+	DEFINE_FIELD(CShockrifle, m_flBeamLifeTime, FIELD_TIME),
+};
+IMPLEMENT_SAVERESTORE(CShockrifle, CHgun);
+
+TYPEDESCRIPTION	CSporelauncher::m_SaveData[] =
+{
+	DEFINE_FIELD(CSporelauncher, m_iSquidSpitSprite, FIELD_INTEGER),
+};
+IMPLEMENT_SAVERESTORE(CSporelauncher, CShotgun);

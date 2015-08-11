@@ -40,6 +40,10 @@
 #include "netadr.h"
 #include "pm_shared.h"
 
+#if 1
+#include "gearbox_player.h"
+#endif
+
 #if !defined ( _WIN32 )
 #include <ctype.h>
 #endif
@@ -58,6 +62,7 @@ extern cvar_t allow_spectators;
 extern int g_teamplay;
 
 void LinkUserMessages( void );
+void LinkUserMessages_Op4( void );
 
 /*
  * used by kill command and disconnect command
@@ -148,7 +153,11 @@ void respawn(entvars_t* pev, BOOL fCopyCorpse)
 		}
 
 		// respawn player
+#if 1
+		GetClassPtr( (CGearboxPlayer *)pev)->Spawn( );
+#else
 		GetClassPtr( (CBasePlayer *)pev)->Spawn( );
+#endif
 	}
 	else
 	{       // restart the entire server
@@ -169,7 +178,11 @@ void ClientKill( edict_t *pEntity )
 {
 	entvars_t *pev = &pEntity->v;
 
+#if 1
+	CGearboxPlayer *pl = (CGearboxPlayer*)CGearboxPlayer::Instance(pev);
+#else
 	CBasePlayer *pl = (CBasePlayer*) CBasePlayer::Instance( pev );
+#endif
 
 	if ( pl->m_fNextSuicideTime > gpGlobals->time )
 		return;  // prevent suiciding too ofter
@@ -194,11 +207,19 @@ called each time a player is spawned
 */
 void ClientPutInServer( edict_t *pEntity )
 {
+#if 1
+	CGearboxPlayer *pPlayer;
+#else
 	CBasePlayer *pPlayer;
+#endif
 
 	entvars_t *pev = &pEntity->v;
 
+#if 1
+	pPlayer = GetClassPtr((CGearboxPlayer *)pev);
+#else
 	pPlayer = GetClassPtr((CBasePlayer *)pev);
+#endif
 	pPlayer->SetCustomDecalFrames(-1); // Assume none;
 
 	// Allocate a CBasePlayer for pev, and call spawn
@@ -337,7 +358,11 @@ bool Q_UnicodeValidate( const char *pUTF8 )
 //
 void Host_Say( edict_t *pEntity, int teamonly )
 {
+#if 1
+	CGearboxPlayer *client;
+#else
 	CBasePlayer *client;
+#endif
 	int		j;
 	char	*p;
 	char	text[128];
@@ -351,7 +376,11 @@ void Host_Say( edict_t *pEntity, int teamonly )
 		return;
 
 	entvars_t *pev = &pEntity->v;
+#if 1
+	CGearboxPlayer* player = GetClassPtr((CGearboxPlayer *)pev);
+#else
 	CBasePlayer* player = GetClassPtr((CBasePlayer *)pev);
+#endif
 
 	//Not yet.
 	if ( player->m_flNextChatTime > gpGlobals->time )
@@ -420,7 +449,11 @@ void Host_Say( edict_t *pEntity, int teamonly )
 	// so check it, or it will infinite loop
 
 	client = NULL;
+#if 1
+	while ( ((client = (CGearboxPlayer*)UTIL_FindEntityByClassname( client, "player" )) != NULL) && (!FNullEnt(client->edict())) ) 
+#else
 	while ( ((client = (CBasePlayer*)UTIL_FindEntityByClassname( client, "player" )) != NULL) && (!FNullEnt(client->edict())) ) 
+#endif
 	{
 		if ( !client->pev )
 			continue;
@@ -519,51 +552,87 @@ void ClientCommand( edict_t *pEntity )
 	}
 	else if ( FStrEq(pcmd, "fullupdate" ) )
 	{
+#if 1
+		GetClassPtr((CGearboxPlayer *)pev)->ForceClientDllUpdate(); 
+#else
 		GetClassPtr((CBasePlayer *)pev)->ForceClientDllUpdate(); 
+#endif
 	}
 	else if ( FStrEq(pcmd, "give" ) )
 	{
 		if ( g_flWeaponCheat != 0.0)
 		{
 			int iszItem = ALLOC_STRING( CMD_ARGV(1) );	// Make a copy of the classname
+#if 1
+			GetClassPtr((CGearboxPlayer *)pev)->GiveNamedItem( STRING(iszItem) );
+#else
 			GetClassPtr((CBasePlayer *)pev)->GiveNamedItem( STRING(iszItem) );
+#endif
 		}
 	}
 
 	else if ( FStrEq(pcmd, "drop" ) )
 	{
 		// player is dropping an item. 
-		GetClassPtr((CBasePlayer *)pev)->DropPlayerItem((char *)CMD_ARGV(1));
+#if 1
+		GetClassPtr((CGearboxPlayer *)pev)->DropPlayerItem((char *)CMD_ARGV(1));
+#else
+		etClassPtr((CBasePlayer *)pev)->DropPlayerItem((char *)CMD_ARGV(1));
+#endif
 	}
 	else if ( FStrEq(pcmd, "fov" ) )
 	{
 		if ( g_flWeaponCheat && CMD_ARGC() > 1)
 		{
+#if 1
+			GetClassPtr((CGearboxPlayer *)pev)->m_iFOV = atoi( CMD_ARGV(1) );
+#else
 			GetClassPtr((CBasePlayer *)pev)->m_iFOV = atoi( CMD_ARGV(1) );
+#endif
 		}
 		else
 		{
+#if 1
+			CLIENT_PRINTF( pEntity, print_console, UTIL_VarArgs( "\"fov\" is \"%d\"\n", (int)GetClassPtr((CGearboxPlayer *)pev)->m_iFOV ) );
+#else
 			CLIENT_PRINTF( pEntity, print_console, UTIL_VarArgs( "\"fov\" is \"%d\"\n", (int)GetClassPtr((CBasePlayer *)pev)->m_iFOV ) );
+#endif
 		}
 	}
 	else if ( FStrEq(pcmd, "use" ) )
 	{
+#if 1
+		GetClassPtr((CGearboxPlayer *)pev)->SelectItem((char *)CMD_ARGV(1));
+#else
 		GetClassPtr((CBasePlayer *)pev)->SelectItem((char *)CMD_ARGV(1));
+#endif
 	}
 	else if (((pstr = strstr(pcmd, "weapon_")) != NULL)  && (pstr == pcmd))
 	{
+#if 1
+		GetClassPtr((CGearboxPlayer *)pev)->SelectItem(pcmd);
+#else
 		GetClassPtr((CBasePlayer *)pev)->SelectItem(pcmd);
+#endif
 	}
 	else if (FStrEq(pcmd, "lastinv" ))
 	{
+#if 1
+		GetClassPtr((CGearboxPlayer *)pev)->SelectLastItem();
+#else
 		GetClassPtr((CBasePlayer *)pev)->SelectLastItem();
+#endif
 	}
 	else if ( FStrEq( pcmd, "spectate" ) )	// clients wants to become a spectator
 	{
 			// always allow proxies to become a spectator
 		if ( (pev->flags & FL_PROXY) || allow_spectators.value  )
 		{
+#if 1
+			CGearboxPlayer * pPlayer = GetClassPtr((CGearboxPlayer *)pev);
+#else
 			CBasePlayer * pPlayer = GetClassPtr((CBasePlayer *)pev);
+#endif
 
 			edict_t *pentSpawnSpot = g_pGameRules->GetPlayerSpawnSpot( pPlayer );
 			pPlayer->StartObserver( pev->origin, VARS(pentSpawnSpot)->angles);
@@ -578,7 +647,11 @@ void ClientCommand( edict_t *pEntity )
 	}	
 	else if ( FStrEq( pcmd, "specmode" )  )	// new spectator mode
 	{
+#if 1
+		CGearboxPlayer * pPlayer = GetClassPtr((CGearboxPlayer *)pev);
+#else
 		CBasePlayer * pPlayer = GetClassPtr((CBasePlayer *)pev);
+#endif
 
 		if ( pPlayer->IsObserver() )
 			pPlayer->Observer_SetMode( atoi( CMD_ARGV(1) ) );
@@ -589,12 +662,20 @@ void ClientCommand( edict_t *pEntity )
 	}
 	else if ( FStrEq( pcmd, "follownext" )  )	// follow next player
 	{
+#if 1
+		CGearboxPlayer * pPlayer = GetClassPtr((CGearboxPlayer *)pev);
+#else
 		CBasePlayer * pPlayer = GetClassPtr((CBasePlayer *)pev);
+#endif
 
 		if ( pPlayer->IsObserver() )
 			pPlayer->Observer_FindNextPlayer( atoi( CMD_ARGV(1) )?true:false );
 	}
+#if 1
+	else if ( g_pGameRules->ClientCommand( GetClassPtr((CGearboxPlayer *)pev), pcmd ) )
+#else
 	else if ( g_pGameRules->ClientCommand( GetClassPtr((CBasePlayer *)pev), pcmd ) )
+#endif
 	{
 		// MenuSelect returns true only if the command is properly handled,  so don't print a warning
 	}
@@ -679,7 +760,11 @@ void ClientUserInfoChanged( edict_t *pEntity, char *infobuffer )
 		}
 	}
 
+#if 1
+	g_pGameRules->ClientUserInfoChanged( GetClassPtr((CGearboxPlayer *)&pEntity->v), infobuffer );
+#else
 	g_pGameRules->ClientUserInfoChanged( GetClassPtr((CBasePlayer *)&pEntity->v), infobuffer );
+#endif
 }
 
 static int g_serveractive = 0;
@@ -731,6 +816,11 @@ void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 
 	// Link user messages here to make sure first client can get them...
 	LinkUserMessages();
+
+#if 1
+	// Link Op4 user messages.
+	LinkUserMessages_Op4();
+#endif
 }
 
 
@@ -744,7 +834,12 @@ Called every frame before physics are run
 void PlayerPreThink( edict_t *pEntity )
 {
 	entvars_t *pev = &pEntity->v;
+
+#if 1
+	CGearboxPlayer *pPlayer = (CGearboxPlayer *)GET_PRIVATE(pEntity);
+#else
 	CBasePlayer *pPlayer = (CBasePlayer *)GET_PRIVATE(pEntity);
+#endif
 
 	if (pPlayer)
 		pPlayer->PreThink( );
@@ -760,7 +855,11 @@ Called every frame after physics are run
 void PlayerPostThink( edict_t *pEntity )
 {
 	entvars_t *pev = &pEntity->v;
+#if 1
+	CGearboxPlayer *pPlayer = (CGearboxPlayer *)GET_PRIVATE(pEntity);
+#else
 	CBasePlayer *pPlayer = (CBasePlayer *)GET_PRIVATE(pEntity);
+#endif
 
 	if (pPlayer)
 		pPlayer->PostThink( );
@@ -953,7 +1052,11 @@ animation right now.
 void PlayerCustomization( edict_t *pEntity, customization_t *pCust )
 {
 	entvars_t *pev = &pEntity->v;
+#if 1
+	CGearboxPlayer *pPlayer = (CGearboxPlayer *)GET_PRIVATE(pEntity);
+#else
 	CBasePlayer *pPlayer = (CBasePlayer *)GET_PRIVATE(pEntity);
+#endif
 
 	if (!pPlayer)
 	{
@@ -1588,7 +1691,11 @@ int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 	int i;
 	weapon_data_t *item;
 	entvars_t *pev = &player->v;
+#if 1
+	CGearboxPlayer *pl = dynamic_cast< CGearboxPlayer *>(CGearboxPlayer::Instance(pev));
+#else
 	CBasePlayer *pl = dynamic_cast< CBasePlayer *>( CBasePlayer::Instance( pev ) );
+#endif
 	CBasePlayerWeapon *gun;
 	
 	ItemInfo II;
@@ -1661,7 +1768,11 @@ void UpdateClientData ( const edict_t *ent, int sendweapons, struct clientdata_s
 	if ( !ent || !ent->pvPrivateData )
 		return;
 	entvars_t *		pev	= (entvars_t *)&ent->v;
+#if 1
+	CGearboxPlayer *	pl = dynamic_cast< CGearboxPlayer *>(CGearboxPlayer::Instance(pev));
+#else
 	CBasePlayer *	pl	= dynamic_cast< CBasePlayer *>(CBasePlayer::Instance( pev ));
+#endif
 	entvars_t *		pevOrg = NULL;
 
 	// if user is spectating different player in First person, override some vars
@@ -1671,7 +1782,11 @@ void UpdateClientData ( const edict_t *ent, int sendweapons, struct clientdata_s
 		{
 			pevOrg = pev;
 			pev = pl->m_hObserverTarget->pev;
+#if 1
+			pl = dynamic_cast< CGearboxPlayer *>(CGearboxPlayer::Instance(pev));
+#else
 			pl = dynamic_cast< CBasePlayer *>(CBasePlayer::Instance( pev ) );
+#endif
 		}
 	}
 
@@ -1763,9 +1878,17 @@ void UpdateClientData ( const edict_t *ent, int sendweapons, struct clientdata_s
 					{
 						cd->vuser2.y = pl->ammo_556;
 					}
+					else if (pl->m_pActiveItem->m_iId == WEAPON_SHOCKRIFLE)
+					{
+						cd->vuser2.y = pl->ammo_shocks;
+					}
 					else if (pl->m_pActiveItem->m_iId == WEAPON_SNIPERRIFLE)
 					{
 						cd->vuser2.y = pl->ammo_762;
+					}
+					else if (pl->m_pActiveItem->m_iId == WEAPON_SPORELAUNCHER)
+					{
+						cd->vuser2.y = pl->ammo_spores;
 					}
 #endif
 				}
@@ -1786,7 +1909,11 @@ This is the time to examine the usercmd for anything extra.  This call happens e
 void CmdStart( const edict_t *player, const struct usercmd_s *cmd, unsigned int random_seed )
 {
 	entvars_t *pev = (entvars_t *)&player->v;
+#if 1
+	CGearboxPlayer *pl = dynamic_cast< CGearboxPlayer *>(CGearboxPlayer::Instance(pev));
+#else
 	CBasePlayer *pl = dynamic_cast< CBasePlayer *>( CBasePlayer::Instance( pev ) );
+#endif
 
 	if( !pl )
 		return;
@@ -1809,7 +1936,11 @@ Each cmdstart is exactly matched with a cmd end, clean up any group trace flags,
 void CmdEnd ( const edict_t *player )
 {
 	entvars_t *pev = (entvars_t *)&player->v;
+#if 1
+	CGearboxPlayer *pl = dynamic_cast< CGearboxPlayer *>(CGearboxPlayer::Instance(pev));
+#else
 	CBasePlayer *pl = dynamic_cast< CBasePlayer *>( CBasePlayer::Instance( pev ) );
+#endif
 
 	if( !pl )
 		return;

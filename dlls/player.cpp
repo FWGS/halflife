@@ -238,8 +238,13 @@ void LinkUserMessages( void )
 
 }
 
+#if defined ( BSHIFT_DLL ) || defined ( BSHIFT_CLIENT_DLL )
+LINK_ENTITY_TO_CLASS(player, CBasePlayer);
+#elif defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+// Player uses a different class in Op4.
+#else
 LINK_ENTITY_TO_CLASS( player, CBasePlayer );
-
+#endif
 
 
 void CBasePlayer :: Pain( void )
@@ -1139,6 +1144,8 @@ void CBasePlayer::TabulateAmmo()
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 	ammo_556 = AmmoInventory( GetAmmoIndex( "556" ) );
 	ammo_762 = AmmoInventory( GetAmmoIndex( "762" ) );
+	ammo_shocks = AmmoInventory( GetAmmoIndex("Shocks") );
+	ammo_spores = AmmoInventory( GetAmmoIndex("Spore") );
 #endif
 }
 
@@ -3568,14 +3575,18 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 		GiveNamedItem( "weapon_hornetgun" );
 #endif
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+		GiveNamedItem("weapon_displacer");
 		GiveNamedItem("weapon_eagle");
 		GiveNamedItem("weapon_knife");
 		GiveNamedItem("weapon_m249");
 		GiveNamedItem("ammo_556");
 		GiveNamedItem("weapon_penguin");
 		GiveNamedItem("weapon_pipewrench");
+		GiveNamedItem("weapon_shockrifle");
 		GiveNamedItem("weapon_sniperrifle");
 		GiveNamedItem("ammo_762");
+		GiveNamedItem("weapon_sporelauncher");
+		//GiveNamedItem("ammo_spore");
 #endif
 
 		gEvilImpulse101 = FALSE;

@@ -376,6 +376,31 @@ private:
 	int	  m_iWidth;		// width of the battery innards
 };
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+//
+//-----------------------------------------------------
+//
+class CHudNightvision : public CHudBase
+{
+public:
+	int Init(void);
+	int VidInit(void);
+	int Draw(float flTime);
+	void Reset(void);
+	int MsgFunc_Nightvision(const char *pszName, int iSize, void *pbuf);
+
+private:
+	HSPRITE m_hSprite1,
+			m_hSprite2,
+			m_hSprite3,
+			m_hSprite4;
+
+	wrect_t* m_prc;
+	int		m_fOn;
+	int		m_iFrame, m_nFrameCount;
+};
+#endif
+
 //
 //-----------------------------------------------------
 //
@@ -618,6 +643,10 @@ public:
 	CHudTextMessage m_TextMessage;
 	CHudStatusIcons m_StatusIcons;
 	CHudBenchmark	m_Benchmark;
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	CHudNightvision m_Nightvision;
+#endif
 
 	void Init( void );
 	void VidInit( void );

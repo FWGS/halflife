@@ -68,12 +68,15 @@ CTripmine g_Tripmine;
 CSqueak g_Snark;
 
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+CDisplacer g_Displacer;
 CEagle	g_Eagle;
 CKnife	g_Knife;
 CM249	g_M249;
 CPenguin g_Penguin;
 CPipeWrench g_PipeWrench;
+CShockrifle g_Shock;
 CSniperrifle g_Sniper;
+CSporelauncher g_Spore;
 #endif
 
 
@@ -630,12 +633,15 @@ void HUD_InitClientWeapons( void )
 	HUD_PrepEntity( &g_Snark	, &player );
 
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	HUD_PrepEntity(&g_Displacer, &player);
 	HUD_PrepEntity(&g_Eagle, &player);
 	HUD_PrepEntity(&g_Knife, &player);
 	HUD_PrepEntity(&g_M249, &player);
 	HUD_PrepEntity(&g_Penguin, &player);
 	HUD_PrepEntity(&g_PipeWrench, &player);
+	HUD_PrepEntity(&g_Shock, &player);
 	HUD_PrepEntity(&g_Sniper, &player);
+	HUD_PrepEntity(&g_Spore, &player);
 #endif //  defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 }
 
@@ -760,6 +766,10 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 
+		case WEAPON_DISPLACER:
+			pWeapon = &g_Displacer;
+			break;
+
 		case WEAPON_EAGLE:
 			pWeapon = &g_Eagle;
 			break;
@@ -780,8 +790,16 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 			pWeapon = &g_PipeWrench;
 			break;
 
+		case WEAPON_SHOCKRIFLE:
+			pWeapon = &g_Shock;
+			break;
+
 		case WEAPON_SNIPERRIFLE:
 			pWeapon = &g_Sniper;
+			break;
+
+		case WEAPON_SPORELAUNCHER:
+			pWeapon = &g_Spore;
 			break;
 #endif
 	}
@@ -899,9 +917,17 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	{
 		player.ammo_556 = (int)from->client.vuser2[1];
 	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_SHOCKRIFLE)
+	{
+		player.ammo_shocks = (int)from->client.vuser2[1];
+	}
 	else if (player.m_pActiveItem->m_iId == WEAPON_SNIPERRIFLE)
 	{
 		player.ammo_762 = (int)from->client.vuser2[1];
+	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_SPORELAUNCHER)
+	{
+		player.ammo_spores = (int)from->client.vuser2[1];
 	}
 #endif
 	
@@ -977,9 +1003,17 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	{
 		from->client.vuser2[1] = player.ammo_556;
 	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_SHOCKRIFLE)
+	{
+		from->client.vuser2[1] = player.ammo_shocks;
+	}
 	else if (player.m_pActiveItem->m_iId == WEAPON_SNIPERRIFLE)
 	{
 		from->client.vuser2[1] = player.ammo_762;
+	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_SPORELAUNCHER)
+	{
+		from->client.vuser2[1] = player.ammo_spores;
 	}
 #endif
 
