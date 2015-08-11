@@ -276,10 +276,16 @@ void CStrooper::HandleAnimEvent(MonsterEvent_t *pEvent)
 		vecDropAngles.x = 0;
 
 		// now spawn a shockroach.
-		CBaseEntity* pShockroach = DropItem("monster_shockroach", vecGunPos, vecDropAngles);
-		if (pShockroach)
+		CBaseEntity* pRoach = DropItem("monster_shockroach", vecGunPos, vecDropAngles);
+		if (pRoach)
 		{
-			pShockroach->pev->owner = edict();
+			pRoach->pev->owner = edict();
+
+			if (m_hEnemy)
+				pRoach->pev->angles = (pev->origin - m_hEnemy->pev->origin).Normalize();
+
+			// Remove any pitch.
+			pRoach->pev->angles.x = 0;
 		}
 	}
 	break;

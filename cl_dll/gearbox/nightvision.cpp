@@ -114,12 +114,14 @@ int CHudNightvision::Draw(float flTime)
 		SPR_Set(m_hSprite2, r, g, b);
 
 		int i, j;
-		for (i = 0; i < 4; ++i) // height
+		for (i = 0; i < 8; ++i) // height
 		{
-			for (j = 0; j < 4; ++j) // width
+			for (j = 0; j < 16; ++j) // width
 			{
-				// Nightvision sprites are 256 x 256. So draw 16 instances to cover
+				// Nightvision sprites are 256 x 256. So draw 128 -> (8 * 16) instances to cover
 				// the entire screen. It's cheap but does the work.
+				//
+				// Keep in mind this is used until we find a better solution.
 				SPR_DrawAdditive(m_iFrame, x + (j * 256), y + (i * 256), NULL);
 			}
 		}

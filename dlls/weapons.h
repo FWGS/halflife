@@ -1122,6 +1122,9 @@ public:
 	void Holster(int skiplocal = 0);
 	void WeaponIdle(void); 
 
+	void ItemPreFrame(void);
+	void ItemPostFrame( void );
+
 	BOOL PlayEmptySound(void);
 
 	virtual BOOL UseDecrement(void)
@@ -1144,6 +1147,7 @@ public:
 
 	enum DISPLACER_FIRESTATE { FIRESTATE_NONE = 0, FIRESTATE_SPINUP, FIRESTATE_SPIN, FIRESTATE_FIRE };
 	enum DISPLACER_FIREMODE { FIREMODE_NONE = 0, FIREMODE_FORWARD, FIREMODE_BACKWARD };
+	enum DISPLACER_EFFECT { EFFECT_NONE = 0, EFFECT_CORE };
 
 private:
 	void ClearSpin( void );
@@ -1151,7 +1155,9 @@ private:
 	void Spin( void );
 	void Fire( BOOL fIsPrimary );
 	void Teleport( void );
-	void Displace();
+	void Displace( void );
+	void UpdateEffects( void );
+	BOOL ShouldUpdateEffects( void ) const;
 
 private:
 	unsigned short m_usDisplacer;

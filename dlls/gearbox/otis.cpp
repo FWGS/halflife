@@ -30,7 +30,15 @@
 
 #define		NUM_OTIS_HEADS		2 // heads available for otis model
 
-enum { HEAD_BALD = 0, HEAD_HAIR = 1 };
+#define		GUN_GROUP			1
+#define		HEAD_GROUP			2
+
+#define		HEAD_HAIR			0
+#define		HEAD_BALD			1
+
+#define		GUN_NONE			0
+#define		GUN_EAGLE			1
+#define		GUN_DONUT			2
 
 //=========================================================
 // Monster's Anim Events Go Here
@@ -38,15 +46,19 @@ enum { HEAD_BALD = 0, HEAD_HAIR = 1 };
 // first flag is Otis dying for scripted sequences?
 #define		OTIS_AE_DRAW		( 2 )
 #define		OTIS_AE_SHOOT		( 3 )
-#define		OTIS_AE_HOLSTER	( 4 )
+#define		OTIS_AE_HOLSTER		( 4 )
 
 #define	OTIS_BODY_GUNHOLSTERED	0
 #define	OTIS_BODY_GUNDRAWN		1
-#define OTIS_BODY_GUNGONE			2
+#define OTIS_BODY_GUNGONE		2
 
 class COtis : public CTalkMonster
 {
 public:
+#if 1
+	void KeyValue(KeyValueData *pkvd);
+#endif
+
 	void Spawn(void);
 	void Precache(void);
 	void SetYawSpeed(void);
@@ -91,6 +103,7 @@ public:
 
 #if 1
 	BOOL	m_fSuspicious;
+	int		head;
 #endif
 
 	CUSTOM_SCHEDULES;
@@ -106,7 +119,10 @@ TYPEDESCRIPTION	COtis::m_SaveData[] =
 	DEFINE_FIELD(COtis, m_lastAttackCheck, FIELD_BOOLEAN),
 	DEFINE_FIELD(COtis, m_flPlayerDamage, FIELD_FLOAT),
 
+#if 1
 	DEFINE_FIELD(COtis, m_fSuspicious, FIELD_INTEGER),
+	DEFINE_FIELD(COtis, head, FIELD_INTEGER),
+#endif
 };
 
 IMPLEMENT_SAVERESTORE(COtis, CTalkMonster);
@@ -395,13 +411,15 @@ void COtis::HandleAnimEvent(MonsterEvent_t *pEvent)
 
 	case OTIS_AE_DRAW:
 		// otis' bodygroup switches here so he can pull gun from holster
-		pev->body = OTIS_BODY_GUNDRAWN;
+		// pev->body = OTIS_BODY_GUNDRAWN;
+		SetBodygroup( GUN_GROUP, GUN_EAGLE );
 		m_fGunDrawn = TRUE;
 		break;
 
 	case OTIS_AE_HOLSTER:
 		// change bodygroup to replace gun in holster
-		pev->body = OTIS_BODY_GUNHOLSTERED;
+		// pev->body = OTIS_BODY_GUNHOLSTERED;
+		SetBodygroup( GUN_GROUP, GUN_NONE );
 		m_fGunDrawn = FALSE;
 		break;
 
@@ -437,9 +455,14 @@ void COtis::Spawn()
 	// Make sure hands are white.
 	pev->skin = 0;
 
-	if (pev->body == -1)
-	{// -1 chooses a random head
-		pev->body = RANDOM_LONG(0, NUM_OTIS_HEADS - 1);// pick a head, any head
+	// Select a random head.
+	if (head == -1)
+	{
+		SetBodygroup(HEAD_GROUP, RANDOM_LONG(0, NUM_OTIS_HEADS - 1));
+	}
+	else
+	{
+		SetBodygroup(HEAD_GROUP, head);
 	}
 #endif
 
@@ -792,6 +815,16 @@ void COtis::DeclineFollowing(void)
 	PlaySentence("OT_POK", 2, VOL_NORM, ATTN_NORM);
 }
 
+void COtis::KeyValue(KeyValueData *pkvd)
+{
+	if (FStrEq(pkvd->szKeyName, "head"))
+	{
+		head = atoi(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	else
+		CTalkMonster::KeyValue(pkvd);
+}
 
 
 

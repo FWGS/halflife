@@ -203,15 +203,15 @@ void CSporelauncher::PrimaryAttack()
 	if (m_iClip != 0)
 		m_flPumpTime = gpGlobals->time + 0.5;
 
-	m_flNextPrimaryAttack = GetNextAttackDelay(0.75);
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.75;
+	m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
 
 #if 1
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.75;
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
 #endif
 
 	if (m_iClip != 0)
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 5.0;
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0;
 	else
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.75;
 	m_fInSpecialReload = 0;
@@ -311,15 +311,15 @@ void CSporelauncher::SecondaryAttack(void)
 	if (m_iClip != 0)
 		m_flPumpTime = gpGlobals->time + 0.95;
 
-	m_flNextPrimaryAttack = GetNextAttackDelay(1.5);
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.5;
+	m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
 
 #if 1
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.5;
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
 #endif
 
 	if (m_iClip != 0)
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 6.0;
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0;
 	else
 		m_flTimeWeaponIdle = 1.5;
 

@@ -523,6 +523,30 @@ void CDisplacer::WeaponIdle(void)
 //=========================================================
 // Purpose:
 //=========================================================
+void CDisplacer::ItemPreFrame(void)
+{
+	CBasePlayerWeapon::ItemPreFrame();
+
+	// Update the displacer beam if required.
+	if ( ShouldUpdateEffects() )
+		UpdateEffects();
+}
+
+//=========================================================
+// Purpose:
+//=========================================================
+void CDisplacer::ItemPostFrame(void)
+{
+	CBasePlayerWeapon::ItemPostFrame();
+
+	// Update the displacer beam if required.
+	if ( ShouldUpdateEffects() )
+		UpdateEffects();
+}
+
+//=========================================================
+// Purpose:
+//=========================================================
 void CDisplacer::ClearSpin( void )
 {
 
@@ -612,9 +636,6 @@ void CDisplacer::Spin(void)
 //=========================================================
 void CDisplacer::Fire(BOOL fIsPrimary)
 {
-	//SendWeaponAnim(DISPLACER_FIRE, UseDecrement());
-	m_iFireState = FIRESTATE_NONE;
-
 	if (fIsPrimary)
 	{
 		// Use the firemode 1, which launches a portal forward.
@@ -659,7 +680,7 @@ void CDisplacer::Displace( void )
 		0.0,
 		0.0,
 		DISPLACER_FIRE,
-		0,
+		FIREMODE_FORWARD,
 		0,
 		0);
 
@@ -710,12 +731,82 @@ void CDisplacer::Teleport( void )
 		pPlayer->pev->velocity = pPlayer->pev->basevelocity = g_vecZero;
 
 		pPlayer->m_fInXen = !pPlayer->m_fInXen;
+
+		if (pPlayer->m_fInXen)
+		{
+			pPlayer->pev->gravity = 0.5;
+		}
+		else
+		{
+			pPlayer->pev->gravity = 1.0;
+		}
 	}
 	else
 	{
 		ALERT(at_console, "Displacer: Not an Op4 player!\n");
 	}
 #endif
+
+	int flags;
+#if defined( CLIENT_WEAPONS )
+	flags = FEV_NOTHOST;
+#else
+	flags = 0;
+#endif
+
+	// Used to play teleport sound.
+	PLAYBACK_EVENT_FULL(
+		flags,
+		m_pPlayer->edict(),
+		m_usDisplacer,
+		0.0,
+		(float *)&g_vecZero,
+		(float *)&g_vecZero,
+		0.0,
+		0.0,
+		DISPLACER_FIRE,
+		FIREMODE_BACKWARD,
+		0,
+		0);
+}
+
+//=========================================================
+// Purpose:
+//=========================================================
+void CDisplacer::UpdateEffects(void)
+{
+	int flags;
+#if defined( CLIENT_WEAPONS )
+	flags = FEV_NOTHOST;
+#else
+	flags = 0;
+#endif
+
+	// TODO: Fix effects later.
+#if 0
+	// Used to display beam effects.
+	PLAYBACK_EVENT_FULL(
+		flags,
+		m_pPlayer->edict(),
+		m_usDisplacer,
+		0.0,
+		(float *)&g_vecZero,
+		(float *)&g_vecZero,
+		0.0,
+		0.0,
+		0,
+		0,
+		EFFECT_CORE,
+		0);
+#endif
+}
+
+//=========================================================
+// Purpose:
+//=========================================================
+BOOL CDisplacer::ShouldUpdateEffects(void) const
+{
+	return (m_iFireState != FIRESTATE_NONE);
 }
 
 //=========================================================

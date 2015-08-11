@@ -31,6 +31,7 @@ private:
 	BOOL	m_fInXen;
 
 	friend class CDisplacer;
+	friend class CTriggerXenReturn;
 };
 
 #endif // GEARBOX_PLAYER_H

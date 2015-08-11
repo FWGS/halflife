@@ -32,6 +32,8 @@ class CDrillSergeant : public CGMan
 public:
 	void Spawn(void);
 	void Precache(void);
+
+	void EXPORT DrillUse(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value);
 };
 
 LINK_ENTITY_TO_CLASS(monster_drillsergeant, CDrillSergeant);
@@ -54,6 +56,7 @@ void CDrillSergeant::Spawn()
 	m_MonsterState = MONSTERSTATE_NONE;
 
 	MonsterInit();
+	SetUse(&CDrillSergeant::DrillUse);
 }
 
 //=========================================================
@@ -62,4 +65,12 @@ void CDrillSergeant::Spawn()
 void CDrillSergeant::Precache()
 {
 	PRECACHE_MODEL("models/drill.mdl");
+}
+
+//=========================================================
+// Purpose:
+//=========================================================
+void CDrillSergeant::DrillUse(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value)
+{
+	PlaySentence("DR_POK", 2, VOL_NORM, ATTN_NORM);
 }
