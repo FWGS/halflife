@@ -30,15 +30,30 @@ spawn and use functions for editor-placed triggers
 #include "triggers.h"
 #include "gearbox_player.h"
 
+//=========================================================
+// CTriggerXenReturn
+//=========================================================
+
 class CTriggerXenReturn : public CTriggerTeleport
 {
 public:
+	void Spawn(void);
 	void EXPORT TeleportTouch(CBaseEntity *pOther);
 };
 
+
+LINK_ENTITY_TO_CLASS(trigger_xen_return, CTriggerXenReturn);
+
+
+void CTriggerXenReturn::Spawn(void)
+{
+	CTriggerTeleport::Spawn();
+
+	SetTouch(&CTriggerXenReturn::TeleportTouch);
+}
+
 void CTriggerXenReturn::TeleportTouch(CBaseEntity* pOther)
 {
-
 	entvars_t* pevToucher = pOther->pev;
 	edict_t	*pentTarget = NULL;
 
@@ -106,6 +121,91 @@ void CTriggerXenReturn::TeleportTouch(CBaseEntity* pOther)
 		// Reset gravity to default.
 		pPlayer->pev->gravity = 1.0f;
 	}
+
+	// Play teleport sound.
+	EMIT_SOUND(ENT(pOther->pev), CHAN_STATIC, "debris/beamstart7.wav", 1, ATTN_NORM );
 }
 
-LINK_ENTITY_TO_CLASS(trigger_xen_return, CTriggerXenReturn);
+//=========================================================
+// CTriggerGenewormHit
+//=========================================================
+
+class CTriggerGenewormHit : public CTriggerMultiple
+{
+public:
+};
+
+LINK_ENTITY_TO_CLASS(trigger_geneworm_hit, CTriggerMultiple);
+
+//=========================================================
+// CPlayerFreeze
+//=========================================================
+
+class CPlayerFreeze : public CBaseDelay
+{
+public:
+	void	Spawn(void);
+	void	Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value);
+
+	virtual int		Save(CSave &save);
+	virtual int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+
+	EHANDLE m_hPlayer;
+};
+
+LINK_ENTITY_TO_CLASS(trigger_playerfreeze, CPlayerFreeze);
+
+
+TYPEDESCRIPTION CPlayerFreeze::m_SaveData[] =
+{
+	DEFINE_FIELD(CPlayerFreeze, m_hPlayer, FIELD_EHANDLE),
+};
+
+IMPLEMENT_SAVERESTORE(CPlayerFreeze, CBaseDelay);
+
+void CPlayerFreeze::Spawn(void)
+{
+	CBaseDelay::Spawn();
+
+	m_hPlayer.Set(NULL);
+
+	CBaseEntity* pPlayer = UTIL_PlayerByIndex( 1 );
+
+	if (pPlayer)
+	{
+		m_hPlayer = pPlayer;
+	}
+}
+
+void CPlayerFreeze::Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value)
+{
+	CBaseEntity* pPlayer = NULL;
+
+	if (!m_hPlayer.Get())
+	{
+		CBaseEntity* pPlayer = UTIL_PlayerByIndex(1);
+
+		if (pPlayer)
+		{
+			m_hPlayer = pPlayer;
+		}
+	}
+
+	if (m_hPlayer.Get())
+	{
+#ifdef DEBUG
+		ASSERT(m_hPlayer != NULL);
+#endif
+		m_hPlayer->pev->movetype = (m_hPlayer->pev->movetype == MOVETYPE_NONE)
+			? MOVETYPE_WALK
+			: MOVETYPE_NONE;
+	}
+	else
+	{
+		ALERT(at_console, "ERROR: Couldn't find player entity.\n");
+	}
+
+	SetThink(&CPlayerFreeze::SUB_Remove);
+	pev->nextthink = gpGlobals->time;
+}

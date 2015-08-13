@@ -70,6 +70,7 @@ CSqueak g_Snark;
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 CDisplacer g_Displacer;
 CEagle	g_Eagle;
+CGrapple g_Grapple;
 CKnife	g_Knife;
 CM249	g_M249;
 CPenguin g_Penguin;
@@ -635,6 +636,7 @@ void HUD_InitClientWeapons( void )
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 	HUD_PrepEntity(&g_Displacer, &player);
 	HUD_PrepEntity(&g_Eagle, &player);
+	HUD_PrepEntity(&g_Grapple, &player);
 	HUD_PrepEntity(&g_Knife, &player);
 	HUD_PrepEntity(&g_M249, &player);
 	HUD_PrepEntity(&g_Penguin, &player);
@@ -768,6 +770,10 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 
 		case WEAPON_DISPLACER:
 			pWeapon = &g_Displacer;
+			break;
+
+		case WEAPON_GRAPPLE:
+			pWeapon = &g_Grapple;
 			break;
 
 		case WEAPON_EAGLE:

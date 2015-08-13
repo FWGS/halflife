@@ -3577,6 +3577,7 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 #if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 		GiveNamedItem("weapon_displacer");
 		GiveNamedItem("weapon_eagle");
+		GiveNamedItem("weapon_grapple");
 		GiveNamedItem("weapon_knife");
 		GiveNamedItem("weapon_m249");
 		GiveNamedItem("ammo_556");

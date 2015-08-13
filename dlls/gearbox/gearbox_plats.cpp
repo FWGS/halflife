@@ -12,30 +12,10 @@
 *   without written permission from Valve LLC.
 *
 ****/
-#ifndef GEARBOX_PLAYER_H
-#define GEARBOX_PLAYER_H
+/*
 
-class CGearboxPlayer : public CBasePlayer
-{
-public:
-	virtual int		Save(CSave &save);
-	virtual int		Restore(CRestore &restore);
+===== gearbox_plats.cpp ========================================================
 
-	BOOL	FlashlightIsOn(void);
-	void	FlashlightTurnOn(void);
-	void	FlashlightTurnOff(void);
+spawn, think, and touch functions for trains, etc
 
-	static	TYPEDESCRIPTION m_playerSaveData[];
-
-	virtual void Spawn(void);
-
-private:
-	BOOL	m_fInXen;
-	BOOL	m_fIsFrozen;
-
-	friend class CDisplacer;
-	friend class CTriggerXenReturn;
-	friend class CPlayerFreeze;
-};
-
-#endif // GEARBOX_PLAYER_H
+*/

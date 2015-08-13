@@ -124,6 +124,10 @@ void CShock::Shoot(entvars_t *pevOwner, Vector vecStart, Vector vecVelocity)
 
 void CShock::Touch(CBaseEntity *pOther)
 {
+	// Do not collide with the owner.
+	if (ENT(pOther->pev) == pev->owner)
+		return;
+
 	TraceResult tr;
 	int		iPitch, iVolume;
 
@@ -155,6 +159,7 @@ void CShock::Touch(CBaseEntity *pOther)
 	else
 	{
 		pOther->TakeDamage(pev, pev, gSkillData.monDmgShockroach, DMG_GENERIC);
+		pOther->pev->renderfx = kRenderFxGlowShell;
 	}
 
 

@@ -406,6 +406,12 @@ void W_Precache(void)
 #endif
 
 #if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
+	UTIL_PrecacheOtherWeapon("weapon_grapple");
+	UTIL_PrecacheOther("grapple_tonguetip");
+#endif
+
+
+#if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
 	UTIL_PrecacheOtherWeapon("weapon_knife");
 #endif
 
@@ -1687,6 +1693,18 @@ TYPEDESCRIPTION	CEagle::m_SaveData[] =
 	DEFINE_FIELD(CEagle, m_fSpotActive, FIELD_INTEGER),
 };
 IMPLEMENT_SAVERESTORE(CEagle, CBasePlayerWeapon);
+
+TYPEDESCRIPTION CGrapple::m_SaveData[] =
+{
+	DEFINE_FIELD(CGrapple, m_iFirestate, FIELD_INTEGER),
+	DEFINE_FIELD(CGrapple, m_iHitFlags, FIELD_INTEGER),
+	DEFINE_FIELD(CGrapple, m_fTipHit, FIELD_BOOLEAN),
+	DEFINE_FIELD(CGrapple, m_pTongueTip, FIELD_CLASSPTR),
+	DEFINE_FIELD(CGrapple, m_pBeam, FIELD_CLASSPTR),
+	DEFINE_FIELD(CGrapple, m_flNextPullSoundTime, FIELD_TIME),
+	DEFINE_FIELD(CGrapple, m_fPlayPullSound, FIELD_BOOLEAN),
+};
+IMPLEMENT_SAVERESTORE(CGrapple, CBasePlayerWeapon);
 
 TYPEDESCRIPTION	CShockrifle::m_SaveData[] =
 {

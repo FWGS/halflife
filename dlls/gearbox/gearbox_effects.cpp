@@ -63,3 +63,72 @@ CGib *CPitwormGibShooter::CreateGib(void)
 
 	return pGib;
 }
+
+
+//=========================================================
+// CSpriteTrain
+//=========================================================
+
+class CSpriteTrain : public CSprite
+{
+public:
+
+	void Spawn( void );
+	void Precache( void );
+	void KeyValue(KeyValueData* pkvd);
+
+	virtual int		Save(CSave &save);
+	virtual int		Restore(CRestore &restore);
+
+	static	TYPEDESCRIPTION m_SaveData[];
+
+	int		m_iModelIndex;
+	int		m_iSpeed;
+	float	m_flScale;
+};
+
+LINK_ENTITY_TO_CLASS(env_spritetrain, CSpriteTrain);
+
+
+TYPEDESCRIPTION	CSpriteTrain::m_SaveData[] =
+{
+	DEFINE_FIELD(CSpriteTrain, m_iModelIndex, FIELD_INTEGER),
+	DEFINE_FIELD(CSpriteTrain, m_iSpeed, FIELD_INTEGER),
+	DEFINE_FIELD(CSpriteTrain, m_flScale, FIELD_FLOAT),
+};
+
+IMPLEMENT_SAVERESTORE(CSpriteTrain, CSprite);
+
+void CSpriteTrain::KeyValue(KeyValueData *pkvd)
+{
+	if (FStrEq(pkvd->szKeyName, "model"))
+	{
+		m_iModelIndex = PRECACHE_MODEL(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	else if (FStrEq(pkvd->szKeyName, "scale"))
+	{
+		pev->scale = (float)atof(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	else if (FStrEq(pkvd->szKeyName, "speed"))
+	{
+		pev->speed = (int)atoi(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	else
+		CSprite::KeyValue(pkvd);
+}
+
+
+void CSpriteTrain::Spawn(void)
+{
+	CSprite::Spawn();
+}
+
+void CSpriteTrain::Precache(void)
+{
+
+
+	CSprite::Precache();
+}

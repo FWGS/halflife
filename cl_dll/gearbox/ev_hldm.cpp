@@ -2325,7 +2325,7 @@ void EV_FireSniper(event_args_t *args)
 		EV_MuzzleFlash();
 		gEngfuncs.pEventAPI->EV_WeaponAnimation(SNIPER_FIRE, 0);
 
-		V_PunchAxis(0, -10.0);
+		V_PunchAxis(0, -5.0);
 	}
 
 	// Play fire sound.

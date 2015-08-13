@@ -12,30 +12,35 @@
 *   without written permission from Valve LLC.
 *
 ****/
-#ifndef GEARBOX_PLAYER_H
-#define GEARBOX_PLAYER_H
 
-class CGearboxPlayer : public CBasePlayer
+#ifndef GRAPPLE_TONGUETIP_H
+#define GRAPPLE_TONGUETIP_H
+
+class CGrapple;
+
+//
+//
+//
+class CGrappleTonguetip : public CBaseEntity
 {
 public:
+
+#ifndef CLIENT_DLL
 	virtual int		Save(CSave &save);
 	virtual int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+#endif
 
-	BOOL	FlashlightIsOn(void);
-	void	FlashlightTurnOn(void);
-	void	FlashlightTurnOff(void);
+	void Spawn(void);
+	void FlyThink(void);
+	void HitThink(void);
+	void TipTouch(CBaseEntity* pOther);
 
-	static	TYPEDESCRIPTION m_playerSaveData[];
-
-	virtual void Spawn(void);
+	CGrapple* m_pMyGrappler;
 
 private:
-	BOOL	m_fInXen;
-	BOOL	m_fIsFrozen;
-
-	friend class CDisplacer;
-	friend class CTriggerXenReturn;
-	friend class CPlayerFreeze;
+	static CGrappleTonguetip* CreateTip(entvars_t *pevOwner, Vector vecStart, Vector vecVelocity);
+	friend class CGrapple;
 };
 
-#endif // GEARBOX_PLAYER_H
+#endif // GRAPPLE_TONGUETIP_H

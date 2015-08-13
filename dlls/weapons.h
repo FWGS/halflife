@@ -1207,6 +1207,89 @@ private:
 	unsigned short m_usFireEagle;
 };
 
+class CGrappleTonguetip;
+
+class CGrapple : public CBasePlayerWeapon
+{
+public:
+
+#ifndef CLIENT_DLL
+	int		Save(CSave &save);
+	int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+#endif
+
+	void Spawn(void);
+	void Precache(void);
+	int iItemSlot(void) { return 1; }
+	int GetItemInfo(ItemInfo *p);
+
+	void PrimaryAttack(void);
+	BOOL Deploy(void);
+	void Holster(int skiplocal = 0);
+	void WeaponIdle(void);
+	void ItemPostFrame(void);
+
+	virtual BOOL ShouldWeaponIdle(void) { return TRUE; }
+
+	virtual BOOL UseDecrement(void)
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+
+	void Fire(void);
+	void FireWait(void);
+	void FireReach(void);
+	void FireTravel(void);
+	void FireRelease(void);
+
+	void Fire2(void);
+
+	void OnTongueTipHitSurface( const Vector& vecTarget );
+	void OnTongueTipHitEntity( CBaseEntity* pEntity );
+
+	void StartPull( void );
+	void StopPull( void );
+	void Pull( void );
+
+	void CreateTongueTip( void );
+	void DestroyTongueTip( void );
+
+	void CreateBeam( CBaseEntity* pTongueTip );
+	void DestroyBeam( void );
+	void UpdateBeam( void );
+
+	void StartPullSound( void );
+	void UpdatePullSound( void );
+	void ResetPullSound( void );
+
+	BOOL CanAttack(float attack_time, float curtime, BOOL isPredicted);
+
+	enum GRAPPLE_FIRESTATE 
+	{ 
+		FIRESTATE_NONE = 0, 
+		FIRESTATE_FIRE,
+		FIRESTATE_FIRE2,
+		FIRESTATE_WAIT, 
+		FIRESTATE_REACH, 
+		FIRESTATE_TRAVEL, 
+		FIRESTATE_RELEASE,
+	};
+
+	int		m_iFirestate;
+	int		m_iHitFlags;
+	BOOL	m_fTipHit;
+	CGrappleTonguetip* m_pTongueTip;
+	CBeam*	m_pBeam;
+	float	m_flNextPullSoundTime;
+	BOOL	m_fPlayPullSound;
+private:
+};
+
 
 class CKnife : public CBasePlayerWeapon
 {

@@ -372,8 +372,8 @@ public:
 };
 
 //=========================================================
-// CGearboxMultiplay - rules for the basic half life multiplayer
-// competition
+// CGearboxMultiplay - rules for the basic DM/TDM
+// Half-Life : Opposing Force game.
 //=========================================================
 class CGearboxMultiplay : public CHalfLifeMultiplay
 {
@@ -381,6 +381,16 @@ public:
 	CGearboxMultiplay();
 
 	virtual void RefreshSkillData(void);
+};
+
+//=========================================================
+// CCTFMultiplay - rules for the basic CTF
+// Half-Life : Opposing Force game.
+//=========================================================
+class CCTFMultiplay : public CGearboxMultiplay
+{
+public:
+	CCTFMultiplay();
 };
 
 #endif //  defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )

@@ -56,6 +56,7 @@ LINK_ENTITY_TO_CLASS( player, CGearboxPlayer );
 TYPEDESCRIPTION	CGearboxPlayer::m_playerSaveData[] =
 {
 	DEFINE_FIELD(CGearboxPlayer, m_fInXen, FIELD_BOOLEAN),
+	DEFINE_FIELD(CGearboxPlayer, m_fIsFrozen, FIELD_BOOLEAN),
 };
 
 void LinkUserMessages_Op4(void)
@@ -196,4 +197,12 @@ void CGearboxPlayer::FlashlightTurnOff(void)
 
 	m_flFlashLightTime = FLASH_CHARGE_TIME + gpGlobals->time;
 
+}
+
+void CGearboxPlayer::Spawn(void)
+{
+	CBasePlayer::Spawn();
+
+	m_fInXen	= FALSE;
+	m_fIsFrozen = FALSE;
 }
