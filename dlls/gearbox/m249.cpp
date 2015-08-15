@@ -51,6 +51,8 @@ void CM249::Spawn()
 
 	m_iDefaultAmmo = M249_DEFAULT_GIVE;
 
+	m_iReloadState = RELOAD_STATE_NONE;
+
 	FallInit();// get ready to fall down.
 }
 
@@ -237,6 +239,15 @@ void CM249::WeaponIdle(void)
 }
 
 
+void CM249::ReloadStart(void)
+{
+	SendWeaponAnim(M249_RELOAD1, UseDecrement());
+}
+
+void CM249::ReloadInsert(void)
+{
+	SendWeaponAnim(M249_RELOAD1, UseDecrement());
+}
 
 class CM249AmmoClip : public CBasePlayerAmmo
 {

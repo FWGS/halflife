@@ -107,7 +107,7 @@ void CVoltigoreEnergyBall::Spawn(void)
 	pev->rendermode = kRenderTransAlpha;
 	pev->renderamt = 255;
 
-	SET_MODEL(ENT(pev), "sprites/bigspit.spr");
+	SET_MODEL(ENT(pev), "sprites/glow_prp.spr");
 	pev->frame = 0;
 	pev->scale = 0.5;
 
@@ -749,7 +749,7 @@ void CVoltigore::Precache()
 	PRECACHE_SOUND("voltigore/voltigore_run_grunt1.wav");
 	PRECACHE_SOUND("voltigore/voltigore_run_grunt2.wav");
 
-	PRECACHE_MODEL("sprites/tinyspit.spr");
+	PRECACHE_MODEL("sprites/glow_prp.spr");
 	UTIL_PrecacheOther("voltigore_energy_ball");
 }
 

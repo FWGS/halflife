@@ -159,8 +159,16 @@ void CGrapple::ItemPostFrame(void)
 			Pull();
 		}
 
+		// Check if fire is still eligible.
+		CheckFireEligibility();
+
+		// Update the tip velocity and position.
+		UpdateTongueTip();
+
+		// Update the tongue beam.
 		UpdateBeam();
 
+		// Update the pull sound.
 		UpdatePullSound();
 	}
 
@@ -492,6 +500,28 @@ void CGrapple::DestroyTongueTip(void)
 //=========================================================
 // Purpose:
 //=========================================================
+void CGrapple::UpdateTongueTip(void)
+{
+#ifndef CLIENT_DLL
+	if (m_pTongueTip)
+	{
+		Vector tipVel = m_pTongueTip->pev->velocity;
+		Vector ownerVel = VARS(pev->owner)->velocity;
+
+		Vector newVel;
+
+		newVel.x = tipVel.x + (ownerVel.x * 0.02f);
+		newVel.y = tipVel.y + (ownerVel.y * 0.05f);
+		newVel.z = tipVel.z + (ownerVel.z * 0.01f);
+
+		m_pTongueTip->pev->velocity = newVel;
+	}
+#endif
+}
+
+//=========================================================
+// Purpose:
+//=========================================================
 void CGrapple::CreateBeam( CBaseEntity* pTongueTip )
 {
 #ifndef CLIENT_DLL
@@ -589,4 +619,38 @@ void CGrapple::ResetPullSound(void)
 	STOP_SOUND(ENT(pev), CHAN_BODY, "weapons/bgrapple_pull.wav");
 	m_flNextPullSoundTime = 0.0f;
 	m_fPlayPullSound = FALSE;
+}
+
+BOOL CGrapple::IsTongueColliding(const Vector& vecShootOrigin, const Vector& vecTipPos)
+{
+#ifndef CLIENT_DLL
+	TraceResult tr;
+	UTIL_TraceLine(vecShootOrigin, vecTipPos, dont_ignore_monsters, ENT(m_pPlayer->pev), &tr);
+
+	if (tr.flFraction != 1.0)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+#else
+	return TRUE;
+#endif
+}
+
+void CGrapple::CheckFireEligibility(void)
+{
+#ifndef CLIENT_DLL
+	// Do not check for this if the tongue is not valid.
+	if (!m_pTongueTip)
+		return;
+
+	// Check if the tongue is through walls or if other things
+	// such as entities are between the owner and the tip.
+	if (IsTongueColliding(m_pPlayer->GetGunPosition(), m_pTongueTip->pev->origin))
+	{
+		// Stop firing!
+		FireRelease();
+	}
+#endif
 }

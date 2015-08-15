@@ -1256,8 +1256,12 @@ public:
 	void StopPull( void );
 	void Pull( void );
 
+	BOOL IsTongueColliding( const Vector& vecShootOrigin, const Vector& vecTipPos );
+	void CheckFireEligibility( void );
+
 	void CreateTongueTip( void );
 	void DestroyTongueTip( void );
+	void UpdateTongueTip( void );
 
 	void CreateBeam( CBaseEntity* pTongueTip );
 	void DestroyBeam( void );
@@ -1324,6 +1328,13 @@ private:
 class CM249 : public CBasePlayerWeapon
 {
 public:
+
+#ifndef CLIENT_DLL
+	int		Save(CSave &save);
+	int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+#endif
+
 	void Spawn(void);
 	void Precache(void);
 	int iItemSlot(void) { return 6; }
@@ -1334,6 +1345,7 @@ public:
 	BOOL Deploy(void);
 	void Reload(void);
 	void WeaponIdle(void);
+	virtual BOOL ShouldWeaponIdle(void) { return TRUE; }
 	float m_flNextAnimTime;
 	int m_iShell;
 
@@ -1345,6 +1357,13 @@ public:
 		return FALSE;
 #endif
 	}
+
+	void ReloadStart( void );
+	void ReloadInsert( void );
+
+	enum M249_RELOAD_STATE { RELOAD_STATE_NONE = 0, RELOAD_STATE_OPEN, RELOAD_STATE_FILL };
+
+	int m_iReloadState;
 
 private:
 	unsigned short m_usM249;
