@@ -85,7 +85,7 @@ void CGrapple::Precache(void)
 	PRECACHE_SOUND("weapons/bgrapple_release.wav");
 	PRECACHE_SOUND("weapons/bgrapple_wait.wav");
 
-	PRECACHE_MODEL("sprites/tongue.spr");
+	PRECACHE_MODEL("sprites/smoke_blk.spr");
 }
 
 //=========================================================
@@ -525,7 +525,7 @@ void CGrapple::UpdateTongueTip(void)
 void CGrapple::CreateBeam( CBaseEntity* pTongueTip )
 {
 #ifndef CLIENT_DLL
-	m_pBeam = CBeam::BeamCreate("sprites/tongue.spr", 16);
+	m_pBeam = CBeam::BeamCreate("sprites/smoke_blk.spr", 16);
 
 	if (m_pBeam)
 	{

@@ -15,6 +15,13 @@
 #ifndef GEARBOX_PLAYER_H
 #define GEARBOX_PLAYER_H
 
+#ifdef GEARBOX_CTF
+enum Player_Menu {
+	Team_Menu,
+	Team_Menu_IG,
+};
+#endif
+
 class CGearboxPlayer : public CBasePlayer
 {
 public:
@@ -32,6 +39,39 @@ public:
 private:
 	BOOL	m_fInXen;
 	BOOL	m_fIsFrozen;
+
+#if defined ( GEARBOX_CTF )
+public:
+	int		m_bHasFlag;
+	void ShowMenu(int bitsValidSlots, int nDisplayTime, BOOL fNeedMore, char *pszText);
+	int     m_iMenu;
+
+	float	m_flNextTeamChange;
+
+	CBasePlayer *pFlagCarrierKiller;
+	CBasePlayer *pFlagReturner;
+	CBasePlayer *pCarrierHurter;
+
+	float	m_flCarrierHurtTime;
+	float	m_flCarrierPickupTime;
+	float	m_flFlagCarrierKillTime;
+	float	m_flFlagReturnTime;
+	float	m_flFlagStatusTime;
+
+	float	m_flRegenTime;
+
+	int		m_iRuneStatus;
+
+	void	W_FireHook(void);
+	void	Throw_Grapple(void);
+
+	bool	m_bHook_Out;
+	bool    m_bOn_Hook;
+	CBaseEntity *m_ppHook;
+
+	void Service_Grapple(void);
+private:
+#endif
 
 	friend class CDisplacer;
 	friend class CTriggerXenReturn;

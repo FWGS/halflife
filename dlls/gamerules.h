@@ -383,16 +383,6 @@ public:
 	virtual void RefreshSkillData(void);
 };
 
-//=========================================================
-// CCTFMultiplay - rules for the basic CTF
-// Half-Life : Opposing Force game.
-//=========================================================
-class CCTFMultiplay : public CGearboxMultiplay
-{
-public:
-	CCTFMultiplay();
-};
-
 #endif //  defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 
 extern DLL_GLOBAL CGameRules*	g_pGameRules;

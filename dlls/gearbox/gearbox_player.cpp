@@ -50,6 +50,14 @@ extern edict_t *EntSelectSpawnPoint(CBaseEntity *pPlayer);
 int gmsgSelAmmo_Op4 = 0;
 int gmsgNightvision = 0;
 
+#if defined ( GEARBOX_CTF )
+int gmsgCTFMsgs = 0;
+int gmsgFlagStatus = 0;
+int gmsgRuneStatus = 0;
+int gmsgFlagCarrier = 0;
+
+#endif
+
 LINK_ENTITY_TO_CLASS( player, CGearboxPlayer );
 
 // Global Savedata for player
@@ -67,10 +75,18 @@ void LinkUserMessages_Op4(void)
 		return;
 	}
 	
-	gmsgSelAmmo_Op4 = 1; // Use this as a placeholder to ensure Op4 messages
-						 // only get registered once.
+	gmsgSelAmmo_Op4		= 1; // Use this as a placeholder to ensure Op4 messages
+							 // only get registered once.
 
-	gmsgNightvision = REG_USER_MSG("Nightvision", 1);
+	gmsgNightvision		= REG_USER_MSG("Nightvision", 1);
+
+#if defined ( GEARBOX_CTF )
+	gmsgCTFMsgs			= REG_USER_MSG("CTFMsg", 1);
+	gmsgFlagStatus		= REG_USER_MSG("FlagStatus", 5);
+	gmsgRuneStatus		= REG_USER_MSG("RuneStatus", 1);
+	gmsgFlagCarrier		= REG_USER_MSG("FlagCarrier", 2);
+#endif
+
 }
 
 int CGearboxPlayer::Save(CSave &save)
