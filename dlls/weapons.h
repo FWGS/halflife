@@ -1400,6 +1400,13 @@ private:
 class CPipeWrench : public CBasePlayerWeapon
 {
 public:
+#ifndef CLIENT_DLL
+	int		Save(CSave &save);
+	int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+#endif
+
+
 	void Spawn(void);
 	void Precache(void);
 	int iItemSlot(void) { return 1; }
@@ -1408,7 +1415,10 @@ public:
 	int GetItemInfo(ItemInfo *p);
 
 	void PrimaryAttack(void);
-	int Swing(int fFirst);
+	void SecondaryAttack(void);
+	void ItemPostFrame(void);
+	virtual BOOL ShouldWeaponIdle(void) { return FALSE; };
+	int Swing(int fFirst, BOOL fIsPrimary);
 	BOOL Deploy(void);
 	void Holster(int skiplocal = 0);
 	int m_iSwing;
@@ -1423,7 +1433,17 @@ public:
 #endif
 	}
 private:
+
 	unsigned short m_usPWrench;
+
+	void EXPORT WindUp(void);
+	void EXPORT WindLoop(void);
+	void EXPORT SwingAgain2(void);
+	BOOL CanAttack(float attack_time, float curtime, BOOL isPredicted);
+
+	enum PWRENCH_FIRESTATE { FIRESTATE_NONE = 0, FIRESTATE_WINDUP, FIRESTATE_WINDLOOP, FIRESTATE_BIGHIT };
+	int m_iFirestate;
+	float m_flHoldStartTime;
 };
 
 

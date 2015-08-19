@@ -2158,6 +2158,7 @@ enum pwrench_e {
 	PIPEWRENCH_ATTACKBIGLOOP,
 };
 
+
 //Only predict the miss sounds, hit sounds are still played 
 //server side, so players don't get the wrong idea.
 void EV_PipeWrench(event_args_t *args)
@@ -2170,29 +2171,41 @@ void EV_PipeWrench(event_args_t *args)
 	idx = args->entindex;
 	VectorCopy(args->origin, origin);
 
-	//Play Swing sound
-	switch (gEngfuncs.pfnRandomLong(0, 1))
-	{
-	case 0:
-		gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/pwrench_miss1.wav", 1, ATTN_NORM, 0, PITCH_NORM);
-		break;
-	case 1:
-		gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/pwrench_miss2.wav", 1, ATTN_NORM, 0, PITCH_NORM);
-		break;
-	}
-
 	if (EV_IsLocal(idx))
 	{
-		gEngfuncs.pEventAPI->EV_WeaponAnimation(PIPEWRENCH_ATTACK1MISS, 1);
-
-		switch ((g_iSwing++) % 3)
+		if (args->iparam1) // Is primary attack?
 		{
-		case 0:
-			gEngfuncs.pEventAPI->EV_WeaponAnimation(PIPEWRENCH_ATTACK1MISS, 1); break;
-		case 1:
-			gEngfuncs.pEventAPI->EV_WeaponAnimation(PIPEWRENCH_ATTACK2MISS, 1); break;
-		case 2:
-			gEngfuncs.pEventAPI->EV_WeaponAnimation(PIPEWRENCH_ATTACK3MISS, 1); break;
+			//Play Swing sound
+			switch (gEngfuncs.pfnRandomLong(0, 1))
+			{
+			case 0:
+				gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/pwrench_miss1.wav", 1, ATTN_NORM, 0, PITCH_NORM);
+				break;
+			case 1:
+				gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/pwrench_miss2.wav", 1, ATTN_NORM, 0, PITCH_NORM);
+				break;
+			}
+
+			gEngfuncs.pEventAPI->EV_WeaponAnimation(PIPEWRENCH_ATTACK1MISS, 1);
+
+			// Send weapon anim.
+			switch ((g_iSwing++) % 3)
+			{
+			case 0:
+				gEngfuncs.pEventAPI->EV_WeaponAnimation(PIPEWRENCH_ATTACK1MISS, 1); break;
+			case 1:
+				gEngfuncs.pEventAPI->EV_WeaponAnimation(PIPEWRENCH_ATTACK2MISS, 1); break;
+			case 2:
+				gEngfuncs.pEventAPI->EV_WeaponAnimation(PIPEWRENCH_ATTACK3MISS, 1); break;
+			}
+		}
+		else
+		{
+			// Play Swing sound
+			gEngfuncs.pEventAPI->EV_PlaySound(idx, origin, CHAN_WEAPON, "weapons/pwrench_big_miss.wav", 1, ATTN_NORM, 0, PITCH_NORM);
+
+			// Send weapon anim.
+			gEngfuncs.pEventAPI->EV_WeaponAnimation(PIPEWRENCH_ATTACKBIGMISS, 1);
 		}
 	}
 }

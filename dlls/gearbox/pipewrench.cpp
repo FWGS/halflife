@@ -27,6 +27,10 @@ void FindHullIntersection(const Vector &vecSrc, TraceResult &tr, float *mins, fl
 #define	PIPEWRENCH_BODYHIT_VOLUME 128
 #define	PIPEWRENCH_WALLHIT_VOLUME 512
 
+#define PIPEWRENCH_ATTACK2_MIN_DAMAGE				45
+#define PIPEWRENCH_ATTACK2_MAX_DAMAGE				200
+#define PIPEWRENCH_ATTACK2_MAX_DAMAGE_HOLD_TIME		4
+
 LINK_ENTITY_TO_CLASS(weapon_pipewrench, CPipeWrench);
 
 enum pwrench_e {
@@ -54,6 +58,8 @@ void CPipeWrench::Spawn()
 	m_iId = WEAPON_PIPEWRENCH;
 	SET_MODEL(ENT(pev), "models/w_pipe_wrench.mdl");
 	m_iClip = -1;
+
+	m_iFirestate = FIRESTATE_NONE;
 
 	FallInit();// get ready to fall down.
 }
@@ -98,24 +104,143 @@ int CPipeWrench::GetItemInfo(ItemInfo *p)
 
 BOOL CPipeWrench::Deploy()
 {
+	m_iFirestate = FIRESTATE_NONE;
+
 	return DefaultDeploy("models/v_pipe_wrench.mdl", "models/p_pipe_wrench.mdl", PIPEWRENCH_DRAW, "pipewrench");
 }
 
 void CPipeWrench::Holster(int skiplocal /* = 0 */)
 {
+	m_iFirestate = FIRESTATE_NONE;
+
 	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
 	SendWeaponAnim(PIPEWRENCH_HOLSTER);
 }
 
 void CPipeWrench::PrimaryAttack()
 {
-	if (!Swing(1))
+	if (!Swing(1, TRUE))
 	{
 		SetThink(&CPipeWrench::SwingAgain);
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 }
 
+void CPipeWrench::SecondaryAttack(void)
+{
+	if (m_iFirestate != FIRESTATE_NONE)
+		return;
+
+	m_iFirestate			= FIRESTATE_WINDUP;
+
+	SendWeaponAnim(PIPEWRENCH_ATTACKBIGWIND);
+
+	m_flNextPrimaryAttack = m_flNextSecondaryAttack = GetNextAttackDelay(1.0f);
+	pev->nextthink = UTIL_WeaponTimeBase() + 1.0f;
+
+	ALERT( at_console, "CPipeWrench::SecondaryAttack\n" );
+}
+
+
+void CPipeWrench::ItemPostFrame(void)
+{
+	
+	if (!(m_pPlayer->pev->button & IN_ATTACK))
+	{
+		m_flLastFireTime = 0.0f;
+	}
+
+	if (m_iFirestate != FIRESTATE_NONE)
+	{
+		// Set primary attack flag off, in case the player is thinking of doing a primary
+		// attack while the secondary attack sequence is incomplete.
+		m_pPlayer->pev->button &= ~IN_ATTACK;
+
+		if (CanAttack(m_flNextSecondaryAttack, gpGlobals->time, UseDecrement()))
+		{
+			switch (m_iFirestate)
+			{
+			case FIRESTATE_WINDUP:
+			{
+				ALERT(at_console, "CPipeWrench::FIRESTATE_WINDUP\n");
+
+				m_iFirestate = FIRESTATE_WINDLOOP;
+
+				SendWeaponAnim(PIPEWRENCH_ATTACKBIGLOOP);
+
+				m_flHoldStartTime = gpGlobals->time;
+
+				m_flNextPrimaryAttack = m_flNextSecondaryAttack = GetNextAttackDelay(0.01f);
+				pev->nextthink = UTIL_WeaponTimeBase() + 0.01f;
+			}
+			break;
+
+
+			case FIRESTATE_WINDLOOP:
+			{
+				ALERT(at_console, "CPipeWrench::FIRESTATE_WINDLOOP\n");
+				if (!(m_pPlayer->pev->button & IN_ATTACK2))
+				{
+					ALERT(at_console, "Releasing CPipeWrench\n");
+					m_iFirestate = FIRESTATE_BIGHIT;
+				}
+				else
+				{
+					ALERT(at_console, "Holding CPipeWrench\n");
+					SendWeaponAnim(PIPEWRENCH_ATTACKBIGLOOP);
+				}
+				m_flNextPrimaryAttack = m_flNextSecondaryAttack = GetNextAttackDelay(0.01f);
+			}
+			break;
+
+			case FIRESTATE_BIGHIT:
+			{
+				ALERT(at_console, "CPipeWrench::FIRESTATE_BIGHIT\n");
+
+				Swing(1, FALSE);
+
+				m_iFirestate = FIRESTATE_NONE;
+
+				m_flHoldStartTime = 0.0f;
+
+				m_pPlayer->pev->button &= ~IN_ATTACK2;
+			}
+			break;
+			}
+		}
+		return;
+	}
+
+	if ((m_pPlayer->pev->button & IN_ATTACK2) && CanAttack(m_flNextSecondaryAttack, gpGlobals->time, UseDecrement()))
+	{
+#ifndef CLIENT_DLL
+		m_pPlayer->TabulateAmmo();
+#endif
+		SecondaryAttack();
+		m_pPlayer->pev->button &= ~IN_ATTACK2;
+	}
+	else if ((m_pPlayer->pev->button & IN_ATTACK) && CanAttack(m_flNextPrimaryAttack, gpGlobals->time, UseDecrement()))
+	{
+
+#ifndef CLIENT_DLL
+		m_pPlayer->TabulateAmmo();
+#endif
+		PrimaryAttack();
+		m_pPlayer->pev->button &= ~IN_ATTACK;
+	}
+	else if (!(m_pPlayer->pev->button & (IN_ATTACK | IN_ATTACK2)))
+	{
+		// no fire buttons down
+		WeaponIdle();
+		return;
+	}
+
+	// catch all
+	if (ShouldWeaponIdle())
+	{
+		WeaponIdle();
+	}
+}
 
 void CPipeWrench::Smack()
 {
@@ -125,11 +250,12 @@ void CPipeWrench::Smack()
 
 void CPipeWrench::SwingAgain(void)
 {
-	Swing(0);
+	Swing(0, TRUE);
 }
 
+#define clamp( val, min, max ) ( ((val) > (max)) ? (max) : ( ((val) < (min)) ? (min) : (val) ) )
 
-int CPipeWrench::Swing(int fFirst)
+int CPipeWrench::Swing(int fFirst, BOOL fIsPrimary)
 {
 	int fDidHit = FALSE;
 
@@ -158,28 +284,39 @@ int CPipeWrench::Swing(int fFirst)
 #endif
 
 	PLAYBACK_EVENT_FULL(FEV_NOTHOST, m_pPlayer->edict(), m_usPWrench,
-		0.0, (float *)&g_vecZero, (float *)&g_vecZero, 0, 0, 0,
+		0.0, (float *)&g_vecZero, (float *)&g_vecZero, 0, 0, fIsPrimary,
 		0.0, 0, 0.0);
 
 
 	if (tr.flFraction >= 1.0)
 	{
 		// miss
-		m_flNextPrimaryAttack = GetNextAttackDelay(0.35f);
+		m_flNextPrimaryAttack = m_flNextSecondaryAttack = (fIsPrimary)
+			? GetNextAttackDelay(0.35f)
+			: GetNextAttackDelay(1.0f);
 
 		// player "shoot" animation
 		m_pPlayer->SetAnimation(PLAYER_ATTACK1);
 	}
 	else
 	{
-		switch (((m_iSwing++) % 2) + 1)
+		if (fIsPrimary)
 		{
-		case 0:
-			SendWeaponAnim(PIPEWRENCH_ATTACK1HIT); break;
-		case 1:
-			SendWeaponAnim(PIPEWRENCH_ATTACK2HIT); break;
-		case 2:
-			SendWeaponAnim(PIPEWRENCH_ATTACK3HIT); break;
+			switch (((m_iSwing++) % 2) + 1)
+			{
+			case 0:
+				SendWeaponAnim(PIPEWRENCH_ATTACK1HIT); break;
+			case 1:
+				SendWeaponAnim(PIPEWRENCH_ATTACK2HIT); break;
+			case 2:
+				SendWeaponAnim(PIPEWRENCH_ATTACK3HIT); break;
+			}
+		}
+		else
+		{
+			SendWeaponAnim(PIPEWRENCH_ATTACKBIGHIT);
+
+			m_pPlayer->pev->punchangle.x = -5;
 		}
 
 		// player "shoot" animation
@@ -193,16 +330,55 @@ int CPipeWrench::Swing(int fFirst)
 
 		ClearMultiDamage();
 
-		if ((m_flNextPrimaryAttack + 1 < UTIL_WeaponTimeBase()) || g_pGameRules->IsMultiplayer())
+		float flDamage;
+
+		if (!fIsPrimary)
 		{
-			// first swing does full damage
-			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgPWrench, gpGlobals->v_forward, &tr, DMG_CLUB);
+			float flRealDamage, flTotalDamageSpan;
+			float flRealHoldTimeDelta, flNormHoldTimeDelta;
+			float flNormHoldTimeProp;
+
+			// Get the total damge to be dealt with, excluding the starting minimum.
+			flTotalDamageSpan = PIPEWRENCH_ATTACK2_MAX_DAMAGE - PIPEWRENCH_ATTACK2_MIN_DAMAGE;
+
+			// Get the time delta since we hold the secondary attack button.
+			flRealHoldTimeDelta = clamp(gpGlobals->time - m_flHoldStartTime, 0, PIPEWRENCH_ATTACK2_MAX_DAMAGE_HOLD_TIME);
+
+			// Normalize the value, between 0. and 1.0
+			flNormHoldTimeProp = clamp(flRealHoldTimeDelta / PIPEWRENCH_ATTACK2_MAX_DAMAGE_HOLD_TIME, 0.0f, 1.0f);
+
+			// Establish a proportion between normalized value and total hold time
+			// for maximum damage.
+			flNormHoldTimeDelta = flNormHoldTimeProp * PIPEWRENCH_ATTACK2_MAX_DAMAGE_HOLD_TIME;
+
+			// Convert the computed proportion relative to maximum hold time, to damage.
+			flRealDamage = (flTotalDamageSpan * flNormHoldTimeDelta) / PIPEWRENCH_ATTACK2_MAX_DAMAGE_HOLD_TIME;
+
+			// Add the desired extra damage to the minimum.
+			flDamage = PIPEWRENCH_ATTACK2_MIN_DAMAGE + flRealDamage;
+
+			// Clamp the new desired damage value between min and max.
+			flDamage = clamp(flDamage, PIPEWRENCH_ATTACK2_MIN_DAMAGE, PIPEWRENCH_ATTACK2_MAX_DAMAGE);
 		}
 		else
 		{
-			// subsequent swings do half
-			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgPWrench / 2, gpGlobals->v_forward, &tr, DMG_CLUB);
+			if ((m_flNextPrimaryAttack + 1 < UTIL_WeaponTimeBase()) || g_pGameRules->IsMultiplayer())
+			{
+				// first swing does full damage
+				flDamage = gSkillData.plrDmgPWrench;
+			}
+			else
+			{
+				// subsequent swings do half
+				flDamage = gSkillData.plrDmgPWrench / 2;
+			}
 		}
+
+		ALERT(at_console, "PipeWrench damage: %f\n", flDamage);
+
+		// Send trace attack to player.
+		pEntity->TraceAttack(m_pPlayer->pev, flDamage, gpGlobals->v_forward, &tr, DMG_CLUB);
+
 		ApplyMultiDamage(m_pPlayer->pev, m_pPlayer->pev);
 
 		// play thwack, smack, or dong sound
@@ -214,15 +390,27 @@ int CPipeWrench::Swing(int fFirst)
 			if (pEntity->Classify() != CLASS_NONE && pEntity->Classify() != CLASS_MACHINE)
 			{
 				// play thwack or smack sound
-				switch (RANDOM_LONG(0, 2))
+				if (fIsPrimary)
 				{
-				case 0:
-					EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hitbod1.wav", 1, ATTN_NORM); break;
-				case 1:
-					EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hitbod2.wav", 1, ATTN_NORM); break;
-				case 2:
-					EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hitbod3.wav", 1, ATTN_NORM); break;
+					// Primary attack body hit sound.
+					switch (RANDOM_LONG(0, 2))
+					{
+					case 0: EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hitbod1.wav", 1, ATTN_NORM); break;
+					case 1: EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hitbod2.wav", 1, ATTN_NORM); break;
+					case 2: EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_hitbod3.wav", 1, ATTN_NORM); break;
+					}
 				}
+				else
+				{
+					// Secondary attack body hit sound.
+					switch (RANDOM_LONG(0, 1))
+					{
+					case 0: EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_big_hitbod1.wav", 1, ATTN_NORM); break;
+					case 1: EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/pwrench_big_hitbod2.wav", 1, ATTN_NORM); break;
+					}
+				}
+
+
 				m_pPlayer->m_iWeaponVolume = PIPEWRENCH_BODYHIT_VOLUME;
 				if (!pEntity->IsAlive())
 					return TRUE;
@@ -249,6 +437,9 @@ int CPipeWrench::Swing(int fFirst)
 			}
 
 			// also play crowbar strike
+			//
+			// Shared between both primary and secondary attack.
+			//
 			switch (RANDOM_LONG(0, 1))
 			{
 			case 0:
@@ -265,12 +456,67 @@ int CPipeWrench::Swing(int fFirst)
 
 		m_pPlayer->m_iWeaponVolume = flVol * PIPEWRENCH_WALLHIT_VOLUME;
 #endif
-		m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
-
+	
+		m_flNextPrimaryAttack = m_flNextSecondaryAttack = (fIsPrimary) 
+			? GetNextAttackDelay(0.5f) 
+			: GetNextAttackDelay(1.0f);
+	
 		SetThink(&CPipeWrench::Smack);
+
 		pev->nextthink = UTIL_WeaponTimeBase() + 0.2;
 
 
 	}
 	return fDidHit;
+}
+
+void CPipeWrench::WindUp(void)
+{
+	SendWeaponAnim(PIPEWRENCH_ATTACKBIGWIND);
+
+	SetThink(&CPipeWrench::WindLoop);
+
+	m_flNextSecondaryAttack = GetNextAttackDelay(1.0f);
+	pev->nextthink = UTIL_WeaponTimeBase() + 1.0f;
+}
+
+void CPipeWrench::WindLoop(void)
+{
+	if (m_flNextSecondaryAttack < UTIL_WeaponTimeBase() && !(m_pPlayer->pev->button & IN_ATTACK2))
+	{
+		if (!Swing(1, FALSE))
+		{
+			SetThink(&CPipeWrench::SwingAgain2);
+			pev->nextthink = UTIL_WeaponTimeBase() + 0.1f;
+		}
+		return;
+	}
+
+	SendWeaponAnim( PIPEWRENCH_ATTACKBIGLOOP );
+	pev->nextthink = UTIL_WeaponTimeBase() + 0.1f;
+}
+
+void CPipeWrench::SwingAgain2(void)
+{
+	Swing(0, FALSE);
+}
+
+
+//=========================================================
+// Purpose:
+//=========================================================
+BOOL CPipeWrench::CanAttack(float attack_time, float curtime, BOOL isPredicted)
+{
+#if defined( CLIENT_WEAPONS )
+	if (!isPredicted)
+#else
+	if (1)
+#endif
+	{
+		return (attack_time <= curtime) ? TRUE : FALSE;
+	}
+	else
+	{
+		return (attack_time <= 0.0) ? TRUE : FALSE;
+	}
 }

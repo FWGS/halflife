@@ -693,7 +693,7 @@ public:
 	void RotSpawn( void );
 	virtual void KeyValue( KeyValueData* pkvd);
 
-	void ButtonActivate( );
+	virtual void ButtonActivate( );
 	void SparkSoundCache( void );
 
 	void EXPORT ButtonShot( void );
