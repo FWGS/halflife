@@ -30,6 +30,7 @@ public:
 	void IdleSound(void);
 	void AlertSound(void);
 	void PrescheduleThink(void);
+	void StartTask(Task_t* pTask);
 
 	virtual int		Save(CSave &save);
 	virtual int		Restore(CRestore &restore);

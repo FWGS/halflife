@@ -104,6 +104,8 @@ void CShockRoach::Precache()
 	PRECACHE_SOUND_ARRAY(pDeathSounds);
 	PRECACHE_SOUND_ARRAY(pBiteSounds);
 
+	PRECACHE_SOUND("shockroach/shock_walk.wav");
+
 	PRECACHE_MODEL("models/w_shock_rifle.mdl");
 }
 
@@ -190,4 +192,23 @@ void CShockRoach::PainSound(void)
 void CShockRoach::DeathSound(void)
 {
 	EMIT_SOUND_DYN(edict(), CHAN_VOICE, RANDOM_SOUND_ARRAY(pDeathSounds), GetSoundVolue(), ATTN_IDLE, 0, GetVoicePitch());
+}
+
+
+void CShockRoach::StartTask(Task_t *pTask)
+{
+	m_iTaskStatus = TASKSTATUS_RUNNING;
+
+	switch (pTask->iTask)
+	{
+	case TASK_RANGE_ATTACK1:
+	{
+		EMIT_SOUND_DYN(edict(), CHAN_WEAPON, pAttackSounds[0], GetSoundVolue(), ATTN_IDLE, 0, GetVoicePitch());
+		m_IdealActivity = ACT_RANGE_ATTACK1;
+		SetTouch(&CShockRoach::LeapTouch);
+		break;
+	}
+	default:
+		CHeadCrab::StartTask(pTask);
+	}
 }

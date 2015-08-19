@@ -29,7 +29,10 @@
 
 #define		VOLTIGORE_SPRINT_DIST	256 // how close the voltigore has to get before starting to sprint and refusing to swerve
 
-#define		VOLTIGORE_MAX_BEAMS		8
+#define		VOLTIGORE_MAX_BEAMS		12
+
+#define		VOLTIGORE_CLASSNAME				"monster_alien_voltigore"
+#define		VOLTIGORE_BABY_CLASSNAME		"monster_alien_babyvoltigore"
 
 //=========================================================
 // monster-specific schedule types
@@ -61,7 +64,7 @@ public:
 	static void Shoot(entvars_t *pevOwner, Vector vecStart, Vector vecVelocity);
 	void Touch(CBaseEntity *pOther);
 	void EXPORT Animate(void);
-	void BeamThink(void);
+	void EXPORT BeamThink(void);
 
 	virtual int		Save(CSave &save);
 	virtual int		Restore(CRestore &restore);
@@ -104,12 +107,12 @@ void CVoltigoreEnergyBall::Spawn(void)
 	pev->classname = MAKE_STRING("voltigore_energy_ball");
 
 	pev->solid = SOLID_BBOX;
-	pev->rendermode = kRenderTransAlpha;
-	pev->renderamt = 255;
+	pev->rendermode = kRenderGlow;
+	pev->renderamt = 220;
 
 	SET_MODEL(ENT(pev), "sprites/glow_prp.spr");
 	pev->frame = 0;
-	pev->scale = 0.5;
+	pev->scale = 0.05;
 
 	UTIL_SetSize(pev, Vector(0, 0, 0), Vector(0, 0, 0));
 
@@ -126,6 +129,7 @@ void CVoltigoreEnergyBall::Spawn(void)
 //=========================================================
 void CVoltigoreEnergyBall::Animate(void)
 {
+#if 0
 	if (pev->frame++)
 	{
 		if (pev->frame > m_maxFrame)
@@ -133,6 +137,7 @@ void CVoltigoreEnergyBall::Animate(void)
 			pev->frame = 0;
 		}
 	}
+#endif
 
 	SetThink(&CVoltigoreEnergyBall::BeamThink);
 	pev->nextthink = gpGlobals->time + 0.1;
@@ -203,7 +208,7 @@ void CVoltigoreEnergyBall::CreateBeam(int nIndex, const Vector& vecPos, int widt
 	m_pBeam[nIndex]->SetColor(125, 61, 177);
 	m_pBeam[nIndex]->SetBrightness(brightness);
 	m_pBeam[nIndex]->SetNoise(50);
-	m_pBeam[nIndex]->SetFlags(/*SF_BEAM_SHADEIN |*/ SF_BEAM_SHADEOUT );
+	m_pBeam[nIndex]->SetFlags(SF_BEAM_SHADEIN | SF_BEAM_SHADEOUT );
 }
 
 //=========================================================
@@ -238,7 +243,7 @@ void CVoltigoreEnergyBall::CreateBeams()
 {
 	for (int i = 0; i < VOLTIGORE_MAX_BEAMS; ++i)
 	{
-		CreateBeam(i, pev->origin, RANDOM_LONG( 3, 4 ) * 10, 250 + RANDOM_LONG(1, 5) );
+		CreateBeam(i, pev->origin, RANDOM_LONG( 2, 3 ) * 10, 250 + RANDOM_LONG(1, 5) );
 	}
 	m_iBeams = VOLTIGORE_MAX_BEAMS;
 }
@@ -321,7 +326,6 @@ public:
 	virtual void AlertSound(void);
 	virtual void AttackSound(void);
 	virtual void StartTask(Task_t *pTask);
-	void RunTask(Task_t *pTask);
 	virtual BOOL CheckMeleeAttack1(float flDot, float flDist);
 	virtual BOOL CheckMeleeAttack2(float flDot, float flDist);
 	virtual BOOL CheckRangeAttack1(float flDot, float flDist);
@@ -330,10 +334,10 @@ public:
 	Schedule_t *GetSchedule(void);
 	Schedule_t *GetScheduleOfType(int Type);
 	virtual int TakeDamage(entvars_t *pevInflictor, entvars_t *pevAttacker, float flDamage, int bitsDamageType);
-	virtual int IRelationship(CBaseEntity *pTarget);
 	virtual int IgnoreConditions(void);
 	MONSTERSTATE GetIdealState(void);
-
+	virtual void Killed(entvars_t *pevAttacker, int iGib);
+	
 	int	Save(CSave &save);
 	int Restore(CRestore &restore);
 
@@ -341,19 +345,123 @@ public:
 	static TYPEDESCRIPTION m_SaveData[];
 
 	float m_flLastHurtTime;
-	float m_flNextSpitTime;// last time the voltigore used the spit attack.
+	float m_flNextSpitTime; // last time the voltigore used the spit attack.
+	BOOL m_fShouldUpdateBeam;
+	CBeam* m_pBeam[3];
+	CSprite* m_pBeamGlow;
+	int m_glowBrightness;
+
+	static const char* pAlertSounds[];
+	static const char* pAttackMeleeSounds[];
+	static const char* pMeleeHitSounds[];
+	static const char* pMeleeMissSounds[];
+	static const char* pComSounds[];
+	static const char* pDeathSounds[];
+	static const char* pFootstepSounds[];
+	static const char* pIdleSounds[];
+	static const char* pPainSounds[];
+	static const char* pGruntSounds[];
+
+	virtual BOOL	CanThrowEnergyBall(void)	const	{ return TRUE; }
+	virtual BOOL	CanGib(void)				const	{ return TRUE; }
+
+
+	void CreateBeams();
+	void DestroyBeams();
+	void UpdateBeams();
+
+	void CreateGlow();
+	void DestroyGlow();
+	void GlowUpdate();
+	void GlowOff(void);
+	void GlowOn(int level);
+
 };
 
-
 LINK_ENTITY_TO_CLASS(monster_alien_voltigore, CVoltigore);
+
 
 TYPEDESCRIPTION	CVoltigore::m_SaveData[] =
 {
 	DEFINE_FIELD(CVoltigore, m_flLastHurtTime, FIELD_TIME),
 	DEFINE_FIELD(CVoltigore, m_flNextSpitTime, FIELD_TIME),
+	DEFINE_FIELD(CVoltigore, m_fShouldUpdateBeam, FIELD_BOOLEAN),
+	DEFINE_ARRAY(CVoltigore, m_pBeam, FIELD_CLASSPTR, 3),
+	DEFINE_FIELD(CVoltigore, m_glowBrightness, FIELD_INTEGER),
+	DEFINE_FIELD(CVoltigore, m_pBeamGlow, FIELD_CLASSPTR),
 };
 
 IMPLEMENT_SAVERESTORE(CVoltigore, CBaseMonster);
+
+const char* CVoltigore::pAlertSounds[] =
+{
+	"voltigore/voltigore_alert1.wav",
+	"voltigore/voltigore_alert2.wav",
+	"voltigore/voltigore_alert3.wav",
+};
+
+const char* CVoltigore::pAttackMeleeSounds[] =
+{
+	"voltigore/voltigore_attack_melee1.wav",
+	"voltigore/voltigore_attack_melee2.wav",
+};
+
+const char* CVoltigore::pMeleeHitSounds[] =
+{
+	"zombie/claw_strike1.wav",
+	"zombie/claw_strike2.wav",
+	"zombie/claw_strike3.wav",
+};
+
+const char* CVoltigore::pMeleeMissSounds[] =
+{
+	"zombie/claw_miss1.wav",
+	"zombie/claw_miss2.wav",
+};
+
+const char* CVoltigore::pComSounds[] =
+{
+	"voltigore/voltigore_communicate1.wav",
+	"voltigore/voltigore_communicate2.wav",
+	"voltigore/voltigore_communicate3.wav",
+};
+
+
+const char* CVoltigore::pDeathSounds[] =
+{
+	"voltigore/voltigore_die1.wav",
+	"voltigore/voltigore_die2.wav",
+	"voltigore/voltigore_die3.wav",
+};
+
+const char* CVoltigore::pFootstepSounds[] =
+{
+	"voltigore/voltigore_footstep1.wav",
+	"voltigore/voltigore_footstep2.wav",
+	"voltigore/voltigore_footstep3.wav",
+};
+
+const char* CVoltigore::pIdleSounds[] =
+{
+	"voltigore/voltigore_idle1.wav",
+	"voltigore/voltigore_idle2.wav",
+	"voltigore/voltigore_idle3.wav",
+};
+
+const char* CVoltigore::pPainSounds[] =
+{
+	"voltigore/voltigore_pain1.wav",
+	"voltigore/voltigore_pain2.wav",
+	"voltigore/voltigore_pain3.wav",
+	"voltigore/voltigore_pain4.wav",
+};
+
+const char* CVoltigore::pGruntSounds[] =
+{
+	"voltigore/voltigore_run_grunt1.wav",
+	"voltigore/voltigore_run_grunt2.wav",
+};
+
 
 //=========================================================
 // IgnoreConditions 
@@ -369,15 +477,6 @@ int CVoltigore::IgnoreConditions(void)
 	}
 
 	return iIgnore;
-}
-
-//=========================================================
-// IRelationship - overridden for voltigore so that it can
-// be made to ignore its love of headcrabs for a while.
-//=========================================================
-int CVoltigore::IRelationship(CBaseEntity *pTarget)
-{
-	return CBaseMonster::IRelationship(pTarget);
 }
 
 //=========================================================
@@ -414,6 +513,11 @@ int CVoltigore::TakeDamage(entvars_t *pevInflictor, entvars_t *pevAttacker, floa
 //=========================================================
 BOOL CVoltigore::CheckRangeAttack1(float flDot, float flDist)
 {
+	if (!CanThrowEnergyBall())
+	{
+		return FALSE;
+	}
+
 	if (IsMoving() && flDist >= 512)
 	{
 		// voltigore will far too far behind if he stops running to spit at this distance from the enemy.
@@ -449,12 +553,26 @@ BOOL CVoltigore::CheckRangeAttack1(float flDot, float flDist)
 }
 
 //=========================================================
+//=========================================================
+void CVoltigore::RunAI(void)
+{
+	CBaseMonster::RunAI();
+
+	if (m_fShouldUpdateBeam)
+	{
+		UpdateBeams();
+	}
+
+	GlowUpdate();
+}
+
+//=========================================================
 // CheckMeleeAttack1 - voltigore is a big guy, so has a longer
 // melee range than most monsters. This is the tailwhip attack
 //=========================================================
 BOOL CVoltigore::CheckMeleeAttack1(float flDot, float flDist)
 {
-	if (m_hEnemy->pev->health <= gSkillData.voltigoreDmgPunch && flDist <= 85 && flDot >= 0.7)
+	if (flDist <= fabs(pev->mins.x - pev->maxs.x) && flDot >= 0.7)
 	{
 		return TRUE;
 	}
@@ -469,8 +587,8 @@ BOOL CVoltigore::CheckMeleeAttack1(float flDot, float flDist)
 //=========================================================
 BOOL CVoltigore::CheckMeleeAttack2(float flDot, float flDist)
 {
-	if (flDist <= 85 && flDot >= 0.7 && !HasConditions(bits_COND_CAN_MELEE_ATTACK1))		// The player & voltigore can be as much as their bboxes 
-	{										// apart (48 * sqrt(3)) and he can still attack (85 is a little more than 48*sqrt(3))
+	if (!HasConditions(bits_COND_CAN_MELEE_ATTACK1))		// The player & voltigore can be as much as their bboxes 
+	{													   // apart (48 * sqrt(3)) and he can still attack (85 is a little more than 48*sqrt(3))
 		return TRUE;
 	}
 	return FALSE;
@@ -521,7 +639,7 @@ int CVoltigore::ISoundMask(void)
 //=========================================================
 int	CVoltigore::Classify(void)
 {
-	return	CLASS_ALIEN_PREDATOR;
+	return	CLASS_ALIEN_MONSTER;
 }
 
 //=========================================================
@@ -529,18 +647,7 @@ int	CVoltigore::Classify(void)
 //=========================================================
 void CVoltigore::IdleSound(void)
 {
-	switch (RANDOM_LONG(0, 2))
-	{
-	case 0:
-		EMIT_SOUND(ENT(pev), CHAN_VOICE, "voltigore/voltigore_idle1.wav", 1, ATTN_NORM);
-		break;
-	case 1:
-		EMIT_SOUND(ENT(pev), CHAN_VOICE, "voltigore/voltigore_idle2.wav", 1, ATTN_NORM);
-		break;
-	case 2:
-		EMIT_SOUND(ENT(pev), CHAN_VOICE, "voltigore/voltigore_idle3.wav", 1, ATTN_NORM);
-		break;
-	}
+	EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pIdleSounds), 1, ATTN_NORM);
 }
 
 //=========================================================
@@ -548,23 +655,7 @@ void CVoltigore::IdleSound(void)
 //=========================================================
 void CVoltigore::PainSound(void)
 {
-	int iPitch = RANDOM_LONG(85, 120);
-
-	switch (RANDOM_LONG(0, 3))
-	{
-	case 0:
-		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "voltigore/voltigore_pain1.wav", 1, ATTN_NORM, 0, iPitch);
-		break;
-	case 1:
-		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "voltigore/voltigore_pain2.wav", 1, ATTN_NORM, 0, iPitch);
-		break;
-	case 2:
-		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "voltigore/voltigore_pain3.wav", 1, ATTN_NORM, 0, iPitch);
-		break;
-	case 3:
-		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "voltigore/voltigore_pain4.wav", 1, ATTN_NORM, 0, iPitch);
-		break;
-	}
+	EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pPainSounds), 1, ATTN_NORM, 0, RANDOM_LONG(85, 120));
 }
 
 //=========================================================
@@ -572,20 +663,7 @@ void CVoltigore::PainSound(void)
 //=========================================================
 void CVoltigore::AlertSound(void)
 {
-	int iPitch = RANDOM_LONG(140, 160);
-
-	switch (RANDOM_LONG(0, 2))
-	{
-	case 0:
-		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "voltigore/voltigore_alert1.wav", 1, ATTN_NORM, 0, iPitch);
-		break;
-	case 1:
-		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "voltigore/voltigore_alert2.wav", 1, ATTN_NORM, 0, iPitch);
-		break;
-	case 2:
-		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "voltigore/voltigore_alert3.wav", 1, ATTN_NORM, 0, iPitch);
-		break;
-	}
+	EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pAlertSounds), 1, ATTN_NORM, 0, RANDOM_LONG(140, 160));
 }
 
 //=========================================================
@@ -642,31 +720,50 @@ void CVoltigore::HandleAnimEvent(MonsterEvent_t *pEvent)
 		AttackSound();
 
 		CVoltigoreEnergyBall::Shoot(pev, vecSpitOffset, vecSpitDir * 500);
+
+		// turn the beam glow off.
+		DestroyBeams();
+
+		GlowOff();
+
+		m_fShouldUpdateBeam = FALSE;
 	}
 	break;
 
 
 	case VOLTIGORE_AE_PUNCH_SINGLE:
 	{
-		CBaseEntity *pHurt = CheckTraceHullAttack(70, gSkillData.voltigoreDmgPunch, DMG_CLUB | DMG_ALWAYSGIB);
+		CBaseEntity *pHurt = CheckTraceHullAttack(120, gSkillData.voltigoreDmgPunch, DMG_CLUB | DMG_ALWAYSGIB);
 		if (pHurt)
 		{
 			pHurt->pev->punchangle.z = -20;
 			pHurt->pev->punchangle.x = 20;
-			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_right * 200;
+			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_right * -200;
 			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_up * 100;
+
+			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeHitSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+		}
+		else
+		{
+			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeMissSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
 		}
 	}
 	break;
 
 	case VOLTIGORE_AE_PUNCH_BOTH:
 	{
-		CBaseEntity *pHurt = CheckTraceHullAttack(70, gSkillData.voltigoreDmgPunch, DMG_CLUB | DMG_ALWAYSGIB);
+		CBaseEntity *pHurt = CheckTraceHullAttack(120, gSkillData.voltigoreDmgPunch, DMG_CLUB | DMG_ALWAYSGIB);
 		if (pHurt)
 		{
 			pHurt->pev->punchangle.x = 30;
-			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_right * 200;
+			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_forward * 200;
 			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_up * 100;
+
+			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeHitSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+		}
+		else
+		{
+			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeMissSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
 		}
 	}
 	break;
@@ -687,20 +784,31 @@ void CVoltigore::HandleAnimEvent(MonsterEvent_t *pEvent)
 //=========================================================
 void CVoltigore::Spawn()
 {
+	pev->model = ALLOC_STRING("models/voltigore.mdl");
 	Precache();
 
-	SET_MODEL(ENT(pev), "models/voltigore.mdl");
-	UTIL_SetSize(pev, Vector(-64, -64, 0), Vector(64, 64, 128));
+	SET_MODEL(ENT(pev), (char*)STRING(pev->model));
+	UTIL_SetSize(pev, Vector(-80, -80, 0), Vector(80, 80, 90));
 
-	pev->solid = SOLID_SLIDEBOX;
-	pev->movetype = MOVETYPE_STEP;
-	m_bloodColor = BLOOD_COLOR_GREEN;
-	pev->effects = 0;
-	pev->health = gSkillData.voltigoreHealth;
-	m_flFieldOfView = 0.2;// indicates the width of this monster's forward view cone ( as a dotproduct result )
-	m_MonsterState = MONSTERSTATE_NONE;
+	pev->solid			= SOLID_SLIDEBOX;
+	pev->movetype		= MOVETYPE_STEP;
+	m_bloodColor		= BLOOD_COLOR_GREEN;
+	pev->effects		= 0;
+	pev->health			= gSkillData.voltigoreHealth;
+	m_flFieldOfView		= 0.2;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	m_MonsterState		= MONSTERSTATE_NONE;
 
-	m_flNextSpitTime = gpGlobals->time;
+	m_flNextSpitTime	= gpGlobals->time;
+
+	pev->view_ofs		= Vector(0, 0, 90);
+
+	m_fShouldUpdateBeam = FALSE;
+	m_pBeamGlow = NULL;
+
+	GlowOff();
+
+	// Create glow.
+	CreateGlow();
 
 	MonsterInit();
 }
@@ -710,47 +818,30 @@ void CVoltigore::Spawn()
 //=========================================================
 void CVoltigore::Precache()
 {
-	PRECACHE_MODEL("models/voltigore.mdl");
-
-	PRECACHE_SOUND("zombie/claw_miss2.wav");// because we use the basemonster SWIPE animation event
-
-	PRECACHE_SOUND("voltigore/voltigore_alert1.wav");
-	PRECACHE_SOUND("voltigore/voltigore_alert2.wav");
-	PRECACHE_SOUND("voltigore/voltigore_alert3.wav");
-
-	PRECACHE_SOUND("voltigore/voltigore_alert_melee1.wav");
-	PRECACHE_SOUND("voltigore/voltigore_alert_melee2.wav");
+	PRECACHE_MODEL((char*)STRING(pev->model));
+	
+	PRECACHE_SOUND_ARRAY(pAlertSounds);
+	PRECACHE_SOUND_ARRAY(pAttackMeleeSounds);
+	PRECACHE_SOUND_ARRAY(pMeleeHitSounds);
+	PRECACHE_SOUND_ARRAY(pMeleeMissSounds);
+	PRECACHE_SOUND_ARRAY(pComSounds);
+	PRECACHE_SOUND_ARRAY(pDeathSounds);
+	PRECACHE_SOUND_ARRAY(pFootstepSounds);
+	PRECACHE_SOUND_ARRAY(pIdleSounds);
+	PRECACHE_SOUND_ARRAY(pPainSounds);
+	PRECACHE_SOUND_ARRAY(pGruntSounds);
 
 	PRECACHE_SOUND("voltigore/voltigore_attack_shock.wav");
-
-	PRECACHE_SOUND("voltigore/voltigore_communicate1.wav");
-	PRECACHE_SOUND("voltigore/voltigore_communicate2.wav");
-	PRECACHE_SOUND("voltigore/voltigore_communicate3.wav");
-
-	PRECACHE_SOUND("voltigore/voltigore_die1.wav");
-	PRECACHE_SOUND("voltigore/voltigore_die2.wav");
-	PRECACHE_SOUND("voltigore/voltigore_die3.wav");
-
 	PRECACHE_SOUND("voltigore/voltigore_eat.wav");
 
-	PRECACHE_SOUND("voltigore/voltigore_footstep1.wav");
-	PRECACHE_SOUND("voltigore/voltigore_footstep2.wav");
-	PRECACHE_SOUND("voltigore/voltigore_footstep3.wav");
+	PRECACHE_SOUND("debris/beamstart1.wav");
 
-	PRECACHE_SOUND("voltigore/voltigore_idle1.wav");
-	PRECACHE_SOUND("voltigore/voltigore_idle2.wav");
-	PRECACHE_SOUND("voltigore/voltigore_idle3.wav");
-
-	PRECACHE_SOUND("voltigore/voltigore_pain1.wav");
-	PRECACHE_SOUND("voltigore/voltigore_pain2.wav");
-	PRECACHE_SOUND("voltigore/voltigore_pain3.wav");
-	PRECACHE_SOUND("voltigore/voltigore_pain4.wav");
-
-	PRECACHE_SOUND("voltigore/voltigore_run_grunt1.wav");
-	PRECACHE_SOUND("voltigore/voltigore_run_grunt2.wav");
+	PRECACHE_MODEL("sprites/lgtning.spr");
+	PRECACHE_MODEL("sprites/glow04.spr");
 
 	PRECACHE_MODEL("sprites/glow_prp.spr");
 	UTIL_PrecacheOther("voltigore_energy_ball");
+
 }
 
 //=========================================================
@@ -758,18 +849,7 @@ void CVoltigore::Precache()
 //=========================================================
 void CVoltigore::DeathSound(void)
 {
-	switch (RANDOM_LONG(0, 2))
-	{
-	case 0:
-		EMIT_SOUND(ENT(pev), CHAN_VOICE, "voltigore/voltigore_die1.wav", 1, ATTN_NORM);
-		break;
-	case 1:
-		EMIT_SOUND(ENT(pev), CHAN_VOICE, "voltigore/voltigore_die2.wav", 1, ATTN_NORM);
-		break;
-	case 2:
-		EMIT_SOUND(ENT(pev), CHAN_VOICE, "voltigore/voltigore_die3.wav", 1, ATTN_NORM);
-		break;
-	}
+	EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pDeathSounds), 1, ATTN_NORM);
 }
 
 //=========================================================
@@ -778,38 +858,6 @@ void CVoltigore::DeathSound(void)
 void CVoltigore::AttackSound(void)
 {
 	EMIT_SOUND(ENT(pev), CHAN_WEAPON, "voltigore/voltigore_attack_shock.wav", 1, ATTN_NORM);
-}
-
-
-//========================================================
-// RunAI - overridden for voltigore because there are things
-// that need to be checked every think.
-//========================================================
-void CVoltigore::RunAI(void)
-{
-	// first, do base class stuff
-	CBaseMonster::RunAI();
-
-	if (pev->skin != 0)
-	{
-		// close eye if it was open.
-		pev->skin = 0;
-	}
-
-	if (RANDOM_LONG(0, 39) == 0)
-	{
-		pev->skin = 1;
-	}
-
-	if (m_hEnemy != NULL && m_Activity == ACT_RUN)
-	{
-		// chasing enemy. Sprint for last bit
-		if ((pev->origin - m_hEnemy->pev->origin).Length2D() < VOLTIGORE_SPRINT_DIST)
-		{
-			pev->framerate = 1.25;
-		}
-	}
-
 }
 
 //========================================================
@@ -993,21 +1041,6 @@ Schedule_t *CVoltigore::GetSchedule(void)
 			return GetScheduleOfType(SCHED_WAKE_ANGRY);
 		}
 
-		if (HasConditions(bits_COND_SMELL_FOOD))
-		{
-			CSound		*pSound;
-
-			pSound = PBestScent();
-
-			if (pSound && (!FInViewCone(&pSound->m_vecOrigin) || !FVisible(pSound->m_vecOrigin)))
-			{
-				// scent is behind or occluded
-				return GetScheduleOfType(SCHED_VOLTIGORE_SNIFF_AND_EAT);
-			}
-
-			// food is right out in the open. Just go get it.
-			return GetScheduleOfType(SCHED_VOLTIGORE_EAT);
-		}
 
 		if (HasConditions(bits_COND_CAN_RANGE_ATTACK1))
 		{
@@ -1070,6 +1103,19 @@ void CVoltigore::StartTask(Task_t *pTask)
 
 	switch (pTask->iTask)
 	{
+	case TASK_RANGE_ATTACK1:
+		{
+			CreateBeams();
+
+			GlowOn( 255 );
+			m_fShouldUpdateBeam = TRUE;
+
+			// Play the beam 'glow' sound.
+			EMIT_SOUND_DYN(ENT(pev), CHAN_BODY, "debris/beamstart1.wav", 1, ATTN_NORM, 0, PITCH_HIGH);
+
+			CBaseMonster::StartTask(pTask);
+		}
+		break;
 	case TASK_GET_PATH_TO_ENEMY:
 		{
 			if (BuildRoute(m_hEnemy->pev->origin, bits_MF_TO_ENEMY, m_hEnemy))
@@ -1090,19 +1136,6 @@ void CVoltigore::StartTask(Task_t *pTask)
 	}
 }
 
-//=========================================================
-// RunTask
-//=========================================================
-void CVoltigore::RunTask(Task_t *pTask)
-{
-	switch (pTask->iTask)
-	{
-	default:
-		CBaseMonster::RunTask(pTask);
-		break;
-	}
-}
-
 
 //=========================================================
 // GetIdealState - Overridden for Voltigore to deal with
@@ -1111,6 +1144,7 @@ void CVoltigore::RunTask(Task_t *pTask)
 //=========================================================
 MONSTERSTATE CVoltigore::GetIdealState(void)
 {
+#if 0
 	int	iConditions;
 
 	iConditions = IScheduleFlags();
@@ -1132,8 +1166,242 @@ MONSTERSTATE CVoltigore::GetIdealState(void)
 			break;
 		}
 	}
+#endif
 
 	m_IdealMonsterState = CBaseMonster::GetIdealState();
 
 	return m_IdealMonsterState;
+}
+
+void CVoltigore::Killed(entvars_t *pevAttacker, int iGib)
+{
+	DestroyBeams();
+
+	DestroyGlow();
+
+	CBaseMonster::Killed(pevAttacker, iGib);
+}
+
+void CVoltigore::CreateBeams()
+{
+	Vector vecStart, vecEnd, vecAngles;
+	GetAttachment(3, vecStart, vecAngles);
+
+	for (int i = 0; i < 3; i++)
+	{
+		m_pBeam[i] = CBeam::BeamCreate("sprites/lgtning.spr", 30);
+		if (!m_pBeam[i])
+			return;
+
+		GetAttachment(i, vecEnd, vecAngles);
+
+		m_pBeam[i]->PointsInit(vecStart, vecEnd);
+		m_pBeam[i]->SetColor(125, 61, 177);
+		m_pBeam[i]->SetBrightness(255);
+		m_pBeam[i]->SetNoise(0);
+		m_pBeam[i]->SetFlags(SF_BEAM_SHADEIN /*| SF_BEAM_SHADEOUT*/);
+
+	}
+}
+
+void CVoltigore::DestroyBeams()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (m_pBeam[i])
+		{
+			UTIL_Remove(m_pBeam[i]);
+			m_pBeam[i] = NULL;
+		}
+	}
+}
+
+void CVoltigore::UpdateBeams()
+{
+	Vector vecStart, vecEnd, vecAngles;
+	GetAttachment(3, vecStart, vecAngles);
+
+	for (int i = 0; i < 3; i++)
+	{
+		GetAttachment(i, vecEnd, vecAngles);
+		m_pBeam[i]->SetStartPos(vecStart);
+		m_pBeam[i]->SetEndPos(vecEnd);
+		m_pBeam[i]->RelinkBeam();
+	}
+}
+
+void CVoltigore::CreateGlow()
+{
+	m_pBeamGlow = CSprite::SpriteCreate("sprites/glow04.spr", pev->origin, FALSE);
+	m_pBeamGlow->SetTransparency(kRenderGlow, 255, 255, 255, 0, kRenderFxNoDissipation);
+	m_pBeamGlow->SetAttachment(edict(), 4);
+	m_pBeamGlow->SetScale(0.2f);
+}
+
+void CVoltigore::DestroyGlow()
+{
+	if (m_pBeamGlow)
+	{
+		UTIL_Remove(m_pBeamGlow);
+		m_pBeamGlow = NULL;
+	}
+}
+
+void CVoltigore::GlowUpdate()
+{
+	if (m_pBeamGlow)
+	{
+		m_pBeamGlow->pev->renderamt = UTIL_Approach(m_glowBrightness, m_pBeamGlow->pev->renderamt, 100);
+		if (m_pBeamGlow->pev->renderamt == 0)
+			m_pBeamGlow->pev->effects |= EF_NODRAW;
+		else
+			m_pBeamGlow->pev->effects &= ~EF_NODRAW;
+		UTIL_SetOrigin(m_pBeamGlow->pev, pev->origin);
+	}
+}
+
+void CVoltigore::GlowOff(void)
+{
+	m_glowBrightness = 0;
+}
+
+void CVoltigore::GlowOn(int level)
+{
+	m_glowBrightness = level;
+}
+
+
+//=========================================================
+// CBabyAlienVoltigore
+//=========================================================
+
+//=========================================================
+// Monster's Anim Events Go Here
+//=========================================================
+#define		BABY_VOLTIGORE_AE_RUN			( 14 )
+
+class CBabyVoltigore : public CVoltigore
+{
+public:
+	void	Spawn(void);
+	void	Precache(void);
+	void	HandleAnimEvent(MonsterEvent_t* pEvent);
+	void	StartTask(Task_t *pTask);
+
+	virtual BOOL	CanThrowEnergyBall(void)	const	{ return FALSE; }
+	virtual BOOL	CanGib(void)				const	{ return FALSE; }
+};
+
+LINK_ENTITY_TO_CLASS(monster_alien_babyvoltigore, CBabyVoltigore);
+
+
+
+//=========================================================
+// Spawn
+//=========================================================
+void CBabyVoltigore::Spawn()
+{
+	Precache();
+
+	SET_MODEL(ENT(pev), "models/baby_voltigore.mdl");
+	UTIL_SetSize(pev, Vector(-40, -40, 0), Vector(40, 40, 64));
+
+	pev->solid			= SOLID_SLIDEBOX;
+	pev->movetype		= MOVETYPE_STEP;
+	m_bloodColor		= BLOOD_COLOR_GREEN;
+	pev->effects		= 0;
+	pev->health			= gSkillData.babyVoltigoreHealth;
+	m_flFieldOfView		= 0.2;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	m_MonsterState		= MONSTERSTATE_NONE;
+
+	m_flNextSpitTime	= gpGlobals->time;
+
+	pev->view_ofs		= Vector(0, 0, 64);
+
+	MonsterInit();
+}
+
+//=========================================================
+//=========================================================
+void CBabyVoltigore::Precache(void)
+{
+	pev->model = ALLOC_STRING("models/baby_voltigore.mdl");
+	CVoltigore::Precache();
+}
+
+void CBabyVoltigore::HandleAnimEvent(MonsterEvent_t* pEvent)
+{
+	switch (pEvent->event)
+	{
+	case BABY_VOLTIGORE_AE_RUN:
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pFootstepSounds), RANDOM_FLOAT(0.5, 0.6), ATTN_NORM, 0, RANDOM_LONG(85, 120));
+		break;
+
+	case VOLTIGORE_AE_PUNCH_SINGLE:
+	{
+		CBaseEntity *pHurt = CheckTraceHullAttack(70, gSkillData.babyVoltigoreDmgPunch, DMG_CLUB | DMG_ALWAYSGIB);
+		if (pHurt)
+		{
+			pHurt->pev->punchangle.z = -10;
+			pHurt->pev->punchangle.x = 10;
+			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_right * -100;
+			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_up * 50;
+
+			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeHitSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+		}
+		else
+		{
+			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeMissSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+		}
+	}
+	break;
+
+	case VOLTIGORE_AE_PUNCH_BOTH:
+	{
+		CBaseEntity *pHurt = CheckTraceHullAttack(70, gSkillData.babyVoltigoreDmgPunch, DMG_CLUB | DMG_ALWAYSGIB);
+		if (pHurt)
+		{
+			pHurt->pev->punchangle.x = 20;
+			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_forward * 100;
+			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_up * 50;
+
+			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeHitSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+		}
+		else
+		{
+			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeMissSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+		}
+	}
+	break;
+	default:
+		CVoltigore::HandleAnimEvent(pEvent);
+		break;
+	}
+}
+
+//=========================================================
+// Start task - selects the correct activity and performs
+// any necessary calculations to start the next task on the
+// schedule.  OVERRIDDEN for voltigore because it needs to
+// know explicitly when the last attempt to chase the enemy
+// failed, since that impacts its attack choices.
+//=========================================================
+void CBabyVoltigore::StartTask(Task_t *pTask)
+{
+	m_iTaskStatus = TASKSTATUS_RUNNING;
+
+	switch (pTask->iTask)
+	{
+	case TASK_MELEE_ATTACK1:
+	case TASK_MELEE_ATTACK2:
+	{
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pAttackMeleeSounds), RANDOM_FLOAT(0.5, 0.6), ATTN_NONE, 0, RANDOM_LONG(100, 105));
+		CBaseMonster::StartTask(pTask);
+	}
+	break;
+
+	default:
+		CBaseMonster::StartTask(pTask);
+		break;
+	}
 }
