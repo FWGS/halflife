@@ -364,6 +364,7 @@ public:
 
 	virtual BOOL	CanThrowEnergyBall(void)	const	{ return TRUE; }
 	virtual BOOL	CanGib(void)				const	{ return TRUE; }
+	virtual void	PrintBloodDecal(CBaseEntity* pHurt, const Vector& vecOrigin, const Vector& vecVelocity, float maxDist, int bloodColor = DONT_BLEED);
 
 
 	void CreateBeams();
@@ -742,6 +743,8 @@ void CVoltigore::HandleAnimEvent(MonsterEvent_t *pEvent)
 			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_up * 100;
 
 			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeHitSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+
+			PrintBloodDecal(pHurt, pHurt->pev->origin, pHurt->pev->velocity, RANDOM_FLOAT(80, 90) );
 		}
 		else
 		{
@@ -760,6 +763,8 @@ void CVoltigore::HandleAnimEvent(MonsterEvent_t *pEvent)
 			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_up * 100;
 
 			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeHitSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+
+			PrintBloodDecal(pHurt, pHurt->pev->origin, Vector(0, 0, -1), 90);
 		}
 		else
 		{
@@ -1270,6 +1275,23 @@ void CVoltigore::GlowOn(int level)
 	m_glowBrightness = level;
 }
 
+void CVoltigore::PrintBloodDecal(CBaseEntity* pHurt, const Vector& vecOrigin, const Vector& vecVelocity, float maxDist, int bloodColor)
+{
+	if (!pHurt)
+		return;
+
+	if (bloodColor == DONT_BLEED)
+	{
+		CBaseMonster* pMonster = pHurt->MyMonsterPointer();
+		if (pMonster)
+			bloodColor = pMonster->m_bloodColor;
+	}
+
+	TraceResult tr;
+	UTIL_TraceLine(vecOrigin, vecOrigin + vecVelocity * maxDist, ignore_monsters, ENT(pev), &tr);
+	UTIL_BloodDecalTrace(&tr, bloodColor);
+}
+
 
 //=========================================================
 // CBabyAlienVoltigore
@@ -1348,6 +1370,8 @@ void CBabyVoltigore::HandleAnimEvent(MonsterEvent_t* pEvent)
 			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_up * 50;
 
 			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeHitSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+
+			PrintBloodDecal(pHurt, pHurt->pev->origin, pHurt->pev->velocity, RANDOM_FLOAT(40, 45));
 		}
 		else
 		{
@@ -1366,6 +1390,8 @@ void CBabyVoltigore::HandleAnimEvent(MonsterEvent_t* pEvent)
 			pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_up * 50;
 
 			EMIT_SOUND(ENT(pev), CHAN_VOICE, RANDOM_SOUND_ARRAY(pMeleeHitSounds), RANDOM_FLOAT(0.8, 0.9), ATTN_NORM);
+			
+			PrintBloodDecal(pHurt, pHurt->pev->origin, Vector(0, 0, -1), 50);
 		}
 		else
 		{

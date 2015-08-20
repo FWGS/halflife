@@ -22,6 +22,8 @@ enum Player_Menu {
 };
 #endif
 
+#define		PFLAG_ONROPE		( 1 << 6 )
+
 class CGearboxPlayer : public CBasePlayer
 {
 public:

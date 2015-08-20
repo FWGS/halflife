@@ -1258,6 +1258,7 @@ public:
 
 	BOOL IsTongueColliding( const Vector& vecShootOrigin, const Vector& vecTipPos );
 	void CheckFireEligibility( void );
+	BOOL CheckTargetProximity( void );
 
 	void CreateTongueTip( void );
 	void DestroyTongueTip( void );
@@ -1491,6 +1492,13 @@ private:
 class CSniperrifle : public CBasePlayerWeapon
 {
 public:
+
+#ifndef CLIENT_DLL
+	int		Save(CSave &save);
+	int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+#endif
+
 	void Spawn(void);
 	void Precache(void);
 	int iItemSlot(void) { return 6; }
@@ -1502,6 +1510,9 @@ public:
 	void Holster(int skiplocal = 0);
 	void Reload(void);
 	void WeaponIdle(void);
+	void ItemPostFrame(void);
+
+	BOOL ShouldWeaponIdle(void) { return TRUE; };
 
 	BOOL m_fInZoom;// don't save this. 
 
@@ -1513,6 +1524,11 @@ public:
 		return FALSE;
 #endif
 	}
+
+	BOOL m_fNeedAjustBolt;
+	int	 m_iBoltState;
+
+	enum SNIPER_BOLTSTATE { BOLTSTATE_FINE = 0, BOLTSTATE_ADJUST, BOLTSTATE_ADJUSTING, };
 
 private:
 	unsigned short m_usSniper;

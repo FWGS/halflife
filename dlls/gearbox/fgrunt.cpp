@@ -1397,6 +1397,9 @@ void CFGrunt::PrescheduleThink(void)
 			}
 		}
 	}
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	CTalkMonster::PrescheduleThink();
+#endif
 }
 //=========================================================
 // AI Schedules Specific to this monster

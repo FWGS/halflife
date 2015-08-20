@@ -162,6 +162,12 @@ void CGrapple::ItemPostFrame(void)
 		// Check if fire is still eligible.
 		CheckFireEligibility();
 
+		// Check if the current tip is attached to a monster or a wall.
+		// If the tongue tip move type is MOVETYPE_FOLLOW, then it
+		// implies that we are targetting a monster, so it will kill
+		// the monster when close enough.
+		CheckTargetProximity();
+
 		// Update the tip velocity and position.
 		UpdateTongueTip();
 
@@ -629,6 +635,12 @@ BOOL CGrapple::IsTongueColliding(const Vector& vecShootOrigin, const Vector& vec
 
 	if (tr.flFraction != 1.0)
 	{
+		if (m_pTongueTip->pev->movetype == MOVETYPE_FOLLOW)
+		{
+			if (tr.pHit && m_pTongueTip->pev->aiment && m_pTongueTip->pev->aiment == tr.pHit)
+				return FALSE;
+		}
+
 		return TRUE;
 	}
 
@@ -653,4 +665,55 @@ void CGrapple::CheckFireEligibility(void)
 		FireRelease();
 	}
 #endif
+}
+
+BOOL CGrapple::CheckTargetProximity(void)
+{
+#ifndef CLIENT_DLL
+	// Do not check for this if the tongue is not valid.
+	if (!m_pTongueTip)
+		return FALSE;
+
+	if (m_pTongueTip->pev->movetype == MOVETYPE_FOLLOW)
+	{
+		// Trace a hull around to see if we hit something within 20 units.
+		TraceResult tr;
+		UTIL_TraceHull(
+			pev->origin,
+			pev->origin + VARS(pev->owner)->velocity.Normalize() * 20,
+			dont_ignore_monsters,
+			head_hull,
+			edict(),
+			&tr);
+
+
+		// Check to see if we are close enough to our target.
+		// In the case o a monster, attempt to get a pointer to
+		// the entity, gib it, release grappler fire.
+		edict_t* pHit = ENT(tr.pHit);
+		if ( pHit && 
+			(VARS(pHit)->flags & FL_MONSTER) && 
+			(m_pTongueTip->pev->aiment == tr.pHit))
+		{
+			// Get a pointer to the entity.
+			CBaseEntity* pEnt = GetClassPtr((CBaseEntity*)VARS(tr.pHit));
+			if (pEnt)
+			{
+				// Since FL_MONSTER is set, it can only be a monster entity.
+				ASSERT(pEnt->MyMonsterPointer() != NULL);
+
+				// Gib monster.
+				((CBaseMonster*)pEnt)->GibMonster();
+			}
+			else
+			{
+				ALERT(at_console, "ERROR: %s attempted to reference an unlisted monster.\n", STRING(m_pTongueTip->pev->classname));
+			}
+
+			// Release fire.
+			FireRelease();
+		}
+	}
+#endif
+	return FALSE;
 }

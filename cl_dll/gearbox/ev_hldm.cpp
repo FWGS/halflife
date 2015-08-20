@@ -2336,7 +2336,15 @@ void EV_FireSniper(event_args_t *args)
 	{
 		// Add muzzle flash to current weapon model
 		EV_MuzzleFlash();
-		gEngfuncs.pEventAPI->EV_WeaponAnimation(SNIPER_FIRE, 0);
+
+		if (args->iparam1 == 1) // Last round in clip
+		{
+			gEngfuncs.pEventAPI->EV_WeaponAnimation(SNIPER_FIRELASTROUND, 0);
+		}
+		else // Regular shot.
+		{
+			gEngfuncs.pEventAPI->EV_WeaponAnimation(SNIPER_FIRE, 0);
+		}
 
 		V_PunchAxis(0, -5.0);
 	}

@@ -158,8 +158,19 @@ void CShock::Touch(CBaseEntity *pOther)
 	}
 	else
 	{
-		pOther->TakeDamage(pev, pev, gSkillData.monDmgShockroach, DMG_GENERIC);
-		pOther->pev->renderfx = kRenderFxGlowShell;
+		// pOther->TakeDamage(pev, pev, gSkillData.monDmgShockroach, DMG_GENERIC);
+
+		// Make the monster glow. Only supported on Op4 monsters.
+		CBaseMonster* pMonster = pOther->MyMonsterPointer();
+		if (pMonster)
+		{
+			pMonster->pev->renderfx = kRenderFxGlowShell;
+			pMonster->pev->rendercolor = Vector(0, 255, 255);
+			pMonster->pev->renderamt = 5;
+			pMonster->m_flGlowShellStartTime = gpGlobals->time;
+			pMonster->m_flGlowShellDuration = 0.5f;
+			pMonster->m_fUpdateGlowShell = TRUE;
+		}
 	}
 
 

@@ -120,6 +120,13 @@ public:
 	void EXPORT			CorpseUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 
 // overrideable Monster member functions
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	// Overridden because of glowshell effect attributes.
+	virtual void Spawn(void){ m_flGlowShellDuration = 0.0f; m_flGlowShellStartTime = 0.0f; }
+#else
+	virtual void Spawn(void) { return; };
+#endif //  defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 	
 	virtual int	 BloodColor( void ) { return m_bloodColor; }
 
@@ -282,7 +289,13 @@ public:
 		BOOL BBoxFlat( void );
 
 		// PrescheduleThink 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+
+		// Overridden because of the need to update glow shell effects.
+		virtual void PrescheduleThink(void) { GlowShellUpdate(); }
+#else
 		virtual void PrescheduleThink( void ) { return; };
+#endif
 
 		BOOL GetEnemy ( void );
 		void MakeDamageBloodDecal ( int cCount, float flNoise, TraceResult *ptr, const Vector &vecDir );
@@ -332,6 +345,56 @@ public:
 	BOOL CineCleanup( );
 
 	CBaseEntity* DropItem ( char *pszItemName, const Vector &vecPos, const Vector &vecAng );// drop an item.
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	//
+	// Glowshell effects
+	//
+	void	GlowShellOn(Vector color, float flDuration)
+	{
+		pev->effects |= 2048;
+
+		rendercolorprev = pev->rendercolor;
+		glowshellcolor = color;
+
+		pev->renderfx = kRenderFxGlowShell;
+		pev->rendercolor = Vector(0, 255, 255);
+		pev->renderamt = 5;
+
+		m_flGlowShellStartTime = gpGlobals->time;
+		m_flGlowShellDuration = flDuration;
+	}
+
+	void	GlowShellOff(void)
+	{
+		pev->effects &= ~2048;
+
+		pev->renderfx = kRenderFxNone;
+		pev->rendercolor = rendercolorprev;
+		pev->renderamt = 255;
+
+		m_flGlowShellStartTime = 0.0f;
+		m_flGlowShellDuration = 0.0f;
+
+		m_fUpdateGlowShell = FALSE;
+	}
+	void	GlowShellUpdate(void)
+	{
+		if (m_fUpdateGlowShell)
+		{
+			if ((gpGlobals->time - m_flGlowShellStartTime) > m_flGlowShellDuration)
+			{
+				GlowShellOff();
+			}
+		}
+	}
+
+	float	m_flGlowShellStartTime;
+	float	m_flGlowShellDuration;
+	Vector  glowshellcolor;
+	Vector	rendercolorprev;
+	BOOL	m_fUpdateGlowShell;
+#endif
 };
 
 

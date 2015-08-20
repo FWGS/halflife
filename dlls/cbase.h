@@ -676,7 +676,16 @@ class CBaseMonster;
 class CCineMonster;
 class CSound;
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+class CGearboxMonster;
+#endif
+
 #include "basemonster.h"
+
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+#include "gearbox_monsters.h"
+#endif
 
 
 char *ButtonSound( int sound );				// get string of button sound number

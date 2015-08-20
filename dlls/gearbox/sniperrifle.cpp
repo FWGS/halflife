@@ -73,6 +73,9 @@ void CSniperrifle::Spawn()
 
 	m_iDefaultAmmo = SNIPERRIFLE_DEFAULT_GIVE;
 
+	m_fNeedAjustBolt = FALSE;
+	m_iBoltState = BOLTSTATE_FINE;
+
 	FallInit();// get ready to fall down.
 }
 
@@ -106,6 +109,11 @@ void CSniperrifle::Precache(void)
 
 BOOL CSniperrifle::Deploy()
 {
+	if (m_fNeedAjustBolt)
+	{
+		m_iBoltState = BOLTSTATE_ADJUST;
+	}
+
 	return DefaultDeploy("models/v_m40a1.mdl", "models/p_m40a1.mdl", SNIPER_DRAW, "m40a1", UseDecrement());
 }
 
@@ -117,6 +125,11 @@ void CSniperrifle::Holster(int skiplocal /* = 0 */)
 	if (m_fInZoom)
 	{
 		SecondaryAttack();
+	}
+
+	if (m_fNeedAjustBolt)
+	{
+		m_iBoltState = BOLTSTATE_ADJUST;
 	}
 
 	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.0;
@@ -140,7 +153,7 @@ void CSniperrifle::SecondaryAttack(void)
 	// Play zoom sound.
 	EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_WEAPON, "weapons/sniper_zoom.wav", 1, ATTN_NORM);
 
-	m_flNextSecondaryAttack = 0.5;
+	m_flNextSecondaryAttack = GetNextAttackDelay(0.5f);
 }
 
 void CSniperrifle::PrimaryAttack()
@@ -192,13 +205,20 @@ void CSniperrifle::PrimaryAttack()
 	flags = 0;
 #endif
 
-	PLAYBACK_EVENT_FULL(flags, m_pPlayer->edict(), m_usSniper, 0.0, (float *)&g_vecZero, (float *)&g_vecZero, vecDir.x, vecDir.y, 0, 0, 0, 0);
+	m_fNeedAjustBolt = (m_iClip <= 0) ? 1 : 0;
+
+	// If this was the last round in the clip, make sure to schedule
+	// bolt adjustment.
+	if (m_fNeedAjustBolt)
+		m_iBoltState = BOLTSTATE_ADJUST;
+
+	PLAYBACK_EVENT_FULL(flags, m_pPlayer->edict(), m_usSniper, 0.0, (float *)&g_vecZero, (float *)&g_vecZero, vecDir.x, vecDir.y, m_fNeedAjustBolt, 0, 0, 0);
 
 	if (!m_iClip && m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0)
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
 
-	m_flNextPrimaryAttack = 1.8f;
+	m_flNextPrimaryAttack = GetNextAttackDelay(1.8f);
 	m_flTimeWeaponIdle = UTIL_SharedRandomFloat(m_pPlayer->random_seed, 10, 15);
 }
 
@@ -221,7 +241,13 @@ void CSniperrifle::Reload(void)
 	bUseScope = g_pGameRules->IsMultiplayer();
 #endif
 
-	DefaultReload(SNIPERRIFLE_MAX_CLIP, SNIPER_RELOAD1, 2.0);
+	// Select the appropriate sequence for reload.
+	// One has bolt adjusted, the other does not.
+	int iReloadAnim = (m_iClip > 0) 
+		? SNIPER_RELOAD3	// Regular reload.
+		: SNIPER_RELOAD1;	// No ammo in current clip.
+
+	DefaultReload(SNIPERRIFLE_MAX_CLIP, iReloadAnim, 2.3);
 }
 
 
@@ -234,20 +260,62 @@ void CSniperrifle::WeaponIdle(void)
 	if (m_flTimeWeaponIdle > UTIL_WeaponTimeBase())
 		return;
 
-	int iAnim;
-	float flRand = UTIL_SharedRandomFloat(m_pPlayer->random_seed, 0, 1);
-	if (flRand <= 0.5)
+	// Select the appropriate sequence for idle.
+	// One has bolt adjusted, the other does not.
+	int iIdleAnim = (m_iClip > 0) 
+		? SNIPER_SLOWIDLE	// Clip has at least one bullet. (Bolt adjusted)
+		: SNIPER_SLOWIDLE2; // Clip is empty. (Bolt unadjusted)
+
+	SendWeaponAnim(iIdleAnim, UseDecrement());
+}
+
+void CSniperrifle::ItemPostFrame(void)
+{
+	if ((m_fInReload) && (m_pPlayer->m_flNextAttack <= UTIL_WeaponTimeBase()))
 	{
-		iAnim = SNIPER_SLOWIDLE;
-		m_flTimeWeaponIdle = 4.3f;
-	}
-	else
-	{
-		iAnim = SNIPER_SLOWIDLE2;
-		m_flTimeWeaponIdle = 4.3f;
+		if (m_fNeedAjustBolt)
+		{
+			switch (m_iBoltState)
+			{
+			case BOLTSTATE_ADJUST:
+			{
+				m_iBoltState = BOLTSTATE_ADJUSTING;
+
+				// Send the bolt 'adjustment' weapon anim.
+				SendWeaponAnim(SNIPER_RELOAD2);
+
+				m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.8f;
+			}
+			break;
+
+			case BOLTSTATE_ADJUSTING:
+			{
+				m_fNeedAjustBolt = FALSE;
+				m_iBoltState = BOLTSTATE_FINE;
+			}
+			break;
+			default: ALERT(at_aiconsole, "Warning: Unknown bolt state!\n"); break;
+			}
+
+			return;
+		}
+		else
+		{
+			// complete the reload. 
+			int j = min(iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);
+
+			// Add them to the clip
+			m_iClip += j;
+			m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= j;
+
+#ifndef CLIENT_DLL
+			m_pPlayer->TabulateAmmo();
+#endif
+			m_fInReload = FALSE;
+		}
 	}
 
-	SendWeaponAnim(iAnim, UseDecrement());
+	CBasePlayerWeapon::ItemPostFrame();
 }
 
 

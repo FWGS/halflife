@@ -1327,6 +1327,10 @@ void CTalkMonster :: PrescheduleThink ( void )
 	{
 		SetConditions ( bits_COND_CLIENT_UNSEEN );
 	}
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	CBaseMonster::PrescheduleThink();
+#endif
 }
 
 // try to smell something

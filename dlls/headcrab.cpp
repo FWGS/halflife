@@ -338,6 +338,10 @@ void CHeadCrab :: PrescheduleThink ( void )
 	{
 		IdleSound();
 	}
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	CBaseMonster::PrescheduleThink();
+#endif
 }
 
 void CHeadCrab :: StartTask ( Task_t *pTask )
