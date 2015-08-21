@@ -43,12 +43,16 @@ public:
 	void EXPORT Detonate(void);
 	void EXPORT DetonateUse(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value);
 	void EXPORT TumbleThink(void);
+	void EXPORT FlyThink(void);
 
 	virtual void BounceSound(void);
 	virtual int	BloodColor(void) { return DONT_BLEED; }
 	virtual void Killed(entvars_t *pevAttacker, int iGib);
+	static void SpawnTrailParticles(const Vector& origin, const Vector& direction, int modelindex, int count, float speed, float noise);
+	static void SpawnExplosionParticles(const Vector& origin, const Vector& direction, int modelindex, int count, float speed, float noise);
 
-	int m_iSquidSpitSprite;
+	CSprite* m_pSporeGlow;
+	float m_flNextSpriteTrailSpawn;
 };
 
 #endif // SPORE_GRENADE_H

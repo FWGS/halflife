@@ -236,6 +236,20 @@ public:
 #endif
 
 	void UpdateOnRemove( void );
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	//=====================================================
+	// Use these functions to perform additional cleaning.
+	//=====================================================
+
+	// Called before entity removal.
+	virtual void PreRemoval(void)	{ return; }
+
+	// Called during removal.
+	virtual void OnRemove(void)		{ return; }
+
+	// Called after entity removal.
+	virtual void PostRemoval(void)	{ return; }
+#endif
 
 	// common member functions
 	void EXPORT SUB_Remove( void );

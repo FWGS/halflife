@@ -432,6 +432,8 @@ void CGrapple::StartPull(void)
 	m_pPlayer->pev->gravity = 0.0f;
 
 	m_pPlayer->pev->flags &= ~FL_ONGROUND;
+
+	m_pPlayer->m_afPhysicsFlags |= PFLAG_LATCHING;
 #endif
 }
 
@@ -443,6 +445,8 @@ void CGrapple::StopPull(void)
 #ifndef CLIENT_DLL
 	m_pPlayer->pev->movetype = MOVETYPE_WALK;
 	m_pPlayer->pev->gravity = 1.0f;
+
+	m_pPlayer->m_afPhysicsFlags &= ~PFLAG_LATCHING;
 #endif
 }
 
@@ -459,6 +463,8 @@ void CGrapple::Pull( void )
 	vecDirToTip = (vecTipPos - vecOwnerPos).Normalize();
 
 	m_pPlayer->pev->velocity = vecDirToTip * 300;
+
+	m_pPlayer->m_afPhysicsFlags |= PFLAG_LATCHING;
 #endif
 }
 

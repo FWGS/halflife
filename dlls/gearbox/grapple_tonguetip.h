@@ -35,6 +35,7 @@ public:
 	void FlyThink(void);
 	void HitThink(void);
 	void TipTouch(CBaseEntity* pOther);
+	void PreRemoval(void);
 
 	CGrapple* m_pMyGrappler;
 

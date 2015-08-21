@@ -966,23 +966,23 @@ void CBasePlayer::SetAnimation( PLAYER_ANIM playerAnim )
 		playerAnim = PLAYER_IDLE;
 	}
 
-	switch (playerAnim) 
+	switch (playerAnim)
 	{
 	case PLAYER_JUMP:
 		m_IdealActivity = ACT_HOP;
 		break;
-	
+
 	case PLAYER_SUPERJUMP:
 		m_IdealActivity = ACT_LEAP;
 		break;
-	
+
 	case PLAYER_DIE:
 		m_IdealActivity = ACT_DIESIMPLE;
-		m_IdealActivity = GetDeathActivity( );
+		m_IdealActivity = GetDeathActivity();
 		break;
 
-	case PLAYER_ATTACK1:	
-		switch( m_Activity )
+	case PLAYER_ATTACK1:
+		switch (m_Activity)
 		{
 		case ACT_HOVER:
 		case ACT_SWIM:
@@ -998,11 +998,24 @@ void CBasePlayer::SetAnimation( PLAYER_ANIM playerAnim )
 		break;
 	case PLAYER_IDLE:
 	case PLAYER_WALK:
-		if ( !FBitSet( pev->flags, FL_ONGROUND ) && (m_Activity == ACT_HOP || m_Activity == ACT_LEAP) )	// Still jumping
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+		if ((m_afPhysicsFlags & PFLAG_LATCHING) && (pev->velocity.Length() > 100))
+		{
+			ASSERT( ( m_pActiveItem && FClassnameIs(m_pActiveItem->pev, "weapon_grapple") ) == TRUE );
+
+			m_IdealActivity = ACT_SWIM;
+		}
+		else if (!FBitSet(pev->flags, FL_ONGROUND) && (m_Activity == ACT_HOP || m_Activity == ACT_LEAP)) // Still jumping
 		{
 			m_IdealActivity = m_Activity;
 		}
-		else if ( pev->waterlevel > 1 )
+#else
+		if (!FBitSet(pev->flags, FL_ONGROUND) && (m_Activity == ACT_HOP || m_Activity == ACT_LEAP)) // Still jumping
+		{
+			m_IdealActivity = m_Activity;
+		}
+#endif
+		else if (pev->waterlevel > 1)
 		{
 			if ( speed == 0 )
 				m_IdealActivity = ACT_HOVER;

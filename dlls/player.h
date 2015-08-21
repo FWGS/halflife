@@ -36,6 +36,11 @@
 #define		PFLAG_USING			( 1<<4 )		// Using a continuous entity
 #define		PFLAG_OBSERVER		( 1<<5 )		// player is locked in stationary cam mode. Spectators can move, observers can't.
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+#define		PFLAG_LATCHING		( 1<<6 )	// Player is latching to a target
+#define		PFLAG_ATTACHED		( 1<<7 )	// Player is attached by a barnacle tongue tip
+#endif
+
 //
 // generic player
 //

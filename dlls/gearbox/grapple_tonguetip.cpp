@@ -114,6 +114,10 @@ void CGrappleTonguetip::TipTouch(CBaseEntity *pOther)
 
 	if (hitFlags & (FL_CLIENT | FL_MONSTER))
 	{
+		// Set player attached flag.
+		if (pOther->IsPlayer())
+			((CBasePlayer*)pOther)->m_afPhysicsFlags |= PFLAG_ATTACHED;
+
 		pev->movetype = MOVETYPE_FOLLOW;
 		pev->aiment = ENT(pOther->pev);
 
@@ -133,4 +137,19 @@ void CGrappleTonguetip::TipTouch(CBaseEntity *pOther)
 	SetTouch( NULL );
 	SetThink(&CGrappleTonguetip::HitThink);
 	pev->nextthink = gpGlobals->time + 0.1f;
+}
+
+void CGrappleTonguetip::PreRemoval(void)
+{
+	if (pev->aiment != NULL)
+	{
+		CBaseEntity* pEnt = GetClassPtr((CBaseEntity*)VARS(pev->aiment));
+		if (pEnt && pEnt->IsPlayer())
+		{
+			// Remove attached flag of the target entity.
+			((CBasePlayer*)pEnt)->m_afPhysicsFlags &= ~PFLAG_ATTACHED;
+		}
+	}
+
+	CBaseEntity::PreRemoval();
 }

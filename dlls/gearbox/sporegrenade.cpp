@@ -25,19 +25,21 @@
 #include "gamerules.h"
 #include "decals.h"
 #include "sporegrenade.h"
+#include "gearbox_weapons.h"
 
 LINK_ENTITY_TO_CLASS(monster_spore, CSporeGrenade);
 
 TYPEDESCRIPTION	CSporeGrenade::m_SaveData[] =
 {
-	DEFINE_FIELD(CSporeGrenade, m_iSquidSpitSprite, FIELD_INTEGER),
+	DEFINE_FIELD(CSporeGrenade, m_pSporeGlow, FIELD_CLASSPTR),
+	DEFINE_FIELD(CSporeGrenade, m_flNextSpriteTrailSpawn, FIELD_TIME),
 };
 
 IMPLEMENT_SAVERESTORE(CSporeGrenade, CGrenade);
 
 void CSporeGrenade::Precache(void)
 {
-	m_iSquidSpitSprite = PRECACHE_MODEL("sprites/tinyspit.spr");// client side spittle.
+	PRECACHE_MODEL("sprites/glow01.spr");
 }
 
 // UNDONE: temporary scorching for PreAlpha - find a less sleazy permenant solution.
@@ -56,45 +58,29 @@ void CSporeGrenade::Explode(TraceResult *pTrace, int bitsDamageType)
 		pev->origin = pTrace->vecEndPos + (pTrace->vecPlaneNormal * (pev->dmg - 24) * 0.6);
 	}
 
-#if 0
-	int iContents = UTIL_PointContents(pev->origin);
+	Vector vecSpraySpot = pTrace->vecEndPos;
+	float flSpraySpeed = RANDOM_LONG(10, 15);
 
-	MESSAGE_BEGIN(MSG_PAS, SVC_TEMPENTITY, pev->origin);
-	WRITE_BYTE(TE_EXPLOSION);		// This makes a dynamic light and the explosion sprites/sound
-	WRITE_COORD(pev->origin.x);	// Send to PAS because of the sound
-	WRITE_COORD(pev->origin.y);
-	WRITE_COORD(pev->origin.z);
-	if (iContents != CONTENTS_WATER)
+	// If the trace is pointing up, then place
+	// spawn position a few units higher.
+	if (pTrace->vecPlaneNormal.z > 0)
 	{
-		WRITE_SHORT(g_sModelIndexFireball);
+		vecSpraySpot = vecSpraySpot + (pTrace->vecPlaneNormal * 8);
+		flSpraySpeed *= 2; // Double the speed to make them fly higher
+						   // in the air.
 	}
-	else
-	{
-		WRITE_SHORT(g_sModelIndexWExplosion);
-	}
-	WRITE_BYTE((pev->dmg - 50) * .60); // scale * 10
-	WRITE_BYTE(15); // framerate
-	WRITE_BYTE(TE_EXPLFLAG_NONE);
-	MESSAGE_END();
-#else
-	// make some flecks
-	MESSAGE_BEGIN(MSG_PAS, SVC_TEMPENTITY, pTrace->vecEndPos);
-		WRITE_BYTE(TE_SPRITE_SPRAY);
-		WRITE_COORD(pTrace->vecEndPos.x);	// pos
-		WRITE_COORD(pTrace->vecEndPos.y);
-		WRITE_COORD(pTrace->vecEndPos.z);
-		WRITE_COORD(pTrace->vecPlaneNormal.x);	// dir
-		WRITE_COORD(pTrace->vecPlaneNormal.y);
-		WRITE_COORD(pTrace->vecPlaneNormal.z);
-		WRITE_SHORT(m_iSquidSpitSprite);	// model
-		WRITE_BYTE(5);			// count
-		WRITE_BYTE(30);			// speed
-		WRITE_BYTE(80);			// noise ( client will divide by 100 )
-	MESSAGE_END();
+
+	// Spawn small particles at the explosion origin.
+	SpawnExplosionParticles(
+		vecSpraySpot,				// position
+		pTrace->vecPlaneNormal,			// direction
+		g_sModelIndexTinySpit,			// modelindex
+		RANDOM_LONG(8, 10),				// count
+		flSpraySpeed,					// speed
+		RANDOM_FLOAT(10, 20) * 10);		// noise
 
 	// Play explode sound.
 	EMIT_SOUND(ENT(pev), CHAN_VOICE, "weapons/splauncher_impact.wav", 1, ATTN_NORM);
-#endif
 
 	CSoundEnt::InsertSound(bits_SOUND_COMBAT, pev->origin, NORMAL_EXPLOSION_VOLUME, 3.0);
 	entvars_t *pevOwner;
@@ -108,12 +94,18 @@ void CSporeGrenade::Explode(TraceResult *pTrace, int bitsDamageType)
 	RadiusDamage(pev, pevOwner, pev->dmg, CLASS_NONE, bitsDamageType);
 
 	// Place a decal on the surface that was hit.
-	UTIL_DecalTrace(pTrace, DECAL_SPIT1 + +RANDOM_LONG(0, 1));
+	UTIL_DecalTrace(pTrace, DECAL_YBLOOD5 + RANDOM_LONG(0, 1));
 
 	pev->effects |= EF_NODRAW;
 	SetThink(&CSporeGrenade::Smoke);
 	pev->velocity = g_vecZero;
 	pev->nextthink = gpGlobals->time + 0.3;
+
+	if (m_pSporeGlow)
+	{
+		UTIL_Remove(m_pSporeGlow);
+		m_pSporeGlow = NULL;
+	}
 }
 
 void CSporeGrenade::Smoke(void)
@@ -192,6 +184,15 @@ void CSporeGrenade::TumbleThink(void)
 		pev->velocity = pev->velocity * 0.5;
 		pev->framerate = 0.2;
 	}
+
+	// Spawn particles.
+	SpawnTrailParticles(
+		pev->origin,					// position
+		-pev->velocity.Normalize(),		// dir
+		g_sModelIndexTinySpit,			// modelindex
+		RANDOM_LONG( 5, 10 ),			// count
+		RANDOM_FLOAT(10, 15),			// speed
+		RANDOM_FLOAT(2, 3) * 100);		// noise ( client will divide by 100 )
 }
 
 //
@@ -227,6 +228,15 @@ void CSporeGrenade::DangerSoundThink(void)
 	{
 		pev->velocity = pev->velocity * 0.5;
 	}
+
+	// Spawn particles.
+	SpawnTrailParticles(
+		pev->origin,					// position
+		-pev->velocity.Normalize(),		// dir
+		g_sModelIndexTinySpit,			// modelindex
+		RANDOM_LONG(5, 10),				// count
+		RANDOM_FLOAT(10, 15),			// speed
+		RANDOM_FLOAT(2, 3) * 100);		// noise ( client will divide by 100 )
 }
 
 void CSporeGrenade::BounceTouch(CBaseEntity *pOther)
@@ -258,7 +268,7 @@ void CSporeGrenade::BounceTouch(CBaseEntity *pOther)
 	// or thrown very far tend to slow down too quickly for me to always catch just by testing velocity. 
 	// trimming the Z velocity a bit seems to help quite a bit.
 	vecTestVelocity = pev->velocity;
-	vecTestVelocity.z *= 0.45;
+	vecTestVelocity.z *= 1.25; // 0.45
 
 	if (!m_fRegisteredSound && vecTestVelocity.Length() <= 60)
 	{
@@ -289,7 +299,6 @@ void CSporeGrenade::BounceTouch(CBaseEntity *pOther)
 		pev->framerate = 1;
 	else if (pev->framerate < 0.5)
 		pev->framerate = 0;
-
 }
 
 
@@ -321,7 +330,6 @@ void CSporeGrenade::Spawn(void)
 {
 	pev->movetype = MOVETYPE_BOUNCE;
 	
-
 	pev->solid = SOLID_BBOX;
 
 	SET_MODEL(ENT(pev), "models/spore.mdl");
@@ -330,13 +338,24 @@ void CSporeGrenade::Spawn(void)
 	pev->gravity = 0.5; // 0.5
 	pev->friction = 0.2; // 0.8
 
-	pev->dmg = 100;
+	pev->dmg = gSkillData.plrDmgSpore;
 	m_fRegisteredSound = FALSE;
+
+	m_flNextSpriteTrailSpawn = gpGlobals->time;
+
+	m_pSporeGlow = CSprite::SpriteCreate("sprites/glow01.spr", pev->origin, FALSE);
+
+	if (m_pSporeGlow)
+	{
+		m_pSporeGlow->SetTransparency(kRenderGlow, 217, 241, 152, 200, kRenderFxNoDissipation);
+		m_pSporeGlow->SetAttachment(edict(), 1);
+		m_pSporeGlow->SetScale(.5f);
+	}
 }
 
 CGrenade * CSporeGrenade::ShootTimed(entvars_t *pevOwner, Vector vecStart, Vector vecVelocity, float time)
 {
-	CGrenade *pGrenade = GetClassPtr((CGrenade *)NULL);
+	CSporeGrenade *pGrenade = GetClassPtr((CSporeGrenade *)NULL);
 	pGrenade->Spawn();
 	UTIL_SetOrigin(pGrenade->pev, vecStart);
 	pGrenade->pev->velocity = vecVelocity;
@@ -368,7 +387,7 @@ CGrenade * CSporeGrenade::ShootTimed(entvars_t *pevOwner, Vector vecStart, Vecto
 	pGrenade->pev->friction = 0.2; // 0.8
 
 	SET_MODEL(ENT(pGrenade->pev), "models/spore.mdl");
-	pGrenade->pev->dmg = 100;
+	pGrenade->pev->dmg = gSkillData.plrDmgSpore;
 
 	return pGrenade;
 }
@@ -377,8 +396,7 @@ CGrenade *CSporeGrenade::ShootContact(entvars_t *pevOwner, Vector vecStart, Vect
 {
 	CSporeGrenade *pGrenade = GetClassPtr((CSporeGrenade *)NULL);
 	pGrenade->Spawn();
-	// contact grenades arc lower
-	pGrenade->pev->gravity = 0.5;// lower gravity since grenade is aerodynamic and engine doesn't know it.
+	pGrenade->pev->movetype = MOVETYPE_FLY;
 	UTIL_SetOrigin(pGrenade->pev, vecStart);
 	pGrenade->pev->velocity = vecVelocity;
 	pGrenade->pev->angles = UTIL_VecToAngles(pGrenade->pev->velocity);
@@ -389,12 +407,46 @@ CGrenade *CSporeGrenade::ShootContact(entvars_t *pevOwner, Vector vecStart, Vect
 	pGrenade->pev->nextthink = gpGlobals->time;
 
 	// Tumble in air
-	pGrenade->pev->avelocity.x = RANDOM_FLOAT(-100, -500);
 
 	// Explode on contact
 	pGrenade->SetTouch(&CSporeGrenade::ExplodeTouch);
 
-	pGrenade->pev->dmg = gSkillData.plrDmgM203Grenade;
+	pGrenade->pev->dmg = gSkillData.plrDmgSpore;
 
 	return pGrenade;
+}
+
+void CSporeGrenade::SpawnTrailParticles(const Vector& origin, const Vector& direction, int modelindex, int count, float speed, float noise)
+{
+	MESSAGE_BEGIN(MSG_PVS, SVC_TEMPENTITY, origin);
+	WRITE_BYTE(TE_SPRITE_SPRAY);
+		WRITE_COORD(origin.x);				// pos
+		WRITE_COORD(origin.y);
+		WRITE_COORD(origin.z);
+		WRITE_COORD(direction.x);			// dir
+		WRITE_COORD(direction.y);
+		WRITE_COORD(direction.z);
+		WRITE_SHORT(modelindex);			// model
+		WRITE_BYTE(count);					// count
+		WRITE_BYTE(speed);					// speed
+		WRITE_BYTE(noise);					// noise ( client will divide by 100 )
+	MESSAGE_END();
+}
+
+void CSporeGrenade::SpawnExplosionParticles(const Vector& origin, const Vector& direction, int modelindex, int count, float speed, float noise)
+{
+
+	MESSAGE_BEGIN(MSG_PVS, SVC_TEMPENTITY, origin);
+		WRITE_BYTE(TE_SPRITE_SPRAY);
+		WRITE_COORD(origin.x);				// pos
+		WRITE_COORD(origin.y);
+		WRITE_COORD(origin.z);
+		WRITE_COORD(direction.x);			// dir
+		WRITE_COORD(direction.y);
+		WRITE_COORD(direction.z);
+		WRITE_SHORT(modelindex);			// model
+		WRITE_BYTE(count);					// count
+		WRITE_BYTE(speed);					// speed
+		WRITE_BYTE(noise);					// noise ( client will divide by 100 )
+	MESSAGE_END();
 }

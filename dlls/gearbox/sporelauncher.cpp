@@ -69,6 +69,7 @@ void CSporelauncher::Precache(void)
 
 	PRECACHE_SOUND("items/9mmclip1.wav");
 
+	PRECACHE_MODEL("sprites/bigspit.spr");
 	m_iSquidSpitSprite = PRECACHE_MODEL("sprites/tinyspit.spr");
 	UTIL_PrecacheOther("monster_spore");
 
@@ -151,29 +152,13 @@ void CSporelauncher::PrimaryAttack()
 	Vector vecDir;
 	Vector vecVel;
 
-#if 0
-#ifdef CLIENT_DLL
-	if (bIsMultiplayer())
-#else
-	if (g_pGameRules->IsMultiplayer())
-#endif
-	{
-		vecDir = m_pPlayer->FireBulletsPlayer(4, vecSrc, vecAiming, VECTOR_CONE_DM_SHOTGUN, 2048, BULLET_PLAYER_BUCKSHOT, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed);
-	}
-	else
-	{
-		// regular old, untouched spread. 
-		vecDir = m_pPlayer->FireBulletsPlayer(6, vecSrc, vecAiming, VECTOR_CONE_10DEGREES, 2048, BULLET_PLAYER_BUCKSHOT, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed);
-	}
-
-#endif
 	UTIL_MakeVectors(m_pPlayer->pev->v_angle);
 
 	vecSrc = vecSrc + gpGlobals->v_forward	* 16;
 	vecSrc = vecSrc + gpGlobals->v_right	* 8;
 	vecSrc = vecSrc + gpGlobals->v_up		* -12;
 
-	vecVel = gpGlobals->v_forward * 600;
+	vecVel = gpGlobals->v_forward * 900;
 	vecDir = gpGlobals->v_forward + gpGlobals->v_right + gpGlobals->v_up;
 	vecDir = vecDir;
 
@@ -200,9 +185,6 @@ void CSporelauncher::PrimaryAttack()
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
 
-	if (m_iClip != 0)
-		m_flPumpTime = gpGlobals->time + 0.5;
-
 	m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
 	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
 
@@ -228,7 +210,7 @@ void CSporelauncher::SecondaryAttack(void)
 		return;
 	}
 
-	if (m_iClip <= 1)
+	if (m_iClip <= 0)
 	{
 		Reload();
 		PlayEmptySound();
@@ -259,30 +241,13 @@ void CSporelauncher::SecondaryAttack(void)
 	Vector vecDir;
 	Vector vecVel;
 
-#if 0
-#ifdef CLIENT_DLL
-	if (bIsMultiplayer())
-#else
-	if (g_pGameRules->IsMultiplayer())
-#endif
-	{
-		// tuned for deathmatch
-		vecDir = m_pPlayer->FireBulletsPlayer(8, vecSrc, vecAiming, VECTOR_CONE_DM_DOUBLESHOTGUN, 2048, BULLET_PLAYER_BUCKSHOT, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed);
-	}
-	else
-	{
-		// untouched default single player
-		vecDir = m_pPlayer->FireBulletsPlayer(12, vecSrc, vecAiming, VECTOR_CONE_10DEGREES, 2048, BULLET_PLAYER_BUCKSHOT, 0, 0, m_pPlayer->pev, m_pPlayer->random_seed);
-	}
-#endif
-
 	UTIL_MakeVectors(m_pPlayer->pev->v_angle);
 
 	vecSrc = vecSrc + gpGlobals->v_forward	* 16;
 	vecSrc = vecSrc + gpGlobals->v_right	* 8;
 	vecSrc = vecSrc + gpGlobals->v_up		* -12;
 
-	vecVel = gpGlobals->v_forward * 600;
+	vecVel = gpGlobals->v_forward * 800;
 	vecDir = gpGlobals->v_forward + gpGlobals->v_right + gpGlobals->v_up;
 	vecDir = vecDir;
 
@@ -307,9 +272,6 @@ void CSporelauncher::SecondaryAttack(void)
 	if (!m_iClip && m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0)
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
-
-	if (m_iClip != 0)
-		m_flPumpTime = gpGlobals->time + 0.95;
 
 	m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
 	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
@@ -378,13 +340,6 @@ void CSporelauncher::WeaponIdle(void)
 	ResetEmptySound();
 
 	m_pPlayer->GetAutoaimVector(AUTOAIM_5DEGREES);
-
-	if (m_flPumpTime && m_flPumpTime < gpGlobals->time)
-	{
-		// play pumping sound
-		EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/scock1.wav", 1, ATTN_NORM, 0, 95 + RANDOM_LONG(0, 0x1f));
-		m_flPumpTime = 0;
-	}
 
 	if (m_flTimeWeaponIdle <  UTIL_WeaponTimeBase())
 	{

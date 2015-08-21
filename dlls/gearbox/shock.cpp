@@ -158,7 +158,7 @@ void CShock::Touch(CBaseEntity *pOther)
 	}
 	else
 	{
-		// pOther->TakeDamage(pev, pev, gSkillData.monDmgShockroach, DMG_GENERIC);
+		pOther->TakeDamage(pev, pev, gSkillData.monDmgShockroach, DMG_ENERGYBEAM | DMG_ALWAYSGIB);
 
 		// Make the monster glow. Only supported on Op4 monsters.
 		CBaseMonster* pMonster = pOther->MyMonsterPointer();

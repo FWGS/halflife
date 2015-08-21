@@ -1560,7 +1560,18 @@ void UTIL_Remove( CBaseEntity *pEntity )
 	if ( !pEntity )
 		return;
 
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	// Call pre removal method.
+	pEntity->PreRemoval();
+#endif
+
 	pEntity->UpdateOnRemove();
+
+#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
+	// Call post removal method.
+	pEntity->PostRemoval();
+#endif
+
 	pEntity->pev->flags |= FL_KILLME;
 	pEntity->pev->targetname = 0;
 }
