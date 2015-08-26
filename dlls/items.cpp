@@ -217,11 +217,6 @@ class CItemBattery : public CItem
 	}
 	BOOL MyTouch( CBasePlayer *pPlayer )
 	{
-#if defined ( BSHIFT_DLL )
-		// Blue shift does not support battery pickup.
-		return FALSE;
-#endif
-
 		if ( pPlayer->pev->deadflag != DEAD_NO )
 		{
 			return FALSE;

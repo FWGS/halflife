@@ -884,10 +884,6 @@ void CHoundeye::PrescheduleThink ( void )
 
 		m_vecPackCenter = m_vecPackCenter / iSquadCount;
 	}
-
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-	CSquadMonster::PrescheduleThink();
-#endif
 }
 
 //=========================================================

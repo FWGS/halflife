@@ -701,10 +701,6 @@ void CGargantua :: PrescheduleThink( void )
 		EyeOn( 200 );
 	
 	EyeUpdate();
-
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-	CBaseMonster::PrescheduleThink();
-#endif
 }
 
 

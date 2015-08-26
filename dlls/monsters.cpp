@@ -108,14 +108,6 @@ TYPEDESCRIPTION	CBaseMonster::m_SaveData[] =
 
 	DEFINE_FIELD( CBaseMonster, m_scriptState, FIELD_INTEGER ),
 	DEFINE_FIELD( CBaseMonster, m_pCine, FIELD_CLASSPTR ),
-
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-	DEFINE_FIELD(CBaseMonster, m_flGlowShellStartTime, FIELD_TIME),
-	DEFINE_FIELD(CBaseMonster, m_flGlowShellDuration, FIELD_FLOAT),
-	DEFINE_FIELD(CBaseMonster, glowshellcolor, FIELD_VECTOR),
-	DEFINE_FIELD(CBaseMonster, rendercolorprev, FIELD_VECTOR),
-	DEFINE_FIELD(CBaseMonster, m_fUpdateGlowShell, FIELD_BOOLEAN),
-#endif // defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
 };
 
 //IMPLEMENT_SAVERESTORE( CBaseMonster, CBaseToggle );

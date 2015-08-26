@@ -121,9 +121,6 @@ float CHalfLifeRules::FlPlayerFallDamage( CBasePlayer *pPlayer )
 //=========================================================
 void CHalfLifeRules :: PlayerSpawn( CBasePlayer *pPlayer )
 {
-#if defined ( BSHIFT_DLL ) || defined ( BSHIFT_CLIENT_DLL )
-	pPlayer->pev->weapons |= (1 << WEAPON_SUIT);
-#endif
 }
 
 //=========================================================

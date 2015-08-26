@@ -91,10 +91,6 @@ BOOL CBaseDMStart::IsTriggered( CBaseEntity *pEntity )
 // This updates global tables that need to know about entities being removed
 void CBaseEntity::UpdateOnRemove( void )
 {
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-	OnRemove();
-#endif
-
 	int	i;
 
 	if ( FBitSet( pev->flags, FL_GRAPHED ) )
@@ -117,10 +113,6 @@ void CBaseEntity::UpdateOnRemove( void )
 // Convenient way to delay removing oneself
 void CBaseEntity :: SUB_Remove( void )
 {
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-	// Call pre removal method.
-	PreRemoval();
-#endif
 	UpdateOnRemove();
 	if (pev->health > 0)
 	{
@@ -128,11 +120,6 @@ void CBaseEntity :: SUB_Remove( void )
 		pev->health = 0;
 		ALERT( at_aiconsole, "SUB_Remove called on entity with health > 0\n");
 	}
-
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-	// Call post removal method.
-	PostRemoval();
-#endif
 
 	REMOVE_ENTITY(ENT(pev));
 }

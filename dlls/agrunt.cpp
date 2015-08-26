@@ -330,10 +330,6 @@ void CAGrunt :: PrescheduleThink ( void )
 			}
 		}
 	}
-
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-	CSquadMonster::PrescheduleThink();
-#endif
 }
 
 //=========================================================

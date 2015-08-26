@@ -36,11 +36,6 @@
 #define		PFLAG_USING			( 1<<4 )		// Using a continuous entity
 #define		PFLAG_OBSERVER		( 1<<5 )		// player is locked in stationary cam mode. Spectators can move, observers can't.
 
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-#define		PFLAG_LATCHING		( 1<<6 )	// Player is latching to a target
-#define		PFLAG_ATTACHED		( 1<<7 )	// Player is attached by a barnacle tongue tip
-#endif
-
 //
 // generic player
 //
@@ -62,16 +57,8 @@
 
 #define CSUITNOREPEAT		32
 
-#if defined ( BSHIFT_DLL ) || defined ( BSHIFT_CLIENT_DLL )
 #define	SOUND_FLASHLIGHT_ON		"items/flashlight1.wav"
 #define	SOUND_FLASHLIGHT_OFF	"items/flashlight1.wav"
-#elif defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-#define	SOUND_FLASHLIGHT_ON		"items/flashlight1.wav"
-#define	SOUND_FLASHLIGHT_OFF	"items/flashlight2.wav"
-#else
-#define	SOUND_FLASHLIGHT_ON		"items/flashlight1.wav"
-#define	SOUND_FLASHLIGHT_OFF	"items/flashlight1.wav"
-#endif
 
 #define TEAM_NAME_LENGTH	16
 
@@ -252,9 +239,9 @@ public:
 	virtual int		ObjectCaps( void ) { return CBaseMonster :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 	virtual void	Precache( void );
 	BOOL			IsOnLadder( void );
-	virtual BOOL	FlashlightIsOn( void );
-	virtual void	FlashlightTurnOn(void);
-	virtual void	FlashlightTurnOff(void);
+	BOOL			FlashlightIsOn( void );
+	void			FlashlightTurnOn( void );
+	void			FlashlightTurnOff( void );
 	
 	void UpdatePlayerSound ( void );
 	void DeathSound ( void );

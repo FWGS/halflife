@@ -20,15 +20,8 @@
 // CHud handles the message, calculation, and drawing the HUD
 //
 
-#if defined ( BSHIFT_DLL ) || defined ( BSHIFT_CLIENT_DLL )
-#define RGB_YELLOWISH 0x00555EC8 //85,94,200
-#elif defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-#define RGB_YELLOWISH 0x0000A000 //0,160,0
-#else
-#define RGB_YELLOWISH 0x00FFA000 //255,160,0
-#endif
 
-//#define RGB_YELLOWISH 0x00FFA000 //255,160,0
+#define RGB_YELLOWISH 0x00FFA000 //255,160,0
 #define RGB_REDISH 0x00FF1010 //255,160,0
 #define RGB_GREENISH 0x0000A000 //0,160,0
 
@@ -376,31 +369,6 @@ private:
 	int	  m_iWidth;		// width of the battery innards
 };
 
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-//
-//-----------------------------------------------------
-//
-class CHudNightvision : public CHudBase
-{
-public:
-	int Init(void);
-	int VidInit(void);
-	int Draw(float flTime);
-	void Reset(void);
-	int MsgFunc_Nightvision(const char *pszName, int iSize, void *pbuf);
-
-private:
-	HSPRITE m_hSprite1,
-			m_hSprite2,
-			m_hSprite3,
-			m_hSprite4;
-
-	wrect_t* m_prc;
-	int		m_fOn;
-	int		m_iFrame, m_nFrameCount;
-};
-#endif
-
 //
 //-----------------------------------------------------
 //
@@ -643,10 +611,6 @@ public:
 	CHudTextMessage m_TextMessage;
 	CHudStatusIcons m_StatusIcons;
 	CHudBenchmark	m_Benchmark;
-
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-	CHudNightvision m_Nightvision;
-#endif
 
 	void Init( void );
 	void VidInit( void );

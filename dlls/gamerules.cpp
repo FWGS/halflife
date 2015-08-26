@@ -26,10 +26,6 @@
 #include	"skill.h"
 #include	"game.h"
 
-#if defined ( GEARBOX_DLL ) && defined ( GEARBOX_CTF )
-#include	"ctf_gamerules.h"
-#endif
-
 extern edict_t *EntSelectSpawnPoint( CBaseEntity *pPlayer );
 
 DLL_GLOBAL CGameRules*	g_pGameRules = NULL;
@@ -321,42 +317,31 @@ CGameRules *InstallGameRules( void )
 	{
 		// generic half-life
 		g_teamplay = 0;
-
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-		return new CGearboxRules;
-#else
 		return new CHalfLifeRules;
-#endif
 	}
 	else
 	{
-#if (defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )) && defined ( GEARBOX_CTF )
-		// HACK HACK!! Put here to tell whether the current map supports
-		// CTF gamerules since there is no explicit way to specify
-		// the CTF gamerule in server creation page.
-		if (!strnicmp(STRING(gpGlobals->mapname), "op4ctf", 6))
-		{
-			// capture the flag
-			g_teamplay = 1;
-			return new CCTFMultiplay;
-		}
-#endif // (defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )) && defined ( GEARBOX_CTF )
-
 		if ( teamplay.value > 0 )
 		{
 			// teamplay
+
 			g_teamplay = 1;
 			return new CHalfLifeTeamplay;
+		}
+		if ((int)gpGlobals->deathmatch == 1)
+		{
+			// vanilla deathmatch
+			g_teamplay = 0;
+			return new CHalfLifeMultiplay;
 		}
 		else
 		{
 			// vanilla deathmatch??
 			g_teamplay = 0;
-#if defined ( GEARBOX_DLL ) || defined ( GEARBOX_CLIENT_DLL )
-			return new CGearboxMultiplay;
-#else
 			return new CHalfLifeMultiplay;
-#endif
 		}
 	}
 }
+
+
+
