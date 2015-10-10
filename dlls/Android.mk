@@ -23,8 +23,7 @@ LOCAL_CFLAGS += $(CFLAGS_OPT_X86)
 endif
 
 
-LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS -D_DEBUG \
-	-Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf \
+LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf \
 	-fno-exceptions
 
 LOCAL_CPPFLAGS := $(LOCAL_CFLAGS) -frtti
