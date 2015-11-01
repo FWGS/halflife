@@ -1,186 +1,147 @@
-#
-# Half-Life Full SDK 2.3 hl_i386.so Makefile for x86 Linux
-#
-# October 2002 by Leon Hartwig (hartwig@valvesoftware.com)
-#
+CC= gcc -m32
+CXX = g++ -m32
+TOPDIR = $(PWD)
+SRCS += $(TOPDIR)/../dlls/aflock.cpp
+SRCS += $(TOPDIR)/../dlls/agrunt.cpp
+SRCS += $(TOPDIR)/../dlls/airtank.cpp
+SRCS += $(TOPDIR)/../dlls/animating.cpp
+SRCS += $(TOPDIR)/../dlls/animation.cpp
+SRCS += $(TOPDIR)/../dlls/apache.cpp
+SRCS += $(TOPDIR)/../dlls/barnacle.cpp
+SRCS += $(TOPDIR)/../dlls/barney.cpp
+SRCS += $(TOPDIR)/../dlls/bigmomma.cpp
+SRCS += $(TOPDIR)/../dlls/bloater.cpp
+SRCS += $(TOPDIR)/../dlls/bmodels.cpp
+SRCS += $(TOPDIR)/../dlls/bullsquid.cpp
+SRCS += $(TOPDIR)/../dlls/buttons.cpp
+SRCS += $(TOPDIR)/../dlls/cbase.cpp
+SRCS += $(TOPDIR)/../dlls/client.cpp
+SRCS += $(TOPDIR)/../dlls/combat.cpp
+SRCS += $(TOPDIR)/../dlls/controller.cpp
+SRCS += $(TOPDIR)/../dlls/crossbow.cpp
+SRCS += $(TOPDIR)/../dlls/crowbar.cpp
+SRCS += $(TOPDIR)/../dlls/defaultai.cpp
+SRCS += $(TOPDIR)/../dlls/doors.cpp
+SRCS += $(TOPDIR)/../dlls/effects.cpp
+SRCS += $(TOPDIR)/../dlls/egon.cpp
+SRCS += $(TOPDIR)/../dlls/explode.cpp
+SRCS += $(TOPDIR)/../dlls/flyingmonster.cpp
+SRCS += $(TOPDIR)/../dlls/func_break.cpp
+SRCS += $(TOPDIR)/../dlls/func_tank.cpp
+SRCS += $(TOPDIR)/../dlls/game.cpp
+SRCS += $(TOPDIR)/../dlls/gamerules.cpp
+SRCS += $(TOPDIR)/../dlls/gargantua.cpp
+SRCS += $(TOPDIR)/../dlls/gauss.cpp
+SRCS += $(TOPDIR)/../dlls/genericmonster.cpp
+SRCS += $(TOPDIR)/../dlls/ggrenade.cpp
+SRCS += $(TOPDIR)/../dlls/globals.cpp
+SRCS += $(TOPDIR)/../dlls/gman.cpp
+SRCS += $(TOPDIR)/../dlls/handgrenade.cpp
+SRCS += $(TOPDIR)/../dlls/hassassin.cpp
+SRCS += $(TOPDIR)/../dlls/headcrab.cpp
+SRCS += $(TOPDIR)/../dlls/healthkit.cpp
+SRCS += $(TOPDIR)/../dlls/hgrunt.cpp
+SRCS += $(TOPDIR)/../dlls/hornet.cpp
+SRCS += $(TOPDIR)/../dlls/hornetgun.cpp
+SRCS += $(TOPDIR)/../dlls/houndeye.cpp
+SRCS += $(TOPDIR)/../dlls/h_ai.cpp
+SRCS += $(TOPDIR)/../dlls/h_battery.cpp
+SRCS += $(TOPDIR)/../dlls/h_cine.cpp
+SRCS += $(TOPDIR)/../dlls/h_cycler.cpp
+SRCS += $(TOPDIR)/../dlls/h_export.cpp
+SRCS += $(TOPDIR)/../dlls/ichthyosaur.cpp
+SRCS += $(TOPDIR)/../dlls/islave.cpp
+SRCS += $(TOPDIR)/../dlls/items.cpp
+SRCS += $(TOPDIR)/../dlls/leech.cpp
+SRCS += $(TOPDIR)/../dlls/lights.cpp
+SRCS += $(TOPDIR)/../dlls/maprules.cpp
+SRCS += $(TOPDIR)/../dlls/monstermaker.cpp
+SRCS += $(TOPDIR)/../dlls/monsters.cpp
+SRCS += $(TOPDIR)/../dlls/monsterstate.cpp
+SRCS += $(TOPDIR)/../dlls/mortar.cpp
+SRCS += $(TOPDIR)/../dlls/mp5.cpp
+SRCS += $(TOPDIR)/../dlls/multiplay_gamerules.cpp
+SRCS += $(TOPDIR)/../dlls/nihilanth.cpp
+SRCS += $(TOPDIR)/../dlls/nodes.cpp
+SRCS += $(TOPDIR)/../dlls/observer.cpp
+SRCS += $(TOPDIR)/../dlls/osprey.cpp
+SRCS += $(TOPDIR)/../dlls/pathcorner.cpp
+SRCS += $(TOPDIR)/../dlls/plane.cpp
+SRCS += $(TOPDIR)/../dlls/plats.cpp
+SRCS += $(TOPDIR)/../dlls/player.cpp
+SRCS += $(TOPDIR)/../dlls/python.cpp
+SRCS += $(TOPDIR)/../dlls/rat.cpp
+SRCS += $(TOPDIR)/../dlls/roach.cpp
+SRCS += $(TOPDIR)/../dlls/rpg.cpp
+SRCS += $(TOPDIR)/../dlls/satchel.cpp
+SRCS += $(TOPDIR)/../dlls/schedule.cpp
+SRCS += $(TOPDIR)/../dlls/scientist.cpp
+SRCS += $(TOPDIR)/../dlls/scripted.cpp
+SRCS += $(TOPDIR)/../dlls/shotgun.cpp
+SRCS += $(TOPDIR)/../dlls/singleplay_gamerules.cpp
+SRCS += $(TOPDIR)/../dlls/skill.cpp
+SRCS += $(TOPDIR)/../dlls/sound.cpp
+SRCS += $(TOPDIR)/../dlls/soundent.cpp
+SRCS += $(TOPDIR)/../dlls/spectator.cpp
+SRCS += $(TOPDIR)/../dlls/squadmonster.cpp
+SRCS += $(TOPDIR)/../dlls/squeakgrenade.cpp
+SRCS += $(TOPDIR)/../dlls/subs.cpp
+SRCS += $(TOPDIR)/../dlls/talkmonster.cpp
+SRCS += $(TOPDIR)/../dlls/teamplay_gamerules.cpp
+SRCS += $(TOPDIR)/../dlls/tempmonster.cpp
+SRCS += $(TOPDIR)/../dlls/tentacle.cpp
+SRCS += $(TOPDIR)/../dlls/triggers.cpp
+SRCS += $(TOPDIR)/../dlls/tripmine.cpp
+SRCS += $(TOPDIR)/../dlls/turret.cpp
+SRCS += $(TOPDIR)/../dlls/util.cpp
+SRCS += $(TOPDIR)/../dlls/weapons.cpp
+SRCS += $(TOPDIR)/../dlls/world.cpp
+SRCS += $(TOPDIR)/../dlls/wpn_shared/hl_wpn_glock.cpp
+SRCS += $(TOPDIR)/../dlls/xen.cpp
+SRCS += $(TOPDIR)/../dlls/zombie.cpp
+SRCS += $(TOPDIR)/../../game_shared/voice_gamemgr.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/blkop_apache.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/blkop_osprey.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/cleansuit_scientist.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/displacer.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/drillsergeant.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/gearbox_effects.cpp
+#SRCS += $(TOPDIR)/../dlls/gearbox/gearbox_gamerules.cpp
+//SRCS += $(TOPDIR)/../dlls/gearbox/gearbox_houndeye.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/geneworm.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/gonome.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/loader.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/m249.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/massn.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/otis.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/pipewrench.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/pitworm.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/recruit.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/skeleton.cpp
+SRCS += $(TOPDIR)/../dlls/gearbox/sniperrifle.cpp
+SRCS += ../dlls/gearbox/knife.cpp
+SRCS += ../dlls/gearbox/eagle.cpp
+SRCS += ../dlls/gearbox/grapple.cpp
+SRCS += ../dlls/gearbox/penguin.cpp
+SRCS += ../dlls/gearbox/shockrifle.cpp
+SRCS += ../dlls/gearbox/sporelauncher.cpp
+#SRCS += $(TOPDIR)/../dlls/gearbox/zbarney.cpp
+#SRCS += $(TOPDIR)/../dlls/gearbox/zgrunt.cpp
+SRCS_C += ../../pm_shared/pm_shared.c
+SRCS_C += ../../pm_shared/pm_math.c
+SRCS_C += ../../pm_shared/pm_debug.c
+INCLUDES =  -I$(TOPDIR)/../../common -I. -I$(TOPDIR)/../../game_shared -I$(TOPDIR)/../pm_shared -I$(TOPDIR)/../../engine -I$(TOPDIR)/../dlls -I$(TOPDIR)/../dlls/hl -I$(TOPDIR)/../../public -Igearbox
+DEFINES = -Wno-write-strings -DLINUX -D_LINUX -D_vsnprintf=vsnprintf -Dstricmp=strcasecmp -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp -DCLIENT_WEAPONS -fpermissive -w -DHL_DLL -DGEARBOX_DLL -D_alloca=alloca -D_snprintf=snprintf
 
-DLLNAME=hl
+CFLAGS = -Og -ggdb
+OBJS = $(SRCS:.cpp=.o) $(SRCS_C:.c=.o)
+%.o : %.c
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -fPIC -c $< -o $@
 
-ARCH=i386
+%.o : %.cpp
+	$(CXX) $(CFLAGS) $(INCLUDES) $(DEFINES) -fPIC -c $< -o $@
+server.so : $(OBJS)
+	$(CXX) $(OBJS) -o server.so -shared -Wl,--no-undefined -fPIC -lm -ldl
 
-#make sure this is the correct compiler for your system
-CC=gcc
-
-DLL_SRCDIR=.
-ENGINE_SRCDIR=../engine
-COMMON_SRCDIR=../common
-WPN_SHARED_SRCDIR=./wpn_shared
-PM_SHARED_SRCDIR=../pm_shared
-GAME_SHARED_SRCDIR=../game_shared
-
-DLL_OBJDIR=$(DLL_SRCDIR)/obj
-WPN_SHARED_OBJDIR=$(WPN_SHARED_SRCDIR)/obj
-PM_SHARED_OBJDIR=$(PM_SHARED_SRCDIR)/obj
-GAME_SHARED_OBJDIR=$(GAME_SHARED_SRCDIR)/obj
-
-BASE_CFLAGS=	-Dstricmp=strcasecmp -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp \
-		-DCLIENT_WEAPONS
-
-#safe optimization
-CFLAGS=$(BASE_CFLAGS) -w -m486 -O1
-
-#full optimization
-#CFLAGS=$(BASE_CFLAGS) -w -O1 -m486 -ffast-math -funroll-loops \
-	-fomit-frame-pointer -fexpensive-optimizations \
-	-malign-loops=2 -malign-jumps=2 -malign-functions=2
-
-#use these when debugging 
-#CFLAGS=$(BASE_CFLAGS) -g
-
-INCLUDEDIRS=-I. -I$(ENGINE_SRCDIR) -I$(COMMON_SRCDIR) -I$(PM_SHARED_SRCDIR) -I$(GAME_SHARED_SRCDIR)
-
-LDFLAGS=
-
-SHLIBEXT=so
-SHLIBCFLAGS=-fPIC
-SHLIBLDFLAGS=-shared
-
-DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $<
-
-#############################################################################
-# SETUP AND BUILD
-# GAME
-#############################################################################
-
-$(DLL_OBJDIR)/%.o: $(DLL_SRCDIR)/%.cpp
-	$(DO_CC)
-
-$(WPN_SHARED_OBJDIR)/%.o: $(WPN_SHARED_SRCDIR)/%.cpp
-	$(DO_CC)
-
-$(GAME_SHARED_OBJDIR)/%.o: $(GAME_SHARED_SRCDIR)/%.cpp
-	$(DO_CC)
-
-$(PM_SHARED_OBJDIR)/%.o: $(PM_SHARED_SRCDIR)/%.c
-	$(DO_CC)
-
-OBJ = \
-	$(DLL_OBJDIR)/aflock.o \
-	$(DLL_OBJDIR)/agrunt.o \
-	$(DLL_OBJDIR)/airtank.o \
-	$(DLL_OBJDIR)/animating.o \
-	$(DLL_OBJDIR)/animation.o \
-	$(DLL_OBJDIR)/apache.o \
-	$(DLL_OBJDIR)/barnacle.o \
-	$(DLL_OBJDIR)/barney.o \
-	$(DLL_OBJDIR)/bigmomma.o \
-	$(DLL_OBJDIR)/bloater.o \
-	$(DLL_OBJDIR)/bmodels.o \
-	$(DLL_OBJDIR)/bullsquid.o \
-	$(DLL_OBJDIR)/buttons.o \
-	$(DLL_OBJDIR)/cbase.o \
-	$(DLL_OBJDIR)/client.o \
-	$(DLL_OBJDIR)/combat.o \
-	$(DLL_OBJDIR)/controller.o \
-	$(DLL_OBJDIR)/crossbow.o \
-	$(DLL_OBJDIR)/crowbar.o \
-	$(DLL_OBJDIR)/defaultai.o \
-	$(DLL_OBJDIR)/doors.o \
-	$(DLL_OBJDIR)/effects.o \
-	$(DLL_OBJDIR)/egon.o \
-	$(DLL_OBJDIR)/explode.o \
-	$(DLL_OBJDIR)/flyingmonster.o \
-	$(DLL_OBJDIR)/func_break.o \
-	$(DLL_OBJDIR)/func_tank.o \
-	$(DLL_OBJDIR)/game.o \
-	$(DLL_OBJDIR)/gamerules.o \
-	$(DLL_OBJDIR)/gargantua.o \
-	$(DLL_OBJDIR)/gauss.o \
-	$(DLL_OBJDIR)/genericmonster.o \
-	$(DLL_OBJDIR)/ggrenade.o \
-	$(DLL_OBJDIR)/globals.o \
-	$(DLL_OBJDIR)/gman.o \
-	$(DLL_OBJDIR)/h_ai.o \
-	$(DLL_OBJDIR)/h_battery.o \
-	$(DLL_OBJDIR)/h_cine.o \
-	$(DLL_OBJDIR)/h_cycler.o \
-	$(DLL_OBJDIR)/h_export.o \
-	$(DLL_OBJDIR)/handgrenade.o \
-	$(DLL_OBJDIR)/hassassin.o \
-	$(DLL_OBJDIR)/headcrab.o \
-	$(DLL_OBJDIR)/healthkit.o \
-	$(DLL_OBJDIR)/hgrunt.o \
-	$(DLL_OBJDIR)/hornet.o \
-	$(DLL_OBJDIR)/hornetgun.o \
-	$(DLL_OBJDIR)/houndeye.o \
-	$(DLL_OBJDIR)/ichthyosaur.o \
-	$(DLL_OBJDIR)/islave.o \
-	$(DLL_OBJDIR)/items.o \
-	$(DLL_OBJDIR)/leech.o \
-	$(DLL_OBJDIR)/lights.o \
-	$(DLL_OBJDIR)/maprules.o \
-	$(DLL_OBJDIR)/monstermaker.o \
-	$(DLL_OBJDIR)/monsters.o \
-	$(DLL_OBJDIR)/monsterstate.o \
-	$(DLL_OBJDIR)/mortar.o \
-	$(DLL_OBJDIR)/mp5.o \
-	$(DLL_OBJDIR)/multiplay_gamerules.o \
-	$(DLL_OBJDIR)/nihilanth.o \
-	$(DLL_OBJDIR)/nodes.o \
-	$(DLL_OBJDIR)/osprey.o \
-	$(DLL_OBJDIR)/pathcorner.o \
-	$(DLL_OBJDIR)/plane.o \
-	$(DLL_OBJDIR)/plats.o \
-	$(DLL_OBJDIR)/player.o \
-	$(DLL_OBJDIR)/python.o \
-	$(DLL_OBJDIR)/rat.o \
-	$(DLL_OBJDIR)/roach.o \
-	$(DLL_OBJDIR)/rpg.o \
-	$(DLL_OBJDIR)/satchel.o \
-	$(DLL_OBJDIR)/schedule.o \
-	$(DLL_OBJDIR)/scientist.o \
-	$(DLL_OBJDIR)/scripted.o \
-	$(DLL_OBJDIR)/shotgun.o \
-	$(DLL_OBJDIR)/singleplay_gamerules.o \
-	$(DLL_OBJDIR)/skill.o \
-	$(DLL_OBJDIR)/sound.o \
-	$(DLL_OBJDIR)/soundent.o \
-	$(DLL_OBJDIR)/spectator.o \
-	$(DLL_OBJDIR)/squadmonster.o \
-	$(DLL_OBJDIR)/squeakgrenade.o \
-	$(DLL_OBJDIR)/subs.o \
-	$(DLL_OBJDIR)/talkmonster.o \
-	$(DLL_OBJDIR)/teamplay_gamerules.o \
-	$(DLL_OBJDIR)/tempmonster.o \
-	$(DLL_OBJDIR)/tentacle.o \
-	$(DLL_OBJDIR)/triggers.o \
-	$(DLL_OBJDIR)/tripmine.o \
-	$(DLL_OBJDIR)/turret.o \
-	$(DLL_OBJDIR)/util.o \
-	$(DLL_OBJDIR)/weapons.o \
-	$(DLL_OBJDIR)/world.o \
-	$(DLL_OBJDIR)/xen.o \
-	$(DLL_OBJDIR)/zombie.o \
-	$(WPN_SHARED_OBJDIR)/hl_wpn_glock.o \
-	$(GAME_SHARED_OBJDIR)/voice_gamemgr.o \
-	$(PM_SHARED_OBJDIR)/pm_debug.o \
-	$(PM_SHARED_OBJDIR)/pm_math.o \
-	$(PM_SHARED_OBJDIR)/pm_shared.o
-
-$(DLLNAME)_$(ARCH).$(SHLIBEXT) : neat $(OBJ)
-	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) $(LDFLAGS) -o $@ $(OBJ)
-
-neat:
-	-mkdir $(DLL_OBJDIR)
-	-mkdir $(WPN_SHARED_OBJDIR)
-	-mkdir $(GAME_SHARED_OBJDIR)
-	-mkdir $(PM_SHARED_OBJDIR)
 clean:
-	-rm -f $(OBJ)
-	-rm -f $(DLLNAME)_$(ARCH).$(SHLIBEXT)
-spotless: clean
-	-rm -r $(DLL_OBJDIR)
-	-rm -r $(WPN_SHARED_OBJDIR)
-	-rm -r $(GAME_SHARED_OBJDIR)
-	-rm -r $(PM_SHARED_OBJDIR)
-
+	$(RM) $(OBJS)
