@@ -22,7 +22,7 @@ extern "C"
 #include <ctype.h>
 #include "Exports.h"
 
-#include "vgui_TeamFortressViewport.h"
+//#include "vgui_TeamFortressViewport.h"
 
 
 extern int g_iAlive;
@@ -369,8 +369,8 @@ int CL_DLLEXPORT HUD_Key_Event( int down, int keynum, const char *pszCurrentBind
 {
 //	RecClKeyEvent(down, keynum, pszCurrentBinding);
 
-	if (gViewPort)
-		return gViewPort->KeyInput(down, keynum, pszCurrentBinding);
+	//if (gViewPort)
+		//return gViewPort->KeyInput(down, keynum, pszCurrentBinding);
 	
 	return 1;
 }
@@ -514,19 +514,19 @@ void IN_Impulse (void)
 void IN_ScoreDown(void)
 {
 	KeyDown(&in_score);
-	if ( gViewPort )
+	/*if ( gViewPort )
 	{
 		gViewPort->ShowScoreBoard();
-	}
+	}*/
 }
 
 void IN_ScoreUp(void)
 {
 	KeyUp(&in_score);
-	if ( gViewPort )
+	/*if ( gViewPort )
 	{
 		gViewPort->HideScoreBoard();
-	}
+	} */
 }
 
 void IN_MLookUp (void)
@@ -734,8 +734,8 @@ void CL_DLLEXPORT CL_CreateMove ( float frametime, struct usercmd_s *cmd, int ac
 	cmd->buttons = CL_ButtonBits( 1 );
 
 	// If they're in a modal dialog, ignore the attack button.
-	if(GetClientVoiceMgr()->IsInSquelchMode())
-		cmd->buttons &= ~IN_ATTACK;
+//	if(GetClientVoiceMgr()->IsInSquelchMode())
+//		cmd->buttons &= ~IN_ATTACK;
 
 	// Using joystick?
 	if ( in_joystick->value )

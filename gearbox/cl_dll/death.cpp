@@ -22,7 +22,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "vgui_TeamFortressViewport.h"
+//#include "vgui_TeamFortressViewport.h"
 
 DECLARE_MESSAGE( m_DeathNotice, DeathMsg );
 
@@ -112,7 +112,7 @@ int CHudDeathNotice :: Draw( float flTime )
 		rgDeathNoticeList[i].flDisplayTime = min( rgDeathNoticeList[i].flDisplayTime, gHUD.m_flTime + DEATHNOTICE_DISPLAY_TIME );
 
 		// Only draw if the viewport will let me
-		if ( gViewPort && gViewPort->AllowedToPrintText() )
+		//if ( gViewPort && gViewPort->AllowedToPrintText() )
 		{
 			// Draw the death notice
 			y = DEATHNOTICE_TOP + 2 + (20 * i);  //!!!
@@ -169,8 +169,8 @@ int CHudDeathNotice :: MsgFunc_DeathMsg( const char *pszName, int iSize, void *p
 	strcpy( killedwith, "d_" );
 	strncat( killedwith, READ_STRING(), 32 );
 
-	if (gViewPort)
-		gViewPort->DeathMsg( killer, victim );
+	//if (gViewPort)
+		//gViewPort->DeathMsg( killer, victim );
 
 	gHUD.m_Spectator.DeathMessage(victim);
 	int i;
@@ -185,8 +185,8 @@ int CHudDeathNotice :: MsgFunc_DeathMsg( const char *pszName, int iSize, void *p
 		i = MAX_DEATHNOTICES - 1;
 	}
 
-	if (gViewPort)
-		gViewPort->GetAllPlayersInfo();
+	//if (gViewPort)
+		//gViewPort->GetAllPlayersInfo();
 
 	// Get the Killer's name
 	char *killer_name = g_PlayerInfoList[ killer ].name;

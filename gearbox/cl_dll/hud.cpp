@@ -24,16 +24,16 @@
 #include <stdio.h>
 #include "parsemsg.h"
 #include "hud_servers.h"
-#include "vgui_int.h"
-#include "vgui_TeamFortressViewport.h"
+//#include "vgui_int.h"
+//#include "vgui_TeamFortressViewport.h"
 
 #include "demo.h"
 #include "demo_api.h"
-#include "vgui_ScorePanel.h"
+//#include "vgui_ScorePanel.h"
 
 hud_player_info_t	 g_PlayerInfoList[MAX_PLAYERS+1];	   // player info from the engine
 extra_player_info_t  g_PlayerExtraInfo[MAX_PLAYERS+1];   // additional player info sent directly to the client dll
-
+#if 0
 class CHLVoiceStatusHelper : public IVoiceStatusHelper
 {
 public:
@@ -60,7 +60,7 @@ public:
 
 	virtual void UpdateCursorState()
 	{
-		gViewPort->UpdateCursorState();
+		//gViewPort->UpdateCursorState();
 	}
 
 	virtual int	GetAckIconHeight()
@@ -70,13 +70,14 @@ public:
 
 	virtual bool			CanShowSpeakerLabels()
 	{
-		if( gViewPort && gViewPort->m_pScoreBoard )
-			return !gViewPort->m_pScoreBoard->isVisible();
+		//if( gViewPort && gViewPort->m_pScoreBoard )
+		//	return !gViewPort->m_pScoreBoard->isVisible();
 		else
 			return false;
 	}
 };
-static CHLVoiceStatusHelper g_VoiceStatusHelper;
+#endif
+//static CHLVoiceStatusHelper g_VoiceStatusHelper;
 
 
 extern client_sprite_t *GetSpriteList(client_sprite_t *pList, const char *psz, int iRes, int iCount);
@@ -128,155 +129,157 @@ int __MsgFunc_GameMode(const char *pszName, int iSize, void *pbuf )
 // TFFree Command Menu
 void __CmdFunc_OpenCommandMenu(void)
 {
+/*
 	if ( gViewPort )
 	{
 		gViewPort->ShowCommandMenu( gViewPort->m_StandardMenu );
 	}
+*/
 }
 
 // TFC "special" command
 void __CmdFunc_InputPlayerSpecial(void)
 {
-	if ( gViewPort )
+	/* ( gViewPort )
 	{
 		gViewPort->InputPlayerSpecial();
-	}
+	} */
 }
 
 void __CmdFunc_CloseCommandMenu(void)
 {
-	if ( gViewPort )
+	/* ( gViewPort )
 	{
 		gViewPort->InputSignalHideCommandMenu();
-	}
+	} */
 }
 
 void __CmdFunc_ForceCloseCommandMenu( void )
 {
-	if ( gViewPort )
+	/* ( gViewPort )
 	{
 		gViewPort->HideCommandMenu();
-	}
+	} */
 }
 
 void __CmdFunc_ToggleServerBrowser( void )
 {
-	if ( gViewPort )
+	/* ( gViewPort )
 	{
 		gViewPort->ToggleServerBrowser();
-	}
+	} */
 }
 
 // TFFree Command Menu Message Handlers
 int __MsgFunc_ValClass(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_ValClass( pszName, iSize, pbuf );
+	// (gViewPort)
+		//turn gViewPort->MsgFunc_ValClass( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_TeamNames(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_TeamNames( pszName, iSize, pbuf );
+	// (gViewPort)
+		//turn gViewPort->MsgFunc_TeamNames( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_Feign(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_Feign( pszName, iSize, pbuf );
+	// (gViewPort)
+		//turn gViewPort->MsgFunc_Feign( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_Detpack(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_Detpack( pszName, iSize, pbuf );
+	// (gViewPort)
+		//turn gViewPort->MsgFunc_Detpack( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_VGUIMenu(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_VGUIMenu( pszName, iSize, pbuf );
+	// (gViewPort)
+		//turn gViewPort->MsgFunc_VGUIMenu( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_MOTD(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_MOTD( pszName, iSize, pbuf );
+	// (gViewPort)
+		//turn gViewPort->MsgFunc_MOTD( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_BuildSt(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_BuildSt( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_BuildSt( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_RandomPC(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_RandomPC( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_RandomPC( pszName, iSize, pbuf );
 	return 0;
 }
  
 int __MsgFunc_ServerName(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_ServerName( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_ServerName( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_ScoreInfo(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_ScoreInfo( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_ScoreInfo( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_TeamScore(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_TeamScore( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_TeamScore( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_TeamInfo(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_TeamInfo( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_TeamInfo( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_Spectator(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_Spectator( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_Spectator( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_SpecFade(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_SpecFade( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_SpecFade( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_ResetFade(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_ResetFade( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_ResetFade( pszName, iSize, pbuf );
 	return 0;
 }
 
 int __MsgFunc_AllowSpec(const char *pszName, int iSize, void *pbuf)
 {
-	if (gViewPort)
-		return gViewPort->MsgFunc_AllowSpec( pszName, iSize, pbuf );
+	//if (gViewPort)
+		//return gViewPort->MsgFunc_AllowSpec( pszName, iSize, pbuf );
 	return 0;
 }
 
@@ -369,7 +372,7 @@ void CHud :: Init( void )
 	m_Nightvision.Init();
 #endif
 
-	GetClientVoiceMgr()->Init(&g_VoiceStatusHelper, (vgui::Panel**)&gViewPort);
+//	GetClientVoiceMgr()->Init(&g_VoiceStatusHelper, (vgui::Panel**)&gViewPort);
 
 	m_Menu.Init();
 	
@@ -523,7 +526,7 @@ void CHud :: VidInit( void )
 	m_Nightvision.VidInit();
 #endif
 
-	GetClientVoiceMgr()->VidInit();
+//	GetClientVoiceMgr()->VidInit();
 }
 
 int CHud::MsgFunc_Logo(const char *pszName,  int iSize, void *pbuf)

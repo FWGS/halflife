@@ -20,7 +20,7 @@
 #include "cl_util.h"
 #include "bench.h"
 
-#include "vgui_TeamFortressViewport.h"
+//#include "vgui_TeamFortressViewport.h"
 
 #define MAX_LOGO_FRAMES 56
 
@@ -107,7 +107,8 @@ int CHud :: Redraw( float flTime, int intermission )
 		m_flTimeDelta = 0;
 
 	// Bring up the scoreboard during intermission
-	if (gViewPort)
+#if 0	
+if (gViewPort)
 	{
 		if ( m_iIntermission && !intermission )
 		{
@@ -130,6 +131,7 @@ int CHud :: Redraw( float flTime, int intermission )
 				m_flShotTime = flTime + 1.0;	// Take a screenshot in a second
 		}
 	}
+#endif
 
 	if (m_flShotTime && m_flShotTime < flTime)
 	{

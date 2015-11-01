@@ -39,25 +39,15 @@ SRCS += ../cl_dll/message.cpp
 SRCS += ../cl_dll/saytext.cpp
 SRCS += ../cl_dll/statusbar.cpp
 SRCS += ../cl_dll/status_icons.cpp
+SRCS += ../cl_dll/scoreboard_stub.cpp
 SRCS += ../cl_dll/StudioModelRenderer.cpp
 SRCS += ../cl_dll/studio_util.cpp
 SRCS += ../cl_dll/text_message.cpp
 SRCS += ../cl_dll/train.cpp
 SRCS += ../cl_dll/tri.cpp
 SRCS += ../cl_dll/util.cpp
-SRCS += ../cl_dll/vgui_ClassMenu.cpp
-SRCS += ../cl_dll/vgui_ControlConfigPanel.cpp
-SRCS += ../cl_dll/vgui_CustomObjects.cpp
-SRCS += ../cl_dll/vgui_int.cpp
-SRCS += ../cl_dll/vgui_MOTDWindow.cpp
-SRCS += ../cl_dll/vgui_SchemeManager.cpp
-SRCS += ../cl_dll/vgui_ScorePanel.cpp
-SRCS += ../cl_dll/vgui_ServerBrowser.cpp
-SRCS += ../cl_dll/vgui_SpectatorPanel.cpp
-SRCS += ../cl_dll/vgui_TeamFortressViewport.cpp
-SRCS += ../cl_dll/vgui_teammenu.cpp
 SRCS += ../cl_dll/view.cpp
-SRCS += ../cl_dll/voice_status.cpp
+#SRCS += ../cl_dll/voice_status.cpp
 SRCS += ../../common/parsemsg.cpp
 SRCS += ../dlls/crossbow.cpp
 SRCS += ../dlls/crowbar.cpp
@@ -73,14 +63,6 @@ SRCS += ../dlls/shotgun.cpp
 SRCS += ../dlls/squeakgrenade.cpp
 SRCS += ../dlls/tripmine.cpp
 SRCS += ../dlls/wpn_shared/hl_wpn_glock.cpp
-SRCS += ../../game_shared/vgui_checkbutton2.cpp
-SRCS += ../../game_shared/vgui_grid.cpp
-SRCS += ../../game_shared/vgui_helpers.cpp
-SRCS += ../../game_shared/vgui_listbox.cpp
-SRCS += ../../game_shared/vgui_loadtga.cpp
-SRCS += ../../game_shared/vgui_scrollbar2.cpp
-SRCS += ../../game_shared/vgui_slider2.cpp
-SRCS += ../../game_shared/voice_banmgr.cpp
 SRCS += ../../public/interface.cpp
 SRCS_C += ../../pm_shared/pm_shared.c
 SRCS_C += ../../pm_shared/pm_math.c
@@ -95,7 +77,7 @@ SRCS += ../dlls/gearbox/pipewrench.cpp
 SRCS += ../dlls/gearbox/shockrifle.cpp
 SRCS += ../dlls/gearbox/sniperrifle.cpp
 SRCS += ../dlls/gearbox/sporelauncher.cpp
-INCLUDES =  -I$(TOPDIR)/../../common -I. -I$(TOPDIR)/../../game_shared -I$(TOPDIR)/../pm_shared -I$(TOPDIR)/../../engine -I$(TOPDIR)/../dlls -I$(TOPDIR)/../dlls/hl -I$(TOPDIR)/../../public -I$(TOPDIR)/../../utils/vgui/include/ 
+INCLUDES =  -I$(TOPDIR)/../../common -I. -I$(TOPDIR)/../../game_shared -I$(TOPDIR)/../pm_shared -I$(TOPDIR)/../../engine -I$(TOPDIR)/../dlls -I$(TOPDIR)/../dlls/hl -I$(TOPDIR)/../../public 
 DEFINES = -Wno-write-strings -DLINUX -D_LINUX -D_vsnprintf=vsnprintf -Dstricmp=strcasecmp -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp -DCLIENT_WEAPONS -DCLIENT_DLL -fpermissive -w -DHL_DLL -DGEARBOX_CLIENT_DLL -DGEARBOX_DLL -D_alloca=alloca -D_snprintf=snprintf -DDISABLE_VEC_ORIGIN -DDISABLE_JUMP_ORIGIN
 
 CFLAGS = -Og -ggdb
@@ -106,7 +88,7 @@ OBJS = $(SRCS:.cpp=.o) $(SRCS_C:.c=.o)
 %.o : %.cpp
 	$(CXX) $(CFLAGS) $(INCLUDES) $(DEFINES) -fPIC -c $< -o $@
 client.so : $(OBJS)
-	$(CXX) $(OBJS) vgui.so -o client.so -shared -Wl,--no-undefined -fPIC -lm -ldl
+	$(CXX) $(OBJS) -o client.so -shared -Wl,--no-undefined -fPIC -lm -ldl
 
 clean:
 	$(RM) $(OBJS)
