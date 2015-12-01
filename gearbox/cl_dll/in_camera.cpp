@@ -16,7 +16,7 @@
 #include "in_defs.h"
 #include "Exports.h"
 
-#include "SDL2/SDL_mouse.h"
+//#include "SDL2/SDL_mouse.h"
 #include "port.h"
 
 float CL_KeyState (kbutton_t *key);
