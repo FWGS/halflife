@@ -54,6 +54,7 @@ extern int giPrecacheGrunt;
 extern int gmsgSayText;
 
 extern cvar_t allow_spectators;
+extern cvar_t multibyte_only;
 
 extern int g_teamplay;
 
@@ -316,6 +317,8 @@ decodeFinishedMaybeCESU8:
 bool Q_UnicodeValidate( const char *pUTF8 )
 {
 	bool bError = false;
+	if ( !multibyte_only.value )
+		return true;
 	while ( *pUTF8 )
 	{
 		uchar32 uVal;
