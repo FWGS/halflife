@@ -42,7 +42,7 @@ TYPEDESCRIPTION	CSquadMonster::m_SaveData[] =
 
 };
 
-IMPLEMENT_SAVERESTORE( CSquadMonster, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CSquadMonster, CBaseMonster )
 
 
 //=========================================================

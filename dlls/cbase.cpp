@@ -446,7 +446,7 @@ edict_t * EHANDLE::Get( void )
 			return NULL;
 	}
 	return NULL; 
-};
+}
 
 edict_t * EHANDLE::Set( edict_t *pent ) 
 { 
@@ -454,13 +454,13 @@ edict_t * EHANDLE::Set( edict_t *pent )
 	if (pent) 
 		m_serialnumber = m_pent->serialnumber; 
 	return pent; 
-};
+}
 
 
 EHANDLE :: operator CBaseEntity *() 
 { 
 	return (CBaseEntity *)GET_PRIVATE( Get( ) ); 
-};
+}
 
 
 CBaseEntity * EHANDLE :: operator = (CBaseEntity *pEntity)

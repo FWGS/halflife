@@ -34,7 +34,7 @@ public:
 		dc_sizeall,
 		dc_no,
 		dc_hand,
-		dc_last,
+		dc_last
 	};
 private:
 	int           _hotspot[2];

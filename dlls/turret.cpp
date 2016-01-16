@@ -48,7 +48,7 @@ typedef enum
 	TURRET_ANIM_SPIN,
 	TURRET_ANIM_DEPLOY,
 	TURRET_ANIM_RETIRE,
-	TURRET_ANIM_DIE,
+	TURRET_ANIM_DIE
 } TURRET_ANIM;
 
 class CBaseTurret : public CBaseMonster
@@ -167,7 +167,7 @@ TYPEDESCRIPTION	CBaseTurret::m_SaveData[] =
 	DEFINE_FIELD( CBaseTurret, m_flSpinUpTime, FIELD_TIME ),
 };
 
-IMPLEMENT_SAVERESTORE( CBaseTurret, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CBaseTurret, CBaseMonster )
 
 class CTurret : public CBaseTurret
 {
@@ -195,7 +195,7 @@ TYPEDESCRIPTION	CTurret::m_SaveData[] =
 	DEFINE_FIELD( CTurret, m_iStartSpin, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CTurret, CBaseTurret );
+IMPLEMENT_SAVERESTORE( CTurret, CBaseTurret )
 
 
 class CMiniTurret : public CBaseTurret
@@ -208,8 +208,8 @@ public:
 };
 
 
-LINK_ENTITY_TO_CLASS( monster_turret, CTurret );
-LINK_ENTITY_TO_CLASS( monster_miniturret, CMiniTurret );
+LINK_ENTITY_TO_CLASS( monster_turret, CTurret )
+LINK_ENTITY_TO_CLASS( monster_miniturret, CMiniTurret )
 
 void CBaseTurret::KeyValue( KeyValueData *pkvd )
 {
@@ -1155,7 +1155,7 @@ public:
 
 };
 
-LINK_ENTITY_TO_CLASS( monster_sentry, CSentry );
+LINK_ENTITY_TO_CLASS( monster_sentry, CSentry )
 
 void CSentry::Precache()
 {

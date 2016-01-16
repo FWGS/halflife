@@ -36,14 +36,14 @@ enum rpg_e {
 	RPG_HOLSTER2,	// unloaded
 	RPG_DRAW_UL,	// unloaded
 	RPG_IDLE_UL,	// unloaded idle
-	RPG_FIDGET_UL,	// unloaded fidget
+	RPG_FIDGET_UL	// unloaded fidget
 };
 
-LINK_ENTITY_TO_CLASS( weapon_rpg, CRpg );
+LINK_ENTITY_TO_CLASS( weapon_rpg, CRpg )
 
 #ifndef CLIENT_DLL
 
-LINK_ENTITY_TO_CLASS( laser_spot, CLaserSpot );
+LINK_ENTITY_TO_CLASS( laser_spot, CLaserSpot )
 
 //=========================================================
 //=========================================================
@@ -71,7 +71,7 @@ void CLaserSpot::Spawn( void )
 
 	SET_MODEL(ENT(pev), "sprites/laserdot.spr");
 	UTIL_SetOrigin( pev, pev->origin );
-};
+}
 
 //=========================================================
 // Suspend- make the laser sight invisible. 
@@ -97,9 +97,9 @@ void CLaserSpot::Revive( void )
 void CLaserSpot::Precache( void )
 {
 	PRECACHE_MODEL("sprites/laserdot.spr");
-};
+}
 
-LINK_ENTITY_TO_CLASS( rpg_rocket, CRpgRocket );
+LINK_ENTITY_TO_CLASS( rpg_rocket, CRpgRocket )
 
 //=========================================================
 //=========================================================
@@ -612,6 +612,6 @@ class CRpgAmmo : public CBasePlayerAmmo
 		return FALSE;
 	}
 };
-LINK_ENTITY_TO_CLASS( ammo_rpgclip, CRpgAmmo );
+LINK_ENTITY_TO_CLASS( ammo_rpgclip, CRpgAmmo )
 
 #endif

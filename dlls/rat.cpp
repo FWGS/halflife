@@ -34,7 +34,7 @@ public:
 	void SetYawSpeed( void );
 	int  Classify ( void );
 };
-LINK_ENTITY_TO_CLASS( monster_rat, CRat );
+LINK_ENTITY_TO_CLASS( monster_rat, CRat )
 
 //=========================================================
 // Classify - indicates this monster's place in the 

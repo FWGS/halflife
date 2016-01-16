@@ -131,7 +131,7 @@ public:
 	EHANDLE m_hFriend[3];
 };
 
-LINK_ENTITY_TO_CLASS( monster_nihilanth, CNihilanth );
+LINK_ENTITY_TO_CLASS( monster_nihilanth, CNihilanth )
 
 TYPEDESCRIPTION	CNihilanth::m_SaveData[] = 
 {
@@ -167,7 +167,7 @@ TYPEDESCRIPTION	CNihilanth::m_SaveData[] =
 	DEFINE_ARRAY( CNihilanth, m_hFriend, FIELD_EHANDLE, 3 ),
 };
 
-IMPLEMENT_SAVERESTORE( CNihilanth, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CNihilanth, CBaseMonster )
 
 class CNihilanthHVR : public CBaseMonster
 {
@@ -214,7 +214,7 @@ public:
 	int m_nFrames;
 };
 
-LINK_ENTITY_TO_CLASS( nihilanth_energy_ball, CNihilanthHVR );
+LINK_ENTITY_TO_CLASS( nihilanth_energy_ball, CNihilanthHVR )
 
 
 TYPEDESCRIPTION	CNihilanthHVR::m_SaveData[] = 
@@ -227,7 +227,7 @@ TYPEDESCRIPTION	CNihilanthHVR::m_SaveData[] =
 };
 
 
-IMPLEMENT_SAVERESTORE( CNihilanthHVR, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CNihilanthHVR, CBaseMonster )
 
 
 //=========================================================

@@ -105,7 +105,7 @@ public:
 	int m_iDoRightSmokePuff;
 };
 
-LINK_ENTITY_TO_CLASS( monster_osprey, COsprey );
+LINK_ENTITY_TO_CLASS( monster_osprey, COsprey )
 
 TYPEDESCRIPTION	COsprey::m_SaveData[] = 
 {
@@ -139,7 +139,7 @@ TYPEDESCRIPTION	COsprey::m_SaveData[] =
 	DEFINE_FIELD( COsprey, m_iDoLeftSmokePuff, FIELD_INTEGER ),
 	DEFINE_FIELD( COsprey, m_iDoRightSmokePuff, FIELD_INTEGER ),
 };
-IMPLEMENT_SAVERESTORE( COsprey, CBaseMonster );
+IMPLEMENT_SAVERESTORE( COsprey, CBaseMonster )
 
 
 void COsprey :: Spawn( void )

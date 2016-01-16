@@ -51,14 +51,14 @@ public:
 	int		m_preSequence;
 };
 
-LINK_ENTITY_TO_CLASS( info_bigmomma, CInfoBM );
+LINK_ENTITY_TO_CLASS( info_bigmomma, CInfoBM )
 
 TYPEDESCRIPTION	CInfoBM::m_SaveData[] = 
 {
 	DEFINE_FIELD( CInfoBM, m_preSequence, FIELD_STRING ),
 };
 
-IMPLEMENT_SAVERESTORE( CInfoBM, CPointEntity );
+IMPLEMENT_SAVERESTORE( CInfoBM, CPointEntity )
 
 void CInfoBM::Spawn( void )
 {
@@ -115,14 +115,14 @@ public:
 	int  m_maxFrame;
 };
 
-LINK_ENTITY_TO_CLASS( bmortar, CBMortar );
+LINK_ENTITY_TO_CLASS( bmortar, CBMortar )
 
 TYPEDESCRIPTION	CBMortar::m_SaveData[] = 
 {
 	DEFINE_FIELD( CBMortar, m_maxFrame, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CBMortar, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CBMortar, CBaseEntity )
 
 
 //=========================================================
@@ -303,7 +303,7 @@ public:
 	static const char *pPainSounds[];
 	static const char *pFootSounds[];
 
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 
 private:
 	float	m_nodeTime;
@@ -312,7 +312,7 @@ private:
 	float	m_painSoundTime;
 	int		m_crabCount;
 };
-LINK_ENTITY_TO_CLASS( monster_bigmomma, CBigMomma );
+LINK_ENTITY_TO_CLASS( monster_bigmomma, CBigMomma )
 
 TYPEDESCRIPTION	CBigMomma::m_SaveData[] = 
 {
@@ -323,7 +323,7 @@ TYPEDESCRIPTION	CBigMomma::m_SaveData[] =
 	DEFINE_FIELD( CBigMomma, m_crabCount, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CBigMomma, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CBigMomma, CBaseMonster )
 
 const char *CBigMomma::pChildDieSounds[] = 
 {
@@ -806,7 +806,7 @@ BOOL CBigMomma::CheckRangeAttack1( float flDot, float flDist )
 enum
 {
 	SCHED_BIG_NODE = LAST_COMMON_SCHEDULE + 1,
-	SCHED_NODE_FAIL,
+	SCHED_NODE_FAIL
 };
 
 enum
@@ -818,7 +818,7 @@ enum
 	TASK_PROCESS_NODE,								// Fire targets, etc.
 	TASK_WAIT_NODE,									// Wait at the node
 	TASK_NODE_DELAY,								// Delay walking toward node for a bit. You've failed to get there
-	TASK_NODE_YAW,									// Get the best facing direction for this node
+	TASK_NODE_YAW									// Get the best facing direction for this node
 };
 
 
@@ -873,7 +873,7 @@ DEFINE_CUSTOM_SCHEDULES( CBigMomma )
 	slNodeFail,
 };
 
-IMPLEMENT_CUSTOM_SCHEDULES( CBigMomma, CBaseMonster );
+IMPLEMENT_CUSTOM_SCHEDULES( CBigMomma, CBaseMonster )
 
 
 

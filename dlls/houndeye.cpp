@@ -59,7 +59,7 @@ enum
 {
 	SCHED_HOUND_AGITATED = LAST_COMMON_SCHEDULE + 1,
 	SCHED_HOUND_HOP_RETREAT,
-	SCHED_HOUND_FAIL,
+	SCHED_HOUND_FAIL
 };
 
 //=========================================================
@@ -102,7 +102,7 @@ public:
 	int	Save( CSave &save ); 
 	int Restore( CRestore &restore );
 
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 	static TYPEDESCRIPTION m_SaveData[];
 
 	int m_iSpriteTexture;
@@ -110,7 +110,7 @@ public:
 	BOOL m_fDontBlink;// don't try to open/close eye if this bit is set!
 	Vector	m_vecPackCenter; // the center of the pack. The leader maintains this by averaging the origins of all pack members.
 };
-LINK_ENTITY_TO_CLASS( monster_houndeye, CHoundeye );
+LINK_ENTITY_TO_CLASS( monster_houndeye, CHoundeye )
 
 TYPEDESCRIPTION	CHoundeye::m_SaveData[] = 
 {
@@ -120,7 +120,7 @@ TYPEDESCRIPTION	CHoundeye::m_SaveData[] =
 	DEFINE_FIELD( CHoundeye, m_vecPackCenter, FIELD_POSITION_VECTOR ),
 };
 
-IMPLEMENT_SAVERESTORE( CHoundeye, CSquadMonster );
+IMPLEMENT_SAVERESTORE( CHoundeye, CSquadMonster )
 
 //=========================================================
 // Classify - indicates this monster's place in the 
@@ -1143,7 +1143,7 @@ DEFINE_CUSTOM_SCHEDULES( CHoundeye )
 	slHoundCombatFailNoPVS,
 };
 
-IMPLEMENT_CUSTOM_SCHEDULES( CHoundeye, CSquadMonster );
+IMPLEMENT_CUSTOM_SCHEDULES( CHoundeye, CSquadMonster )
 
 //=========================================================
 // GetScheduleOfType 

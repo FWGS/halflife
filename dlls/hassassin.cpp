@@ -38,7 +38,7 @@ enum
 	SCHED_ASSASSIN_EXPOSED = LAST_COMMON_SCHEDULE + 1,// cover was blown.
 	SCHED_ASSASSIN_JUMP,	// fly through the air
 	SCHED_ASSASSIN_JUMP_ATTACK,	// fly through the air and shoot
-	SCHED_ASSASSIN_JUMP_LAND, // hit and run away
+	SCHED_ASSASSIN_JUMP_LAND // hit and run away
 };
 
 //=========================================================
@@ -47,7 +47,7 @@ enum
 
 enum
 {
-	TASK_ASSASSIN_FALL_TO_GROUND = LAST_COMMON_TASK + 1, // falling and waiting to hit ground
+	TASK_ASSASSIN_FALL_TO_GROUND = LAST_COMMON_TASK + 1 // falling and waiting to hit ground
 };
 
 
@@ -82,7 +82,7 @@ public:
 	void RunTask ( Task_t *pTask );
 	void DeathSound ( void );
 	void IdleSound ( void );
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 
 	int	Save( CSave &save ); 
 	int Restore( CRestore &restore );
@@ -104,7 +104,7 @@ public:
 
 	int		m_iShell;
 };
-LINK_ENTITY_TO_CLASS( monster_human_assassin, CHAssassin );
+LINK_ENTITY_TO_CLASS( monster_human_assassin, CHAssassin )
 
 
 TYPEDESCRIPTION	CHAssassin::m_SaveData[] = 
@@ -123,7 +123,7 @@ TYPEDESCRIPTION	CHAssassin::m_SaveData[] =
 	DEFINE_FIELD( CHAssassin, m_iFrustration, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CHAssassin, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CHAssassin, CBaseMonster )
 
 
 //=========================================================
@@ -617,7 +617,7 @@ DEFINE_CUSTOM_SCHEDULES( CHAssassin )
 	slAssassinJumpLand,
 };
 
-IMPLEMENT_CUSTOM_SCHEDULES( CHAssassin, CBaseMonster );
+IMPLEMENT_CUSTOM_SCHEDULES( CHAssassin, CBaseMonster )
 
 
 //=========================================================

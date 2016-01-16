@@ -32,13 +32,13 @@ enum mp5_e
 	MP5_DEPLOY,
 	MP5_FIRE1,
 	MP5_FIRE2,
-	MP5_FIRE3,
+	MP5_FIRE3
 };
 
 
 
-LINK_ENTITY_TO_CLASS( weapon_mp5, CMP5 );
-LINK_ENTITY_TO_CLASS( weapon_9mmAR, CMP5 );
+LINK_ENTITY_TO_CLASS( weapon_mp5, CMP5 )
+LINK_ENTITY_TO_CLASS( weapon_9mmAR, CMP5 )
 
 
 //=========================================================
@@ -308,9 +308,8 @@ class CMP5AmmoClip : public CBasePlayerAmmo
 		return bResult;
 	}
 };
-LINK_ENTITY_TO_CLASS( ammo_mp5clip, CMP5AmmoClip );
-LINK_ENTITY_TO_CLASS( ammo_9mmAR, CMP5AmmoClip );
-
+LINK_ENTITY_TO_CLASS( ammo_mp5clip, CMP5AmmoClip )
+LINK_ENTITY_TO_CLASS( ammo_9mmAR, CMP5AmmoClip )
 
 
 class CMP5Chainammo : public CBasePlayerAmmo
@@ -336,7 +335,7 @@ class CMP5Chainammo : public CBasePlayerAmmo
 		return bResult;
 	}
 };
-LINK_ENTITY_TO_CLASS( ammo_9mmbox, CMP5Chainammo );
+LINK_ENTITY_TO_CLASS( ammo_9mmbox, CMP5Chainammo )
 
 
 class CMP5AmmoGrenade : public CBasePlayerAmmo
@@ -363,8 +362,8 @@ class CMP5AmmoGrenade : public CBasePlayerAmmo
 		return bResult;
 	}
 };
-LINK_ENTITY_TO_CLASS( ammo_mp5grenades, CMP5AmmoGrenade );
-LINK_ENTITY_TO_CLASS( ammo_ARgrenades, CMP5AmmoGrenade );
+LINK_ENTITY_TO_CLASS( ammo_mp5grenades, CMP5AmmoGrenade )
+LINK_ENTITY_TO_CLASS( ammo_ARgrenades, CMP5AmmoGrenade )
 
 
 

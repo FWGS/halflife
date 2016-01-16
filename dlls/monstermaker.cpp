@@ -62,7 +62,7 @@ public:
 	BOOL m_fFadeChildren;// should we make the children fadeout?
 };
 
-LINK_ENTITY_TO_CLASS( monstermaker, CMonsterMaker );
+LINK_ENTITY_TO_CLASS( monstermaker, CMonsterMaker )
 
 TYPEDESCRIPTION	CMonsterMaker::m_SaveData[] = 
 {
@@ -76,7 +76,7 @@ TYPEDESCRIPTION	CMonsterMaker::m_SaveData[] =
 };
 
 
-IMPLEMENT_SAVERESTORE( CMonsterMaker, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CMonsterMaker, CBaseMonster )
 
 void CMonsterMaker :: KeyValue( KeyValueData *pkvd )
 {

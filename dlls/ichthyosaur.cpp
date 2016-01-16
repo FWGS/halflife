@@ -57,7 +57,7 @@ public:
 	void  SetYawSpeed( void );
 	int   Classify( void );
 	void  HandleAnimEvent( MonsterEvent_t *pEvent );
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 
 	int	Save( CSave &save ); 
 	int Restore( CRestore &restore );
@@ -123,7 +123,7 @@ public:
 	void PainSound( void );
 };
 
-LINK_ENTITY_TO_CLASS( monster_ichthyosaur, CIchthyosaur );
+LINK_ENTITY_TO_CLASS( monster_ichthyosaur, CIchthyosaur )
 
 TYPEDESCRIPTION	CIchthyosaur::m_SaveData[] = 
 {
@@ -138,7 +138,7 @@ TYPEDESCRIPTION	CIchthyosaur::m_SaveData[] =
 	DEFINE_FIELD( CIchthyosaur, m_flNextAlert, FIELD_TIME ),
 };
 
-IMPLEMENT_SAVERESTORE( CIchthyosaur, CFlyingMonster );
+IMPLEMENT_SAVERESTORE( CIchthyosaur, CFlyingMonster )
 
 
 const char *CIchthyosaur::pIdleSounds[] = 
@@ -221,7 +221,7 @@ enum
 {
 	TASK_ICHTHYOSAUR_CIRCLE_ENEMY = LAST_COMMON_TASK + 1,
 	TASK_ICHTHYOSAUR_SWIM,
-	TASK_ICHTHYOSAUR_FLOAT,
+	TASK_ICHTHYOSAUR_FLOAT
 };
 
 //=========================================================
@@ -318,7 +318,7 @@ DEFINE_CUSTOM_SCHEDULES(CIchthyosaur)
 	slCircleEnemy,
 	slTwitchDie,
 };
-IMPLEMENT_CUSTOM_SCHEDULES(CIchthyosaur, CFlyingMonster);
+IMPLEMENT_CUSTOM_SCHEDULES(CIchthyosaur, CFlyingMonster)
 
 //=========================================================
 // Classify - indicates this monster's place in the 

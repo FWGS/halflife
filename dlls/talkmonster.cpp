@@ -47,7 +47,7 @@ TYPEDESCRIPTION	CTalkMonster::m_SaveData[] =
 	DEFINE_FIELD( CTalkMonster, m_hTalkTarget, FIELD_EHANDLE ),
 };
 
-IMPLEMENT_SAVERESTORE( CTalkMonster, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CTalkMonster, CBaseMonster )
 
 // array of friend names
 char *CTalkMonster::m_szFriends[TLK_CFRIENDS] = 
@@ -358,7 +358,7 @@ DEFINE_CUSTOM_SCHEDULES( CTalkMonster )
 	slTlkIdleEyecontact,
 };
 
-IMPLEMENT_CUSTOM_SCHEDULES( CTalkMonster, CBaseMonster );
+IMPLEMENT_CUSTOM_SCHEDULES( CTalkMonster, CBaseMonster )
 
 
 void CTalkMonster :: SetActivity ( Activity newActivity )

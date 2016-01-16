@@ -90,7 +90,7 @@ TYPEDESCRIPTION	CBaseDoor::m_SaveData[] =
 
 };
 
-IMPLEMENT_SAVERESTORE( CBaseDoor, CBaseToggle );
+IMPLEMENT_SAVERESTORE( CBaseDoor, CBaseToggle )
 
 
 #define DOOR_SENTENCEWAIT	6
@@ -269,11 +269,11 @@ touch or takedamage doors).
 4)      screechy metal
 */
 
-LINK_ENTITY_TO_CLASS( func_door, CBaseDoor );
+LINK_ENTITY_TO_CLASS( func_door, CBaseDoor )
 //
 // func_water - same as a door. 
 //
-LINK_ENTITY_TO_CLASS( func_water, CBaseDoor );
+LINK_ENTITY_TO_CLASS( func_water, CBaseDoor )
 
 
 void CBaseDoor::Spawn( )
@@ -820,7 +820,7 @@ public:
 	virtual void SetToggleState( int state );
 };
 
-LINK_ENTITY_TO_CLASS( func_door_rotating, CRotDoor );
+LINK_ENTITY_TO_CLASS( func_door_rotating, CRotDoor )
 
 
 void CRotDoor::Spawn( void )
@@ -903,14 +903,14 @@ public:
 	BYTE	m_bMoveSnd;			// sound a door makes while moving	
 };
 
-LINK_ENTITY_TO_CLASS( momentary_door, CMomentaryDoor );
+LINK_ENTITY_TO_CLASS( momentary_door, CMomentaryDoor )
 
 TYPEDESCRIPTION	CMomentaryDoor::m_SaveData[] = 
 {
 	DEFINE_FIELD( CMomentaryDoor, m_bMoveSnd, FIELD_CHARACTER ),
 };
 
-IMPLEMENT_SAVERESTORE( CMomentaryDoor, CBaseToggle );
+IMPLEMENT_SAVERESTORE( CMomentaryDoor, CBaseToggle )
 
 void CMomentaryDoor::Spawn( void )
 {

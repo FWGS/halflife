@@ -85,10 +85,10 @@ public:
 	// UNDONE: What is this for?  It isn't used?
 	float	m_flPlayerDamage;// how much pain has the player inflicted on me?
 
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 };
 
-LINK_ENTITY_TO_CLASS( monster_barney, CBarney );
+LINK_ENTITY_TO_CLASS( monster_barney, CBarney )
 
 TYPEDESCRIPTION	CBarney::m_SaveData[] = 
 {
@@ -99,7 +99,7 @@ TYPEDESCRIPTION	CBarney::m_SaveData[] =
 	DEFINE_FIELD( CBarney, m_flPlayerDamage, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CBarney, CTalkMonster );
+IMPLEMENT_SAVERESTORE( CBarney, CTalkMonster )
 
 //=========================================================
 // AI Schedules Specific to this monster
@@ -213,7 +213,7 @@ DEFINE_CUSTOM_SCHEDULES( CBarney )
 };
 
 
-IMPLEMENT_CUSTOM_SCHEDULES( CBarney, CTalkMonster );
+IMPLEMENT_CUSTOM_SCHEDULES( CBarney, CTalkMonster )
 
 void CBarney :: StartTask( Task_t *pTask )
 {
@@ -812,7 +812,7 @@ void CDeadBarney::KeyValue( KeyValueData *pkvd )
 		CBaseMonster::KeyValue( pkvd );
 }
 
-LINK_ENTITY_TO_CLASS( monster_barney_dead, CDeadBarney );
+LINK_ENTITY_TO_CLASS( monster_barney_dead, CDeadBarney )
 
 //=========================================================
 // ********** DeadBarney SPAWN **********

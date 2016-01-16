@@ -172,7 +172,7 @@ typedef enum
 		TASK_REMEMBER,
 		TASK_FORGET,
 		TASK_WAIT_FOR_MOVEMENT,			// wait until MovementIsComplete()
-		LAST_COMMON_TASK, // LEAVE THIS AT THE BOTTOM!! (sjb)
+		LAST_COMMON_TASK // LEAVE THIS AT THE BOTTOM!! (sjb)
 } SHARED_TASKS;
 
 
@@ -180,7 +180,7 @@ typedef enum
 enum 
 {
 	TARGET_MOVE_NORMAL = 0,
-	TARGET_MOVE_SCRIPTED = 1,
+	TARGET_MOVE_SCRIPTED = 1
 };
 
 
@@ -194,7 +194,7 @@ enum
 	GOAL_MOVE,
 	GOAL_TAKE_COVER,
 	GOAL_MOVE_TARGET,
-	GOAL_EAT,
+	GOAL_EAT
 };
 
 // an array of tasks is a task list

@@ -238,7 +238,7 @@ void LinkUserMessages( void )
 
 }
 
-LINK_ENTITY_TO_CLASS( player, CBasePlayer );
+LINK_ENTITY_TO_CLASS( player, CBasePlayer )
 
 
 
@@ -4693,7 +4693,7 @@ void CDeadHEV::KeyValue( KeyValueData *pkvd )
 		CBaseMonster::KeyValue( pkvd );
 }
 
-LINK_ENTITY_TO_CLASS( monster_hevsuit_dead, CDeadHEV );
+LINK_ENTITY_TO_CLASS( monster_hevsuit_dead, CDeadHEV )
 
 //=========================================================
 // ********** DeadHEV SPAWN **********
@@ -4733,7 +4733,7 @@ public:
 private:
 };
 
-LINK_ENTITY_TO_CLASS( player_weaponstrip, CStripWeapons );
+LINK_ENTITY_TO_CLASS( player_weaponstrip, CStripWeapons )
 
 void CStripWeapons :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
@@ -4780,7 +4780,7 @@ private:
 	float	m_loadTime;
 };
 
-LINK_ENTITY_TO_CLASS( player_loadsaved, CRevertSaved );
+LINK_ENTITY_TO_CLASS( player_loadsaved, CRevertSaved )
 
 TYPEDESCRIPTION	CRevertSaved::m_SaveData[] = 
 {
@@ -4788,7 +4788,7 @@ TYPEDESCRIPTION	CRevertSaved::m_SaveData[] =
 	DEFINE_FIELD( CRevertSaved, m_loadTime, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CRevertSaved, CPointEntity );
+IMPLEMENT_SAVERESTORE( CRevertSaved, CPointEntity )
 
 void CRevertSaved :: KeyValue( KeyValueData *pkvd )
 {
@@ -4881,5 +4881,5 @@ void CInfoIntermission::Think ( void )
 	}
 }
 
-LINK_ENTITY_TO_CLASS( info_intermission, CInfoIntermission );
+LINK_ENTITY_TO_CLASS( info_intermission, CInfoIntermission )
 
