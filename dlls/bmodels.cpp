@@ -60,7 +60,7 @@ public:
 	virtual int	ObjectCaps( void ) { return CBaseEntity :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 };
 
-LINK_ENTITY_TO_CLASS( func_wall, CFuncWall );
+LINK_ENTITY_TO_CLASS( func_wall, CFuncWall )
 
 void CFuncWall :: Spawn( void )
 {
@@ -93,7 +93,7 @@ public:
 	BOOL	IsOn( void );
 };
 
-LINK_ENTITY_TO_CLASS( func_wall_toggle, CFuncWallToggle );
+LINK_ENTITY_TO_CLASS( func_wall_toggle, CFuncWallToggle )
 
 void CFuncWallToggle :: Spawn( void )
 {
@@ -152,7 +152,7 @@ public:
 	void	UpdateSpeed( float speed );
 };
 
-LINK_ENTITY_TO_CLASS( func_conveyor, CFuncConveyor );
+LINK_ENTITY_TO_CLASS( func_conveyor, CFuncConveyor )
 void CFuncConveyor :: Spawn( void )
 {
 	SetMovedir( pev );
@@ -214,7 +214,7 @@ public:
 	virtual int	ObjectCaps( void ) { return CBaseEntity :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 };
 
-LINK_ENTITY_TO_CLASS( func_illusionary, CFuncIllusionary );
+LINK_ENTITY_TO_CLASS( func_illusionary, CFuncIllusionary )
 
 void CFuncIllusionary :: KeyValue( KeyValueData *pkvd )
 {
@@ -259,7 +259,7 @@ public:
 	void	Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value ) {}		// Clear out func_wall's use function
 };
 
-LINK_ENTITY_TO_CLASS( func_monsterclip, CFuncMonsterClip );
+LINK_ENTITY_TO_CLASS( func_monsterclip, CFuncMonsterClip )
 
 void CFuncMonsterClip::Spawn( void )
 {
@@ -307,10 +307,10 @@ TYPEDESCRIPTION	CFuncRotating::m_SaveData[] =
 	DEFINE_FIELD( CFuncRotating, m_sounds, FIELD_INTEGER )
 };
 
-IMPLEMENT_SAVERESTORE( CFuncRotating, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CFuncRotating, CBaseEntity )
 
 
-LINK_ENTITY_TO_CLASS( func_rotating, CFuncRotating );
+LINK_ENTITY_TO_CLASS( func_rotating, CFuncRotating )
 
 void CFuncRotating :: KeyValue( KeyValueData* pkvd)
 {
@@ -550,13 +550,13 @@ void CFuncRotating :: RampPitchVol (int fUp)
 	
 	// get current angular velocity
 
-	vecCur = abs(vecAVel.x != 0 ? vecAVel.x : (vecAVel.y != 0 ? vecAVel.y : vecAVel.z));
+	vecCur = fabs(vecAVel.x != 0 ? vecAVel.x : (vecAVel.y != 0 ? vecAVel.y : vecAVel.z));
 	
 	// get target angular velocity
 
 	vecFinal = (pev->movedir.x != 0 ? pev->movedir.x : (pev->movedir.y != 0 ? pev->movedir.y : pev->movedir.z));
 	vecFinal *= pev->speed;
-	vecFinal = abs(vecFinal);
+	vecFinal = fabs(vecFinal);
 
 	// calc volume and pitch as % of final vol and pitch
 
@@ -592,9 +592,9 @@ void CFuncRotating :: SpinUp( void )
 	vecAVel = pev->avelocity;// cache entity's rotational velocity
 
 	// if we've met or exceeded target speed, set target speed and stop thinking
-	if (	abs(vecAVel.x) >= abs(pev->movedir.x * pev->speed)	&&
-			abs(vecAVel.y) >= abs(pev->movedir.y * pev->speed)	&&
-			abs(vecAVel.z) >= abs(pev->movedir.z * pev->speed) )
+	if (	fabs(vecAVel.x) >= fabs(pev->movedir.x * pev->speed)	&&
+			fabs(vecAVel.y) >= fabs(pev->movedir.y * pev->speed)	&&
+			fabs(vecAVel.z) >= fabs(pev->movedir.z * pev->speed) )
 	{
 		pev->avelocity = pev->movedir * pev->speed;// set speed in case we overshot
 		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning), 
@@ -751,7 +751,7 @@ public:
 	vec3_t	m_start;
 };
 
-LINK_ENTITY_TO_CLASS( func_pendulum, CPendulum );
+LINK_ENTITY_TO_CLASS( func_pendulum, CPendulum )
 
 TYPEDESCRIPTION	CPendulum::m_SaveData[] = 
 {
@@ -765,7 +765,7 @@ TYPEDESCRIPTION	CPendulum::m_SaveData[] =
 	DEFINE_FIELD( CPendulum, m_start, FIELD_VECTOR ),
 };
 
-IMPLEMENT_SAVERESTORE( CPendulum, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CPendulum, CBaseEntity )
 
 
 

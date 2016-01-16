@@ -52,7 +52,7 @@ class CSatchelCharge : public CGrenade
 public:
 	void Deactivate( void );
 };
-LINK_ENTITY_TO_CLASS( monster_satchel, CSatchelCharge );
+LINK_ENTITY_TO_CLASS( monster_satchel, CSatchelCharge )
 
 //=========================================================
 // Deactivate - do whatever it is we do to an orphaned 
@@ -168,7 +168,7 @@ void CSatchelCharge :: BounceSound( void )
 }
 
 
-LINK_ENTITY_TO_CLASS( weapon_satchel, CSatchel );
+LINK_ENTITY_TO_CLASS( weapon_satchel, CSatchel )
 
 
 //=========================================================

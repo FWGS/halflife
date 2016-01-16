@@ -39,7 +39,7 @@ enum shotgun_e {
 	SHOTGUN_IDLE_DEEP
 };
 
-LINK_ENTITY_TO_CLASS( weapon_shotgun, CShotgun );
+LINK_ENTITY_TO_CLASS( weapon_shotgun, CShotgun )
 
 void CShotgun::Spawn( )
 {
@@ -396,6 +396,6 @@ class CShotgunAmmo : public CBasePlayerAmmo
 		return FALSE;
 	}
 };
-LINK_ENTITY_TO_CLASS( ammo_buckshot, CShotgunAmmo );
+LINK_ENTITY_TO_CLASS( ammo_buckshot, CShotgunAmmo )
 
 

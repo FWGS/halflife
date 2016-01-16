@@ -42,7 +42,7 @@ enum
 	SCHED_SQUID_SEECRAB,
 	SCHED_SQUID_EAT,
 	SCHED_SQUID_SNIFF_AND_EAT,
-	SCHED_SQUID_WALLOW,
+	SCHED_SQUID_WALLOW
 };
 
 //=========================================================
@@ -50,7 +50,7 @@ enum
 //=========================================================
 enum 
 {
-	TASK_SQUID_HOPTURN = LAST_COMMON_TASK + 1,
+	TASK_SQUID_HOPTURN = LAST_COMMON_TASK + 1
 };
 
 //=========================================================
@@ -72,14 +72,14 @@ public:
 	int  m_maxFrame;
 };
 
-LINK_ENTITY_TO_CLASS( squidspit, CSquidSpit );
+LINK_ENTITY_TO_CLASS( squidspit, CSquidSpit )
 
 TYPEDESCRIPTION	CSquidSpit::m_SaveData[] = 
 {
 	DEFINE_FIELD( CSquidSpit, m_maxFrame, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CSquidSpit, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CSquidSpit, CBaseEntity )
 
 void CSquidSpit:: Spawn( void )
 {
@@ -217,7 +217,7 @@ public:
 	int	Save( CSave &save ); 
 	int Restore( CRestore &restore );
 
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 	static TYPEDESCRIPTION m_SaveData[];
 
 	BOOL m_fCanThreatDisplay;// this is so the squid only does the "I see a headcrab!" dance one time. 
@@ -225,7 +225,7 @@ public:
 	float m_flLastHurtTime;// we keep track of this, because if something hurts a squid, it will forget about its love of headcrabs for a while.
 	float m_flNextSpitTime;// last time the bullsquid used the spit attack.
 };
-LINK_ENTITY_TO_CLASS( monster_bullchicken, CBullsquid );
+LINK_ENTITY_TO_CLASS( monster_bullchicken, CBullsquid )
 
 TYPEDESCRIPTION	CBullsquid::m_SaveData[] = 
 {
@@ -234,7 +234,7 @@ TYPEDESCRIPTION	CBullsquid::m_SaveData[] =
 	DEFINE_FIELD( CBullsquid, m_flNextSpitTime, FIELD_TIME ),
 };
 
-IMPLEMENT_SAVERESTORE( CBullsquid, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CBullsquid, CBaseMonster )
 
 //=========================================================
 // IgnoreConditions 
@@ -1014,7 +1014,7 @@ DEFINE_CUSTOM_SCHEDULES( CBullsquid )
 	slSquidWallow
 };
 
-IMPLEMENT_CUSTOM_SCHEDULES( CBullsquid, CBaseMonster );
+IMPLEMENT_CUSTOM_SCHEDULES( CBullsquid, CBaseMonster )
 
 //=========================================================
 // GetSchedule 

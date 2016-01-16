@@ -39,7 +39,7 @@ public:
 	int		m_iType;
 };
 
-LINK_ENTITY_TO_CLASS(world_items, CWorldItem);
+LINK_ENTITY_TO_CLASS(world_items, CWorldItem)
 
 void CWorldItem::KeyValue(KeyValueData *pkvd)
 {
@@ -198,7 +198,7 @@ class CItemSuit : public CItem
 	}
 };
 
-LINK_ENTITY_TO_CLASS(item_suit, CItemSuit);
+LINK_ENTITY_TO_CLASS(item_suit, CItemSuit)
 
 
 
@@ -255,7 +255,7 @@ class CItemBattery : public CItem
 	}
 };
 
-LINK_ENTITY_TO_CLASS(item_battery, CItemBattery);
+LINK_ENTITY_TO_CLASS(item_battery, CItemBattery)
 
 
 class CItemAntidote : public CItem
@@ -279,7 +279,7 @@ class CItemAntidote : public CItem
 	}
 };
 
-LINK_ENTITY_TO_CLASS(item_antidote, CItemAntidote);
+LINK_ENTITY_TO_CLASS(item_antidote, CItemAntidote)
 
 
 class CItemSecurity : public CItem
@@ -301,7 +301,7 @@ class CItemSecurity : public CItem
 	}
 };
 
-LINK_ENTITY_TO_CLASS(item_security, CItemSecurity);
+LINK_ENTITY_TO_CLASS(item_security, CItemSecurity)
 
 class CItemLongJump : public CItem
 {
@@ -339,4 +339,4 @@ class CItemLongJump : public CItem
 	}
 };
 
-LINK_ENTITY_TO_CLASS( item_longjump, CItemLongJump );
+LINK_ENTITY_TO_CLASS( item_longjump, CItemLongJump )

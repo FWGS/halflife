@@ -44,7 +44,7 @@ TYPEDESCRIPTION	CActAnimating::m_SaveData[] =
 	DEFINE_FIELD( CActAnimating, m_Activity, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CActAnimating, CBaseAnimating );
+IMPLEMENT_SAVERESTORE( CActAnimating, CBaseAnimating )
 
 void CActAnimating :: SetActivity( Activity act ) 
 { 
@@ -80,14 +80,14 @@ private:
 	CSprite		*m_pGlow;
 };
 
-LINK_ENTITY_TO_CLASS( xen_plantlight, CXenPLight );
+LINK_ENTITY_TO_CLASS( xen_plantlight, CXenPLight )
 
 TYPEDESCRIPTION	CXenPLight::m_SaveData[] = 
 {
 	DEFINE_FIELD( CXenPLight, m_pGlow, FIELD_CLASSPTR ),
 };
 
-IMPLEMENT_SAVERESTORE( CXenPLight, CActAnimating );
+IMPLEMENT_SAVERESTORE( CXenPLight, CActAnimating )
 
 void CXenPLight :: Spawn( void )
 {
@@ -188,7 +188,7 @@ public:
 	void		Think( void );
 };
 
-LINK_ENTITY_TO_CLASS( xen_hair, CXenHair );
+LINK_ENTITY_TO_CLASS( xen_hair, CXenHair )
 
 #define SF_HAIR_SYNC		0x0001
 
@@ -231,7 +231,7 @@ public:
 	void		Touch( CBaseEntity *pOther );
 	static CXenTreeTrigger *TriggerCreate( edict_t *pOwner, const Vector &position );
 };
-LINK_ENTITY_TO_CLASS( xen_ttrigger, CXenTreeTrigger );
+LINK_ENTITY_TO_CLASS( xen_ttrigger, CXenTreeTrigger )
 
 CXenTreeTrigger *CXenTreeTrigger :: TriggerCreate( edict_t *pOwner, const Vector &position )
 {
@@ -281,14 +281,14 @@ private:
 	CXenTreeTrigger	*m_pTrigger;
 };
 
-LINK_ENTITY_TO_CLASS( xen_tree, CXenTree );
+LINK_ENTITY_TO_CLASS( xen_tree, CXenTree )
 
 TYPEDESCRIPTION	CXenTree::m_SaveData[] = 
 {
 	DEFINE_FIELD( CXenTree, m_pTrigger, FIELD_CLASSPTR ),
 };
 
-IMPLEMENT_SAVERESTORE( CXenTree, CActAnimating );
+IMPLEMENT_SAVERESTORE( CXenTree, CActAnimating )
 
 void CXenTree :: Spawn( void )
 {
@@ -483,10 +483,10 @@ CXenHull *CXenHull :: CreateHull( CBaseEntity *source, const Vector &mins, const
 }
 
 
-LINK_ENTITY_TO_CLASS( xen_spore_small, CXenSporeSmall );
-LINK_ENTITY_TO_CLASS( xen_spore_medium, CXenSporeMed );
-LINK_ENTITY_TO_CLASS( xen_spore_large, CXenSporeLarge );
-LINK_ENTITY_TO_CLASS( xen_hull, CXenHull );
+LINK_ENTITY_TO_CLASS( xen_spore_small, CXenSporeSmall )
+LINK_ENTITY_TO_CLASS( xen_spore_medium, CXenSporeMed )
+LINK_ENTITY_TO_CLASS( xen_spore_large, CXenSporeLarge )
+LINK_ENTITY_TO_CLASS( xen_hull, CXenHull )
 
 void CXenSporeSmall::Spawn( void )
 {

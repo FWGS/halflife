@@ -29,7 +29,7 @@
 
 
 // Lightning target, just alias landmark
-LINK_ENTITY_TO_CLASS( info_target, CPointEntity );
+LINK_ENTITY_TO_CLASS( info_target, CPointEntity )
 
 
 class CBubbling : public CBaseEntity
@@ -53,7 +53,7 @@ public:
 	int		m_state;
 };
 
-LINK_ENTITY_TO_CLASS( env_bubbles, CBubbling );
+LINK_ENTITY_TO_CLASS( env_bubbles, CBubbling )
 
 TYPEDESCRIPTION	CBubbling::m_SaveData[] = 
 {
@@ -64,7 +64,7 @@ TYPEDESCRIPTION	CBubbling::m_SaveData[] =
 	//	DEFINE_FIELD( CBubbling, m_bubbleModel, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CBubbling, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CBubbling, CBaseEntity )
 
 
 #define SF_BUBBLES_STARTOFF		0x0001
@@ -162,7 +162,7 @@ void CBubbling::FizzThink( void )
 //
 // --------------------------------------------------
 
-LINK_ENTITY_TO_CLASS( beam, CBeam );
+LINK_ENTITY_TO_CLASS( beam, CBeam )
 
 void CBeam::Spawn( void )
 {
@@ -413,8 +413,8 @@ public:
 	float	m_radius;
 };
 
-LINK_ENTITY_TO_CLASS( env_lightning, CLightning );
-LINK_ENTITY_TO_CLASS( env_beam, CLightning );
+LINK_ENTITY_TO_CLASS( env_lightning, CLightning )
+LINK_ENTITY_TO_CLASS( env_beam, CLightning )
 
 // UNDONE: Jay -- This is only a test
 #if _DEBUG
@@ -452,7 +452,7 @@ TYPEDESCRIPTION	CLightning::m_SaveData[] =
 	DEFINE_FIELD( CLightning, m_radius, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CLightning, CBeam );
+IMPLEMENT_SAVERESTORE( CLightning, CBeam )
 
 
 void CLightning::Spawn( void )
@@ -946,7 +946,7 @@ void CLightning::BeamUpdateVars( void )
 }
 
 
-LINK_ENTITY_TO_CLASS( env_laser, CLaser );
+LINK_ENTITY_TO_CLASS( env_laser, CLaser )
 
 TYPEDESCRIPTION	CLaser::m_SaveData[] = 
 {
@@ -955,7 +955,7 @@ TYPEDESCRIPTION	CLaser::m_SaveData[] =
 	DEFINE_FIELD( CLaser, m_firePosition, FIELD_POSITION_VECTOR ),
 };
 
-IMPLEMENT_SAVERESTORE( CLaser, CBeam );
+IMPLEMENT_SAVERESTORE( CLaser, CBeam )
 
 void CLaser::Spawn( void )
 {
@@ -1125,7 +1125,7 @@ public:
 	float		m_maxFrame;
 };
 
-LINK_ENTITY_TO_CLASS( env_glow, CGlow );
+LINK_ENTITY_TO_CLASS( env_glow, CGlow )
 
 TYPEDESCRIPTION	CGlow::m_SaveData[] = 
 {
@@ -1133,7 +1133,7 @@ TYPEDESCRIPTION	CGlow::m_SaveData[] =
 	DEFINE_FIELD( CGlow, m_maxFrame, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CGlow, CPointEntity );
+IMPLEMENT_SAVERESTORE( CGlow, CPointEntity )
 
 void CGlow::Spawn( void )
 {
@@ -1169,7 +1169,7 @@ void CGlow::Animate( float frames )
 }
 
 
-LINK_ENTITY_TO_CLASS( env_sprite, CSprite );
+LINK_ENTITY_TO_CLASS( env_sprite, CSprite )
 
 TYPEDESCRIPTION	CSprite::m_SaveData[] = 
 {
@@ -1177,7 +1177,7 @@ TYPEDESCRIPTION	CSprite::m_SaveData[] =
 	DEFINE_FIELD( CSprite, m_maxFrame, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CSprite, CPointEntity );
+IMPLEMENT_SAVERESTORE( CSprite, CPointEntity )
 
 void CSprite::Spawn( void )
 {
@@ -1379,8 +1379,8 @@ TYPEDESCRIPTION CGibShooter::m_SaveData[] =
 	DEFINE_FIELD( CGibShooter, m_flGibLife, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CGibShooter, CBaseDelay );
-LINK_ENTITY_TO_CLASS( gibshooter, CGibShooter );
+IMPLEMENT_SAVERESTORE( CGibShooter, CBaseDelay )
+LINK_ENTITY_TO_CLASS( gibshooter, CGibShooter )
 
 
 void CGibShooter :: Precache ( void )
@@ -1531,7 +1531,7 @@ class CEnvShooter : public CGibShooter
 	CGib		*CreateGib( void );
 };
 
-LINK_ENTITY_TO_CLASS( env_shooter, CEnvShooter );
+LINK_ENTITY_TO_CLASS( env_shooter, CEnvShooter )
 
 void CEnvShooter :: KeyValue( KeyValueData *pkvd )
 {
@@ -1627,7 +1627,7 @@ public:
 };
 
 
-LINK_ENTITY_TO_CLASS( test_effect, CTestEffect );
+LINK_ENTITY_TO_CLASS( test_effect, CTestEffect )
 
 void CTestEffect::Spawn( void )
 {
@@ -1735,7 +1735,7 @@ public:
 private:
 };
 
-LINK_ENTITY_TO_CLASS( env_blood, CBlood );
+LINK_ENTITY_TO_CLASS( env_blood, CBlood )
 
 
 
@@ -1851,7 +1851,7 @@ public:
 private:
 };
 
-LINK_ENTITY_TO_CLASS( env_shake, CShake );
+LINK_ENTITY_TO_CLASS( env_shake, CShake )
 
 // pev->scale is amplitude
 // pev->dmg_save is frequency
@@ -1925,7 +1925,7 @@ public:
 private:
 };
 
-LINK_ENTITY_TO_CLASS( env_fade, CFade );
+LINK_ENTITY_TO_CLASS( env_fade, CFade )
 
 // pev->dmg_take is duration
 // pev->dmg_save is hold duration
@@ -1994,7 +1994,7 @@ public:
 private:
 };
 
-LINK_ENTITY_TO_CLASS( env_message, CMessage );
+LINK_ENTITY_TO_CLASS( env_message, CMessage )
 
 
 void CMessage::Spawn( void )
@@ -2106,7 +2106,7 @@ void CEnvFunnel :: Precache ( void )
 	m_iSprite = PRECACHE_MODEL ( "sprites/flare6.spr" );
 }
 
-LINK_ENTITY_TO_CLASS( env_funnel, CEnvFunnel );
+LINK_ENTITY_TO_CLASS( env_funnel, CEnvFunnel )
 
 void CEnvFunnel::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
@@ -2217,7 +2217,7 @@ void CItemSoda :: Precache ( void )
 {
 }
 
-LINK_ENTITY_TO_CLASS( item_sodacan, CItemSoda );
+LINK_ENTITY_TO_CLASS( item_sodacan, CItemSoda )
 
 void CItemSoda::Spawn( void )
 {

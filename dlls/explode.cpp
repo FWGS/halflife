@@ -34,7 +34,7 @@ class CShower : public CBaseEntity
 	int ObjectCaps( void ) { return FCAP_DONT_SAVE; }
 };
 
-LINK_ENTITY_TO_CLASS( spark_shower, CShower );
+LINK_ENTITY_TO_CLASS( spark_shower, CShower )
 
 void CShower::Spawn( void )
 {
@@ -103,8 +103,8 @@ TYPEDESCRIPTION	CEnvExplosion::m_SaveData[] =
 	DEFINE_FIELD( CEnvExplosion, m_spriteScale, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CEnvExplosion, CBaseMonster );
-LINK_ENTITY_TO_CLASS( env_explosion, CEnvExplosion );
+IMPLEMENT_SAVERESTORE( CEnvExplosion, CBaseMonster )
+LINK_ENTITY_TO_CLASS( env_explosion, CEnvExplosion )
 
 void CEnvExplosion::KeyValue( KeyValueData *pkvd )
 {

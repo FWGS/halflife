@@ -56,7 +56,7 @@ TYPEDESCRIPTION	CBasePlatTrain::m_SaveData[] =
 	DEFINE_FIELD( CBasePlatTrain, m_volume, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CBasePlatTrain, CBaseToggle );
+IMPLEMENT_SAVERESTORE( CBasePlatTrain, CBaseToggle )
 
 void CBasePlatTrain :: KeyValue( KeyValueData *pkvd )
 {
@@ -241,7 +241,7 @@ public:
 	virtual void HitTop( void );
 	virtual void HitBottom( void );
 };
-LINK_ENTITY_TO_CLASS( func_plat, CFuncPlat );
+LINK_ENTITY_TO_CLASS( func_plat, CFuncPlat )
 
 
 // UNDONE: Need to save this!!! It needs class & linkage
@@ -530,14 +530,14 @@ public:
 
 	Vector	m_end, m_start;
 };
-LINK_ENTITY_TO_CLASS( func_platrot, CFuncPlatRot );
+LINK_ENTITY_TO_CLASS( func_platrot, CFuncPlatRot )
 TYPEDESCRIPTION	CFuncPlatRot::m_SaveData[] = 
 {
 	DEFINE_FIELD( CFuncPlatRot, m_end, FIELD_VECTOR ),
 	DEFINE_FIELD( CFuncPlatRot, m_start, FIELD_VECTOR ),
 };
 
-IMPLEMENT_SAVERESTORE( CFuncPlatRot, CFuncPlat );
+IMPLEMENT_SAVERESTORE( CFuncPlatRot, CFuncPlat )
 
 
 void CFuncPlatRot :: SetupRotation( void )
@@ -649,7 +649,7 @@ public:
 	BOOL		m_activated;
 };
 
-LINK_ENTITY_TO_CLASS( func_train, CFuncTrain );
+LINK_ENTITY_TO_CLASS( func_train, CFuncTrain )
 TYPEDESCRIPTION	CFuncTrain::m_SaveData[] = 
 {
 	DEFINE_FIELD( CFuncTrain, m_sounds, FIELD_INTEGER ),
@@ -657,7 +657,7 @@ TYPEDESCRIPTION	CFuncTrain::m_SaveData[] =
 	DEFINE_FIELD( CFuncTrain, m_activated, FIELD_BOOLEAN ),
 };
 
-IMPLEMENT_SAVERESTORE( CFuncTrain, CBasePlatTrain );
+IMPLEMENT_SAVERESTORE( CFuncTrain, CBasePlatTrain )
 
 
 void CFuncTrain :: KeyValue( KeyValueData *pkvd )
@@ -951,8 +951,8 @@ TYPEDESCRIPTION	CFuncTrackTrain::m_SaveData[] =
 	DEFINE_FIELD( CFuncTrackTrain, m_oldSpeed, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CFuncTrackTrain, CBaseEntity );
-LINK_ENTITY_TO_CLASS( func_tracktrain, CFuncTrackTrain );
+IMPLEMENT_SAVERESTORE( CFuncTrackTrain, CBaseEntity )
+LINK_ENTITY_TO_CLASS( func_tracktrain, CFuncTrackTrain )
 
 void CFuncTrackTrain :: KeyValue( KeyValueData *pkvd )
 {
@@ -1126,7 +1126,7 @@ void CFuncTrackTrain :: UpdateSound( void )
 	if (!pev->noise)
 		return;
 
-	flpitch = TRAIN_STARTPITCH + (abs(pev->speed) * (TRAIN_MAXPITCH - TRAIN_STARTPITCH) / TRAIN_MAXSPEED);
+	flpitch = TRAIN_STARTPITCH + (fabs(pev->speed) * (TRAIN_MAXPITCH - TRAIN_STARTPITCH) / TRAIN_MAXSPEED);
 
 	if (!m_soundPlaying)
 	{
@@ -1556,7 +1556,7 @@ public:
 	void Spawn( void );
 	void EXPORT Find( void );
 };
-LINK_ENTITY_TO_CLASS( func_traincontrols, CFuncTrainControls );
+LINK_ENTITY_TO_CLASS( func_traincontrols, CFuncTrainControls )
 
 
 void CFuncTrainControls :: Find( void )
@@ -1659,7 +1659,7 @@ public:
 	int				m_targetState;
 	int				m_use;
 };
-LINK_ENTITY_TO_CLASS( func_trackchange, CFuncTrackChange );
+LINK_ENTITY_TO_CLASS( func_trackchange, CFuncTrackChange )
 
 TYPEDESCRIPTION	CFuncTrackChange::m_SaveData[] = 
 {
@@ -1674,7 +1674,7 @@ TYPEDESCRIPTION	CFuncTrackChange::m_SaveData[] =
 	DEFINE_FIELD( CFuncTrackChange, m_use, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CFuncTrackChange, CFuncPlatRot );
+IMPLEMENT_SAVERESTORE( CFuncTrackChange, CFuncPlatRot )
 
 void CFuncTrackChange :: Spawn( void )
 {
@@ -2017,7 +2017,7 @@ public:
 	virtual void	UpdateAutoTargets( int toggleState );
 };
 
-LINK_ENTITY_TO_CLASS( func_trackautochange, CFuncTrackAuto );
+LINK_ENTITY_TO_CLASS( func_trackautochange, CFuncTrackAuto )
 
 // Auto track change
 void CFuncTrackAuto :: UpdateAutoTargets( int toggleState )
@@ -2130,7 +2130,7 @@ private:
 };
 
 
-LINK_ENTITY_TO_CLASS( func_guntarget, CGunTarget );
+LINK_ENTITY_TO_CLASS( func_guntarget, CGunTarget )
 
 TYPEDESCRIPTION	CGunTarget::m_SaveData[] = 
 {

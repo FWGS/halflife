@@ -56,7 +56,7 @@ public:
 	float		m_frictionFraction;		// Sorry, couldn't resist this name :)
 };
 
-LINK_ENTITY_TO_CLASS( func_friction, CFrictionModifier );
+LINK_ENTITY_TO_CLASS( func_friction, CFrictionModifier )
 
 // Global Savedata for changelevel friction modifier
 TYPEDESCRIPTION	CFrictionModifier::m_SaveData[] = 
@@ -64,7 +64,7 @@ TYPEDESCRIPTION	CFrictionModifier::m_SaveData[] =
 	DEFINE_FIELD( CFrictionModifier, m_frictionFraction, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE(CFrictionModifier,CBaseEntity);
+IMPLEMENT_SAVERESTORE(CFrictionModifier,CBaseEntity)
 
 
 // Modify an entity's friction
@@ -122,7 +122,7 @@ private:
 	int			m_globalstate;
 	USE_TYPE	triggerType;
 };
-LINK_ENTITY_TO_CLASS( trigger_auto, CAutoTrigger );
+LINK_ENTITY_TO_CLASS( trigger_auto, CAutoTrigger )
 
 TYPEDESCRIPTION	CAutoTrigger::m_SaveData[] = 
 {
@@ -130,7 +130,7 @@ TYPEDESCRIPTION	CAutoTrigger::m_SaveData[] =
 	DEFINE_FIELD( CAutoTrigger, triggerType, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE(CAutoTrigger,CBaseDelay);
+IMPLEMENT_SAVERESTORE(CAutoTrigger, CBaseDelay)
 
 void CAutoTrigger::KeyValue( KeyValueData *pkvd )
 {
@@ -203,14 +203,14 @@ public:
 private:
 	USE_TYPE	triggerType;
 };
-LINK_ENTITY_TO_CLASS( trigger_relay, CTriggerRelay );
+LINK_ENTITY_TO_CLASS( trigger_relay, CTriggerRelay )
 
 TYPEDESCRIPTION	CTriggerRelay::m_SaveData[] = 
 {
 	DEFINE_FIELD( CTriggerRelay, triggerType, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE(CTriggerRelay,CBaseDelay);
+IMPLEMENT_SAVERESTORE(CTriggerRelay, CBaseDelay)
 
 void CTriggerRelay::KeyValue( KeyValueData *pkvd )
 {
@@ -298,7 +298,7 @@ private:
 
 	CMultiManager *Clone( void );
 };
-LINK_ENTITY_TO_CLASS( multi_manager, CMultiManager );
+LINK_ENTITY_TO_CLASS( multi_manager, CMultiManager )
 
 // Global Savedata for multi_manager
 TYPEDESCRIPTION	CMultiManager::m_SaveData[] = 
@@ -310,7 +310,7 @@ TYPEDESCRIPTION	CMultiManager::m_SaveData[] =
 	DEFINE_ARRAY( CMultiManager, m_flTargetDelay, FIELD_FLOAT, MAX_MULTI_TARGETS ),
 };
 
-IMPLEMENT_SAVERESTORE(CMultiManager,CBaseToggle);
+IMPLEMENT_SAVERESTORE(CMultiManager,CBaseToggle)
 
 void CMultiManager :: KeyValue( KeyValueData *pkvd )
 {
@@ -484,7 +484,7 @@ public:
 	void Use ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 };
 
-LINK_ENTITY_TO_CLASS( env_render, CRenderFxManager );
+LINK_ENTITY_TO_CLASS( env_render, CRenderFxManager )
 
 
 void CRenderFxManager :: Spawn ( void )
@@ -535,7 +535,7 @@ public:
 	virtual int	ObjectCaps( void ) { return CBaseToggle :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 };
 
-LINK_ENTITY_TO_CLASS( trigger, CBaseTrigger );
+LINK_ENTITY_TO_CLASS( trigger, CBaseTrigger )
 
 /*
 ================
@@ -588,7 +588,7 @@ public:
 	void EXPORT RadiationThink( void );
 };
 
-LINK_ENTITY_TO_CLASS( trigger_hurt, CTriggerHurt );
+LINK_ENTITY_TO_CLASS( trigger_hurt, CTriggerHurt )
 
 //
 // trigger_monsterjump
@@ -601,7 +601,7 @@ public:
 	void Think( void );
 };
 
-LINK_ENTITY_TO_CLASS( trigger_monsterjump, CTriggerMonsterJump );
+LINK_ENTITY_TO_CLASS( trigger_monsterjump, CTriggerMonsterJump )
 
 
 void CTriggerMonsterJump :: Spawn ( void )
@@ -667,7 +667,7 @@ public:
 	void Touch ( CBaseEntity *pOther );
 };
 
-LINK_ENTITY_TO_CLASS( trigger_cdaudio, CTriggerCDAudio );
+LINK_ENTITY_TO_CLASS( trigger_cdaudio, CTriggerCDAudio )
 
 //
 // Changes tracks or stops CD when player touches
@@ -746,7 +746,7 @@ public:
 	void			Play( void );
 };
 
-LINK_ENTITY_TO_CLASS( target_cdaudio, CTargetCDAudio );
+LINK_ENTITY_TO_CLASS( target_cdaudio, CTargetCDAudio )
 
 void CTargetCDAudio :: KeyValue( KeyValueData *pkvd )
 {
@@ -1054,7 +1054,7 @@ public:
 	void Spawn( void );
 };
 
-LINK_ENTITY_TO_CLASS( trigger_multiple, CTriggerMultiple );
+LINK_ENTITY_TO_CLASS( trigger_multiple, CTriggerMultiple )
 
 
 void CTriggerMultiple :: Spawn( void )
@@ -1103,7 +1103,7 @@ public:
 	void Spawn( void );
 };
 
-LINK_ENTITY_TO_CLASS( trigger_once, CTriggerOnce );
+LINK_ENTITY_TO_CLASS( trigger_once, CTriggerOnce )
 void CTriggerOnce::Spawn( void )
 {
 	m_flWait = -1;
@@ -1256,7 +1256,7 @@ class CTriggerCounter : public CBaseTrigger
 public:
 	void Spawn( void );
 };
-LINK_ENTITY_TO_CLASS( trigger_counter, CTriggerCounter );
+LINK_ENTITY_TO_CLASS( trigger_counter, CTriggerCounter )
 
 void CTriggerCounter :: Spawn( void )
 {
@@ -1277,7 +1277,7 @@ public:
 	void		Spawn( void );
 };
 
-LINK_ENTITY_TO_CLASS( trigger_transition, CTriggerVolume );
+LINK_ENTITY_TO_CLASS( trigger_transition, CTriggerVolume )
 
 // Define space that travels across a level transition
 void CTriggerVolume :: Spawn( void )
@@ -1299,7 +1299,7 @@ public:
 	void Think( void );
 	int ObjectCaps( void ) { return CBaseDelay::ObjectCaps() | FCAP_FORCE_TRANSITION; }	// Always go across transitions
 };
-LINK_ENTITY_TO_CLASS( fireanddie, CFireAndDie );
+LINK_ENTITY_TO_CLASS( fireanddie, CFireAndDie )
 
 void CFireAndDie::Spawn( void )
 {
@@ -1349,7 +1349,7 @@ public:
 	int		m_changeTarget;
 	float	m_changeTargetDelay;
 };
-LINK_ENTITY_TO_CLASS( trigger_changelevel, CChangeLevel );
+LINK_ENTITY_TO_CLASS( trigger_changelevel, CChangeLevel )
 
 // Global Savedata for changelevel trigger
 TYPEDESCRIPTION	CChangeLevel::m_SaveData[] = 
@@ -1360,7 +1360,7 @@ TYPEDESCRIPTION	CChangeLevel::m_SaveData[] =
 	DEFINE_FIELD( CChangeLevel, m_changeTargetDelay, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE(CChangeLevel,CBaseTrigger);
+IMPLEMENT_SAVERESTORE(CChangeLevel,CBaseTrigger)
 
 //
 // Cache user-entity-field values until spawn is called.
@@ -1747,7 +1747,7 @@ public:
 	void Spawn( void );
 	void Precache( void );
 };
-LINK_ENTITY_TO_CLASS( func_ladder, CLadder );
+LINK_ENTITY_TO_CLASS( func_ladder, CLadder )
 
 
 void CLadder :: KeyValue( KeyValueData *pkvd )
@@ -1791,7 +1791,7 @@ public:
 	void KeyValue( KeyValueData *pkvd );
 	void Touch( CBaseEntity *pOther );
 };
-LINK_ENTITY_TO_CLASS( trigger_push, CTriggerPush );
+LINK_ENTITY_TO_CLASS( trigger_push, CTriggerPush )
 
 
 void CTriggerPush :: KeyValue( KeyValueData *pkvd )
@@ -1928,7 +1928,7 @@ class CTriggerTeleport : public CBaseTrigger
 public:
 	void Spawn( void );
 };
-LINK_ENTITY_TO_CLASS( trigger_teleport, CTriggerTeleport );
+LINK_ENTITY_TO_CLASS( trigger_teleport, CTriggerTeleport )
 
 void CTriggerTeleport :: Spawn( void )
 {
@@ -1938,7 +1938,7 @@ void CTriggerTeleport :: Spawn( void )
 }
 
 
-LINK_ENTITY_TO_CLASS( info_teleport_destination, CPointEntity );
+LINK_ENTITY_TO_CLASS( info_teleport_destination, CPointEntity )
 
 
 
@@ -1948,7 +1948,7 @@ public:
 	void Spawn( void );
 	void EXPORT SaveTouch( CBaseEntity *pOther );
 };
-LINK_ENTITY_TO_CLASS( trigger_autosave, CTriggerSave );
+LINK_ENTITY_TO_CLASS( trigger_autosave, CTriggerSave )
 
 void CTriggerSave::Spawn( void )
 {
@@ -1986,7 +1986,7 @@ public:
 	void KeyValue( KeyValueData *pkvd );
 	void EXPORT EndSectionUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 };
-LINK_ENTITY_TO_CLASS( trigger_endsection, CTriggerEndSection );
+LINK_ENTITY_TO_CLASS( trigger_endsection, CTriggerEndSection )
 
 
 void CTriggerEndSection::EndSectionUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
@@ -2055,7 +2055,7 @@ public:
 	void Spawn( void );
 	void EXPORT GravityTouch( CBaseEntity *pOther );
 };
-LINK_ENTITY_TO_CLASS( trigger_gravity, CTriggerGravity );
+LINK_ENTITY_TO_CLASS( trigger_gravity, CTriggerGravity )
 
 void CTriggerGravity::Spawn( void )
 {
@@ -2095,14 +2095,14 @@ public:
 private:
 	int		m_iszNewTarget;
 };
-LINK_ENTITY_TO_CLASS( trigger_changetarget, CTriggerChangeTarget );
+LINK_ENTITY_TO_CLASS( trigger_changetarget, CTriggerChangeTarget )
 
 TYPEDESCRIPTION	CTriggerChangeTarget::m_SaveData[] = 
 {
 	DEFINE_FIELD( CTriggerChangeTarget, m_iszNewTarget, FIELD_STRING ),
 };
 
-IMPLEMENT_SAVERESTORE(CTriggerChangeTarget,CBaseDelay);
+IMPLEMENT_SAVERESTORE(CTriggerChangeTarget, CBaseDelay)
 
 void CTriggerChangeTarget::KeyValue( KeyValueData *pkvd )
 {
@@ -2171,7 +2171,7 @@ public:
 	int	  m_state;
 	
 };
-LINK_ENTITY_TO_CLASS( trigger_camera, CTriggerCamera );
+LINK_ENTITY_TO_CLASS( trigger_camera, CTriggerCamera )
 
 // Global Savedata for changelevel friction modifier
 TYPEDESCRIPTION	CTriggerCamera::m_SaveData[] = 
@@ -2191,7 +2191,7 @@ TYPEDESCRIPTION	CTriggerCamera::m_SaveData[] =
 	DEFINE_FIELD( CTriggerCamera, m_state, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE(CTriggerCamera,CBaseDelay);
+IMPLEMENT_SAVERESTORE(CTriggerCamera, CBaseDelay)
 
 void CTriggerCamera::Spawn( void )
 {

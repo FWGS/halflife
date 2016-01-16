@@ -60,7 +60,7 @@ typedef enum
 	TLK_WOUND,
 	TLK_MORTAL,
 
-	TLK_CGROUPS,					// MUST be last entry
+	TLK_CGROUPS					// MUST be last entry
 } TALKGROUPNAMES;
 
 
@@ -71,7 +71,7 @@ enum
 	SCHED_MOVE_AWAY_FOLLOW,	// same, but follow afterward
 	SCHED_MOVE_AWAY_FAIL,	// Turn back toward player
 
-	LAST_TALKMONSTER_SCHEDULE,		// MUST be last
+	LAST_TALKMONSTER_SCHEDULE		// MUST be last
 };
 
 enum
@@ -92,7 +92,7 @@ enum
 	TASK_TLK_IDEALYAW,		// set ideal yaw to face who I'm talking to
 	TASK_FACE_PLAYER,		// Face the player
 
-	LAST_TALKMONSTER_TASK,			// MUST be last
+	LAST_TALKMONSTER_TASK			// MUST be last
 };
 
 class CTalkMonster : public CBaseMonster
@@ -170,7 +170,7 @@ public:
 	float		m_flStopTalkTime;// when in the future that I'll be done saying this sentence.
 
 	EHANDLE		m_hTalkTarget;	// who to look at while talking
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 };
 
 

@@ -65,7 +65,7 @@ public:
     void StartTask ( Task_t *pTask );
 	Schedule_t *GetSchedule( void );
 	Schedule_t *GetScheduleOfType ( int Type );
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 
 	int	Save( CSave &save ); 
 	int Restore( CRestore &restore );
@@ -93,8 +93,8 @@ public:
 	static const char *pPainSounds[];
 	static const char *pDeathSounds[];
 };
-LINK_ENTITY_TO_CLASS( monster_alien_slave, CISlave );
-LINK_ENTITY_TO_CLASS( monster_vortigaunt, CISlave );
+LINK_ENTITY_TO_CLASS( monster_alien_slave, CISlave )
+LINK_ENTITY_TO_CLASS( monster_vortigaunt, CISlave )
 
 
 TYPEDESCRIPTION	CISlave::m_SaveData[] = 
@@ -111,7 +111,7 @@ TYPEDESCRIPTION	CISlave::m_SaveData[] =
 
 };
 
-IMPLEMENT_SAVERESTORE( CISlave, CSquadMonster );
+IMPLEMENT_SAVERESTORE( CISlave, CSquadMonster )
 
 
 
@@ -635,7 +635,7 @@ DEFINE_CUSTOM_SCHEDULES( CISlave )
 	slSlaveAttack1,
 };
 
-IMPLEMENT_CUSTOM_SCHEDULES( CISlave, CSquadMonster );
+IMPLEMENT_CUSTOM_SCHEDULES( CISlave, CSquadMonster )
 
 
 //=========================================================

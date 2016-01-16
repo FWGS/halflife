@@ -118,12 +118,12 @@ TYPEDESCRIPTION	CCineMonster::m_SaveData[] =
 };
 
 
-IMPLEMENT_SAVERESTORE( CCineMonster, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CCineMonster, CBaseMonster )
 
-LINK_ENTITY_TO_CLASS( scripted_sequence, CCineMonster );
+LINK_ENTITY_TO_CLASS( scripted_sequence, CCineMonster )
 #define CLASSNAME "scripted_sequence"
 
-LINK_ENTITY_TO_CLASS( aiscripted_sequence, CCineAI );
+LINK_ENTITY_TO_CLASS( aiscripted_sequence, CCineAI )
 
 
 void CCineMonster :: Spawn( void )
@@ -970,9 +970,9 @@ TYPEDESCRIPTION	CScriptedSentence::m_SaveData[] =
 };
 
 
-IMPLEMENT_SAVERESTORE( CScriptedSentence, CBaseToggle );
+IMPLEMENT_SAVERESTORE( CScriptedSentence, CBaseToggle )
 
-LINK_ENTITY_TO_CLASS( scripted_sentence, CScriptedSentence );
+LINK_ENTITY_TO_CLASS( scripted_sentence, CScriptedSentence )
 
 void CScriptedSentence :: KeyValue( KeyValueData *pkvd )
 {
@@ -1211,7 +1211,7 @@ public:
 };
 
 
-LINK_ENTITY_TO_CLASS( monster_furniture, CFurniture );
+LINK_ENTITY_TO_CLASS( monster_furniture, CFurniture )
 
 
 //=========================================================

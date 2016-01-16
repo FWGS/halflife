@@ -62,9 +62,9 @@ TYPEDESCRIPTION CEnvGlobal::m_SaveData[] =
 	DEFINE_FIELD( CEnvGlobal, m_initialstate, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CEnvGlobal, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CEnvGlobal, CBaseEntity )
 
-LINK_ENTITY_TO_CLASS( env_global, CEnvGlobal );
+LINK_ENTITY_TO_CLASS( env_global, CEnvGlobal )
 
 void CEnvGlobal::KeyValue( KeyValueData *pkvd )
 {
@@ -141,9 +141,9 @@ TYPEDESCRIPTION CMultiSource::m_SaveData[] =
 	DEFINE_FIELD( CMultiSource, m_globalstate, FIELD_STRING ),
 };
 
-IMPLEMENT_SAVERESTORE( CMultiSource, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CMultiSource, CBaseEntity )
 
-LINK_ENTITY_TO_CLASS( multisource, CMultiSource );
+LINK_ENTITY_TO_CLASS( multisource, CMultiSource )
 //
 // Cache user-entity-field values until spawn is called.
 //
@@ -287,7 +287,7 @@ TYPEDESCRIPTION CBaseButton::m_SaveData[] =
 };
 	
 
-IMPLEMENT_SAVERESTORE( CBaseButton, CBaseToggle );
+IMPLEMENT_SAVERESTORE( CBaseButton, CBaseToggle )
 
 void CBaseButton::Precache( void )
 {
@@ -439,7 +439,7 @@ where it can be triggered again.
 2) metallic click
 3) in-out
 */
-LINK_ENTITY_TO_CLASS( func_button, CBaseButton );
+LINK_ENTITY_TO_CLASS( func_button, CBaseButton )
 
 
 void CBaseButton::Spawn( )
@@ -808,7 +808,7 @@ public:
 	void Spawn( void );
 };
 
-LINK_ENTITY_TO_CLASS( func_rot_button, CRotButton );
+LINK_ENTITY_TO_CLASS( func_rot_button, CRotButton )
 
 void CRotButton::Spawn( void )
 {
@@ -920,9 +920,9 @@ TYPEDESCRIPTION CMomentaryRotButton::m_SaveData[] =
 	DEFINE_FIELD( CMomentaryRotButton, m_sounds, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CMomentaryRotButton, CBaseToggle );
+IMPLEMENT_SAVERESTORE( CMomentaryRotButton, CBaseToggle )
 
-LINK_ENTITY_TO_CLASS( momentary_rot_button, CMomentaryRotButton );
+LINK_ENTITY_TO_CLASS( momentary_rot_button, CMomentaryRotButton )
 
 void CMomentaryRotButton::Spawn( void )
 {
@@ -1148,10 +1148,10 @@ TYPEDESCRIPTION CEnvSpark::m_SaveData[] =
 	DEFINE_FIELD( CEnvSpark, m_flDelay, FIELD_FLOAT),
 };
 
-IMPLEMENT_SAVERESTORE( CEnvSpark, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CEnvSpark, CBaseEntity )
 
-LINK_ENTITY_TO_CLASS(env_spark, CEnvSpark);
-LINK_ENTITY_TO_CLASS(env_debris, CEnvSpark);
+LINK_ENTITY_TO_CLASS(env_spark, CEnvSpark)
+LINK_ENTITY_TO_CLASS(env_debris, CEnvSpark)
 
 void CEnvSpark::Spawn(void)
 {
@@ -1240,7 +1240,7 @@ public:
 	
 };
 
-LINK_ENTITY_TO_CLASS( button_target, CButtonTarget );
+LINK_ENTITY_TO_CLASS( button_target, CButtonTarget )
 
 void CButtonTarget::Spawn( void )
 {

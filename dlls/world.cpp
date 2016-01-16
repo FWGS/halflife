@@ -111,7 +111,7 @@ public:
 	void	EXPORT TriggerDecal( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 };
 
-LINK_ENTITY_TO_CLASS( infodecal, CDecal );
+LINK_ENTITY_TO_CLASS( infodecal, CDecal )
 
 // UNDONE:  These won't get sent to joining players in multi-player
 void CDecal :: Spawn( void )
@@ -203,7 +203,7 @@ class CCorpse : public CBaseEntity
 	virtual int ObjectCaps( void ) { return FCAP_DONT_SAVE; }	
 };
 
-LINK_ENTITY_TO_CLASS( bodyque, CCorpse );
+LINK_ENTITY_TO_CLASS( bodyque, CCorpse )
 
 static void InitBodyQue(void)
 {
@@ -460,7 +460,7 @@ void ResetGlobalState( void )
 // This spawns first when each level begins.
 //=======================
 
-LINK_ENTITY_TO_CLASS( worldspawn, CWorld );
+LINK_ENTITY_TO_CLASS( worldspawn, CWorld )
 
 #define SF_WORLD_DARK		0x0001		// Fade from black at startup
 #define SF_WORLD_TITLE		0x0002		// Display game title at startup

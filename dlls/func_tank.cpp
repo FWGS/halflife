@@ -35,7 +35,7 @@ enum TANKBULLET
 	TANK_BULLET_NONE = 0,
 	TANK_BULLET_9MM = 1,
 	TANK_BULLET_MP5 = 2,
-	TANK_BULLET_12MM = 3,
+	TANK_BULLET_12MM = 3
 };
 
 //			Custom damage
@@ -158,10 +158,10 @@ TYPEDESCRIPTION	CFuncTank::m_SaveData[] =
 	DEFINE_FIELD( CFuncTank, m_vecControllerUsePos, FIELD_VECTOR ),
 	DEFINE_FIELD( CFuncTank, m_flNextAttack, FIELD_TIME ),
 	DEFINE_FIELD( CFuncTank, m_iBulletDamage, FIELD_INTEGER ),
-	DEFINE_FIELD( CFuncTank, m_iszMaster, FIELD_STRING ),
+	DEFINE_FIELD( CFuncTank, m_iszMaster, FIELD_STRING )
 };
 
-IMPLEMENT_SAVERESTORE( CFuncTank, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CFuncTank, CBaseEntity )
 
 static Vector gTankSpread[] =
 {
@@ -717,7 +717,7 @@ class CFuncTankGun : public CFuncTank
 public:
 	void Fire( const Vector &barrelEnd, const Vector &forward, entvars_t *pevAttacker );
 };
-LINK_ENTITY_TO_CLASS( func_tank, CFuncTankGun );
+LINK_ENTITY_TO_CLASS( func_tank, CFuncTankGun )
 
 void CFuncTankGun::Fire( const Vector &barrelEnd, const Vector &forward, entvars_t *pevAttacker )
 {
@@ -778,7 +778,7 @@ private:
 	CLaser	*m_pLaser;
 	float	m_laserTime;
 };
-LINK_ENTITY_TO_CLASS( func_tanklaser, CFuncTankLaser );
+LINK_ENTITY_TO_CLASS( func_tanklaser, CFuncTankLaser )
 
 TYPEDESCRIPTION	CFuncTankLaser::m_SaveData[] = 
 {
@@ -786,7 +786,7 @@ TYPEDESCRIPTION	CFuncTankLaser::m_SaveData[] =
 	DEFINE_FIELD( CFuncTankLaser, m_laserTime, FIELD_TIME ),
 };
 
-IMPLEMENT_SAVERESTORE( CFuncTankLaser, CFuncTank );
+IMPLEMENT_SAVERESTORE( CFuncTankLaser, CFuncTank )
 
 void CFuncTankLaser::Activate( void )
 {
@@ -886,7 +886,7 @@ public:
 	void Precache( void );
 	void Fire( const Vector &barrelEnd, const Vector &forward, entvars_t *pevAttacker );
 };
-LINK_ENTITY_TO_CLASS( func_tankrocket, CFuncTankRocket );
+LINK_ENTITY_TO_CLASS( func_tankrocket, CFuncTankRocket )
 
 void CFuncTankRocket::Precache( void )
 {
@@ -923,7 +923,7 @@ public:
 	void KeyValue( KeyValueData *pkvd );
 	void Fire( const Vector &barrelEnd, const Vector &forward, entvars_t *pevAttacker );
 };
-LINK_ENTITY_TO_CLASS( func_tankmortar, CFuncTankMortar );
+LINK_ENTITY_TO_CLASS( func_tankmortar, CFuncTankMortar )
 
 
 void CFuncTankMortar::KeyValue( KeyValueData *pkvd )
@@ -981,14 +981,14 @@ public:
 
 	CFuncTank *m_pTank;
 };
-LINK_ENTITY_TO_CLASS( func_tankcontrols, CFuncTankControls );
+LINK_ENTITY_TO_CLASS( func_tankcontrols, CFuncTankControls )
 
 TYPEDESCRIPTION	CFuncTankControls::m_SaveData[] = 
 {
 	DEFINE_FIELD( CFuncTankControls, m_pTank, FIELD_CLASSPTR ),
 };
 
-IMPLEMENT_SAVERESTORE( CFuncTankControls, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CFuncTankControls, CBaseEntity )
 
 int	CFuncTankControls :: ObjectCaps( void ) 
 { 
