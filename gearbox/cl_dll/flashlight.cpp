@@ -28,7 +28,7 @@
 
 
 DECLARE_MESSAGE(m_Flash, FlashBat)
-DECLARE_MESSAGE(m_Flash, Flashlight)
+//DECLARE_MESSAGE(m_Flash, Flashlight)
 
 #define BAT_NAME "sprites/%d_Flashlight.spr"
 
@@ -37,7 +37,7 @@ int CHudFlashlight::Init(void)
 	m_fFade = 0;
 	m_fOn = 0;
 
-	HOOK_MESSAGE(Flashlight);
+//	HOOK_MESSAGE(Flashlight);
 	HOOK_MESSAGE(FlashBat);
 
 	m_iFlags |= HUD_ACTIVE;
