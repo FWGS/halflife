@@ -109,7 +109,7 @@ public:
 	void CreateSegments();
 	void DestroySegments();
 
-	int FindClosestSegment(Vector& vecTo, float epsilon, int iMin, int iMax);
+	int FindClosestSegment(Vector vecTo, float epsilon, int iMin, int iMax);
 
 	CRopeSegment*	m_pSegments[MAX_ROPE_SEGMENTS];
 
@@ -199,7 +199,7 @@ void CRope::StartupThink(void)
 //===============================================
 // Use binary search for closest point.
 //===============================================
-int CRope::FindClosestSegment(Vector& vecTo, float epsilon, int iMin, int iMax)
+int CRope::FindClosestSegment(Vector vecTo, float epsilon, int iMin, int iMax)
 {
 	if (iMax < iMin)
 		return -1;

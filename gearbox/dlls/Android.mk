@@ -1,6 +1,30 @@
-CC= gcc -m32
-CXX = g++ -m32
-TOPDIR = $(PWD)
+#hlsdk-2.3 client port for android
+#Copyright (c) mittorn
+
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := server
+#ifeq ($(XASH_SDL),1)
+#APP_PLATFORM := android-12
+#LOCAL_SHARED_LIBRARIES += SDL2 
+#LOCAL_CFLAGS += -DXASH_SDL
+#else
+APP_PLATFORM := android-8
+#endif
+LOCAL_CONLYFLAGS += -std=c99
+
+include $(XASH3D_CONFIG)
+
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a-hard)
+LOCAL_MODULE_FILENAME = libserver_hardfp
+endif
+
+LOCAL_CFLAGS += -fsigned-char
+SRCS :=
+SRCS_C :=
+TOPDIR := .
 SRCS += $(TOPDIR)/../dlls/aflock.cpp
 SRCS += $(TOPDIR)/../dlls/agrunt.cpp
 SRCS += $(TOPDIR)/../dlls/airtank.cpp
@@ -152,18 +176,24 @@ SRCS += gearbox/strooper.cpp
 SRCS_C += ../../pm_shared/pm_shared.c
 SRCS_C += ../../pm_shared/pm_math.c
 SRCS_C += ../../pm_shared/pm_debug.c
+
+#INCLUDES =  -I../common -I. -I../game_shared -I../pm_shared -I../engine -I../dlls
 INCLUDES =  -I$(TOPDIR)/../../common -I. -I$(TOPDIR)/../../game_shared -I$(TOPDIR)/../pm_shared -I$(TOPDIR)/../../engine -I$(TOPDIR)/../dlls -I$(TOPDIR)/../dlls/hl -I$(TOPDIR)/../../public -Igearbox
+
+#DEFINES = -Wno-write-strings -DLINUX -D_LINUX -D_vsnprintf=vsnprintf -Dstricmp=strcasecmp -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp -DCLIENT_WEAPONS -DCLIENT_DLL -fpermissive -w -DHL_DLL -DGEARBOX_CLIENT_DLL -DGEARBOX_DLL -D_alloca=alloca -D_snprintf=snprintf -DDISABLE_VEC_ORIGIN -DDISABLE_JUMP_ORIGIN
 DEFINES = -Wno-write-strings -DLINUX -D_LINUX -D_vsnprintf=vsnprintf -Dstricmp=strcasecmp -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp -DCLIENT_WEAPONS -fpermissive -w -DHL_DLL -DGEARBOX_DLL -D_alloca=alloca -D_snprintf=snprintf
 
-CFLAGS = -Og -ggdb
-OBJS = $(SRCS:.cpp=.o) $(SRCS_C:.c=.o)
-%.o : %.c
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -fPIC -c $< -o $@
+LOCAL_C_INCLUDES := \
+		 $(LOCAL_PATH)/../../common \
+		 $(LOCAL_PATH)/../../engine \
+		 $(LOCAL_PATH)/../../game_shared \
+		 $(LOCAL_PATH)/../dlls \
+		 $(LOCAL_PATH)/../dlls/hl \
+		 $(LOCAL_PATH)/../pm_shared \
+		 $(LOCAL_PATH)/../../public \
+		 $(LOCAL_PATH)/gearbox $(LOCAL_PATH)/
+LOCAL_CFLAGS += $(DEFINES) $(INCLUDES)
 
-%.o : %.cpp
-	$(CXX) $(CFLAGS) $(INCLUDES) $(DEFINES) -fPIC -c $< -o $@
-server.so : $(OBJS)
-	$(CXX) $(OBJS) -o server.so -shared -Wl,--no-undefined -fPIC -lm -ldl
+LOCAL_SRC_FILES := $(SRCS) $(SRCS_C)
 
-clean:
-	$(RM) $(OBJS)
+include $(BUILD_SHARED_LIBRARY)
