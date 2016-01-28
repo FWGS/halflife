@@ -354,15 +354,17 @@ BOOL UTIL_GetNextBestWeapon( CBasePlayer *pPlayer, CBasePlayerItem *pCurrentWeap
 // ripped this out of the engine
 float	UTIL_AngleMod(float a)
 {
-	if (a < 0)
+	/*if (a < 0)
 	{
 		a = a + 360 * ((int)(a / 360) + 1);
 	}
 	else if (a >= 360)
 	{
 		a = a - 360 * ((int)(a / 360));
-	}
+	}*/
 	// a = (360.0/65536) * ((int)(a*(65536/360.0)) & 65535);
+	a = fmod( a, 360.0f );
+	if( a < 0 ) a += 360;
 	return a;
 }
 
