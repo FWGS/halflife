@@ -40,7 +40,7 @@
 #include "netadr.h"
 #include "pm_shared.h"
 
-#if !defined ( _WIN32 )
+#if !defined ( _WIN32 ) || defined( _MINGW32_ )
 #include <ctype.h>
 #endif
 

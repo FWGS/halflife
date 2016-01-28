@@ -79,7 +79,7 @@ typedef union DLONG {
 
 extern DLONG	dlong;
 
-#ifdef _WIN32
+#ifdef __MSC_VER
 void __inline set_fpu_cw(void)
 {
 _asm	
