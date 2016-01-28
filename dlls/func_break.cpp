@@ -123,7 +123,7 @@ void CBreakable::KeyValue( KeyValueData* pkvd )
 //
 // func_breakable - bmodel that breaks into pieces after taking damage
 //
-LINK_ENTITY_TO_CLASS( func_breakable, CBreakable );
+LINK_ENTITY_TO_CLASS( func_breakable, CBreakable )
 TYPEDESCRIPTION CBreakable::m_SaveData[] =
 {
 	DEFINE_FIELD( CBreakable, m_Material, FIELD_INTEGER ),
@@ -139,7 +139,7 @@ TYPEDESCRIPTION CBreakable::m_SaveData[] =
 	// Explosion magnitude is stored in pev->impulse
 };
 
-IMPLEMENT_SAVERESTORE( CBreakable, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CBreakable, CBaseEntity )
 
 void CBreakable::Spawn( void )
 {
@@ -596,7 +596,7 @@ void CBreakable::Die( void )
 	// The more negative pev->health, the louder
 	// the sound should be.
 
-	fvol = RANDOM_FLOAT(0.85, 1.0) + (abs(pev->health) / 100.0);
+	fvol = RANDOM_FLOAT(0.85, 1.0) + (fabs(pev->health) / 100.0);
 
 	if (fvol > 1.0)
 		fvol = 1.0;
@@ -810,9 +810,9 @@ TYPEDESCRIPTION	CPushable::m_SaveData[] =
 	DEFINE_FIELD( CPushable, m_soundTime, FIELD_TIME ),
 };
 
-IMPLEMENT_SAVERESTORE( CPushable, CBreakable );
+IMPLEMENT_SAVERESTORE( CPushable, CBreakable )
 
-LINK_ENTITY_TO_CLASS( func_pushable, CPushable );
+LINK_ENTITY_TO_CLASS( func_pushable, CPushable )
 
 char *CPushable :: m_soundNames[3] = { "debris/pushbox1.wav", "debris/pushbox2.wav", "debris/pushbox3.wav" };
 

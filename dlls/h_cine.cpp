@@ -89,14 +89,14 @@ public:
 // ********** Scientist SPAWN **********
 //
 
-LINK_ENTITY_TO_CLASS( monster_cine_scientist, CCineScientist );
-LINK_ENTITY_TO_CLASS( monster_cine_panther, CCinePanther );
-LINK_ENTITY_TO_CLASS( monster_cine_barney, CCineBarney );
-LINK_ENTITY_TO_CLASS( monster_cine2_scientist, CCine2Scientist );
-LINK_ENTITY_TO_CLASS( monster_cine2_hvyweapons, CCine2HeavyWeapons );
-LINK_ENTITY_TO_CLASS( monster_cine2_slave, CCine2Slave );
-LINK_ENTITY_TO_CLASS( monster_cine3_scientist, CCine3Scientist );
-LINK_ENTITY_TO_CLASS( monster_cine3_barney, CCine3Barney );
+LINK_ENTITY_TO_CLASS( monster_cine_scientist, CCineScientist )
+LINK_ENTITY_TO_CLASS( monster_cine_panther, CCinePanther )
+LINK_ENTITY_TO_CLASS( monster_cine_barney, CCineBarney )
+LINK_ENTITY_TO_CLASS( monster_cine2_scientist, CCine2Scientist )
+LINK_ENTITY_TO_CLASS( monster_cine2_hvyweapons, CCine2HeavyWeapons )
+LINK_ENTITY_TO_CLASS( monster_cine2_slave, CCine2Slave )
+LINK_ENTITY_TO_CLASS( monster_cine3_scientist, CCine3Scientist )
+LINK_ENTITY_TO_CLASS( monster_cine3_barney, CCine3Barney )
 
 //
 // ********** Scientist SPAWN **********
@@ -190,7 +190,7 @@ public:
 	void EXPORT BloodGush ( void );
 };
 
-LINK_ENTITY_TO_CLASS( cine_blood, CCineBlood );
+LINK_ENTITY_TO_CLASS( cine_blood, CCineBlood )
 
 
 void CCineBlood :: BloodGush ( void )

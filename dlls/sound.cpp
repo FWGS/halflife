@@ -140,7 +140,7 @@ public:
 	BOOL	m_fLooping;	// TRUE when the sound played will loop
 };
 
-LINK_ENTITY_TO_CLASS( ambient_generic, CAmbientGeneric );
+LINK_ENTITY_TO_CLASS( ambient_generic, CAmbientGeneric )
 TYPEDESCRIPTION	CAmbientGeneric::m_SaveData[] = 
 {
 	DEFINE_FIELD( CAmbientGeneric, m_flAttenuation, FIELD_FLOAT ),
@@ -155,7 +155,7 @@ TYPEDESCRIPTION	CAmbientGeneric::m_SaveData[] =
 	DEFINE_ARRAY( CAmbientGeneric, m_dpv, FIELD_CHARACTER, sizeof(dynpitchvol_t) ),
 };
 
-IMPLEMENT_SAVERESTORE( CAmbientGeneric, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CAmbientGeneric, CBaseEntity )
 
 //
 // ambient_generic - general-purpose user-defined static sound
@@ -819,14 +819,14 @@ public:
 	float m_flRoomtype;
 };
 
-LINK_ENTITY_TO_CLASS( env_sound, CEnvSound );
+LINK_ENTITY_TO_CLASS( env_sound, CEnvSound )
 TYPEDESCRIPTION	CEnvSound::m_SaveData[] = 
 {
 	DEFINE_FIELD( CEnvSound, m_flRadius, FIELD_FLOAT ),
 	DEFINE_FIELD( CEnvSound, m_flRoomtype, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CEnvSound, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CEnvSound, CBaseEntity )
 
 
 void CEnvSound :: KeyValue( KeyValueData *pkvd )
@@ -1809,13 +1809,13 @@ public:
 	int	m_preset;			// preset number
 };
 
-LINK_ENTITY_TO_CLASS( speaker, CSpeaker );
+LINK_ENTITY_TO_CLASS( speaker, CSpeaker )
 TYPEDESCRIPTION	CSpeaker::m_SaveData[] = 
 {
 	DEFINE_FIELD( CSpeaker, m_preset, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CSpeaker, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CSpeaker, CBaseEntity )
 
 //
 // ambient_generic - general-purpose user-defined static sound

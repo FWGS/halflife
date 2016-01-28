@@ -34,7 +34,7 @@ enum SS_INTERRUPT
 {
 	SS_INTERRUPT_IDLE = 0,
 	SS_INTERRUPT_BY_NAME,
-	SS_INTERRUPT_AI,
+	SS_INTERRUPT_AI
 };
 
 // when a monster finishes an AI scripted sequence, we can choose

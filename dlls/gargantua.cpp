@@ -73,7 +73,7 @@ public:
 	int ObjectCaps( void ) { return FCAP_DONT_SAVE; }
 	static CSpiral *Create( const Vector &origin, float height, float radius, float duration );
 };
-LINK_ENTITY_TO_CLASS( streak_spiral, CSpiral );
+LINK_ENTITY_TO_CLASS( streak_spiral, CSpiral )
 
 
 class CStomp : public CBaseEntity
@@ -88,7 +88,7 @@ private:
 //	CSprite		*m_pSprites[ STOMP_SPRITE_COUNT ];
 };
 
-LINK_ENTITY_TO_CLASS( garg_stomp, CStomp );
+LINK_ENTITY_TO_CLASS( garg_stomp, CStomp )
 CStomp *CStomp::StompCreate( const Vector &origin, const Vector &end, float speed )
 {
 	CStomp *pStomp = GetClassPtr( (CStomp *)NULL );
@@ -243,7 +243,7 @@ public:
 	virtual int		Restore( CRestore &restore );
 	static	TYPEDESCRIPTION m_SaveData[];
 
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 
 private:
 	static const char *pAttackHitSounds[];
@@ -272,7 +272,7 @@ private:
 	float		m_flameY;			
 };
 
-LINK_ENTITY_TO_CLASS( monster_gargantua, CGargantua );
+LINK_ENTITY_TO_CLASS( monster_gargantua, CGargantua )
 
 TYPEDESCRIPTION	CGargantua::m_SaveData[] = 
 {
@@ -287,7 +287,7 @@ TYPEDESCRIPTION	CGargantua::m_SaveData[] =
 	DEFINE_FIELD( CGargantua, m_flameY, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CGargantua, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CGargantua, CBaseMonster )
 
 const char *CGargantua::pAttackHitSounds[] = 
 {
@@ -381,14 +381,14 @@ const char *CGargantua::pBreatheSounds[] =
 #if 0
 enum
 {
-	SCHED_ = LAST_COMMON_SCHEDULE + 1,
+	SCHED_ = LAST_COMMON_SCHEDULE + 1
 };
 #endif
 
 enum
 {
 	TASK_SOUND_ATTACK = LAST_COMMON_TASK + 1,
-	TASK_FLAME_SWEEP,
+	TASK_FLAME_SWEEP
 };
 
 Task_t	tlGargFlame[] =
@@ -440,7 +440,7 @@ DEFINE_CUSTOM_SCHEDULES( CGargantua )
 	slGargSwipe,
 };
 
-IMPLEMENT_CUSTOM_SCHEDULES( CGargantua, CBaseMonster );
+IMPLEMENT_CUSTOM_SCHEDULES( CGargantua, CBaseMonster )
 
 
 void CGargantua::EyeOn( int level )
@@ -1243,7 +1243,7 @@ public:
 	void Think( void );
 };
 
-LINK_ENTITY_TO_CLASS( env_smoker, CSmoker );
+LINK_ENTITY_TO_CLASS( env_smoker, CSmoker )
 
 void CSmoker::Spawn( void )
 {

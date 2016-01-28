@@ -59,7 +59,7 @@ typedef enum
 	{
 	print_console,
 	print_center,
-	print_chat,
+	print_chat
 	} PRINT_TYPE;
 
 // For integrity checking of content on clients
@@ -68,7 +68,7 @@ typedef enum
 	force_exactfile,					// File on client must exactly match server's file
 	force_model_samebounds,				// For model files only, the geometry must fit in the same bbox
 	force_model_specifybounds,			// For model files only, the geometry must fit in the specified bbox
-	force_model_specifybounds_if_avail,	// For Steam model files only, the geometry must fit in the specified bbox (if the file is available)
+	force_model_specifybounds_if_avail	// For Steam model files only, the geometry must fit in the specified bbox (if the file is available)
 } FORCE_TYPE;
 
 // Returned by TraceLine
@@ -391,7 +391,7 @@ typedef enum _fieldtypes
 	FIELD_MODELNAME,		// Engine string that is a model name (needs precache)
 	FIELD_SOUNDNAME,		// Engine string that is a sound name (needs precache)
 
-	FIELD_TYPECOUNT,		// MUST BE LAST
+	FIELD_TYPECOUNT		// MUST BE LAST
 } FIELDTYPE;
 
 #if !defined(offsetof)  && !defined(GNUC)
@@ -529,4 +529,4 @@ extern NEW_DLL_FUNCTIONS	gNewDLLFunctions;
 typedef int	(*APIFUNCTION)( DLL_FUNCTIONS *pFunctionTable, int interfaceVersion );
 typedef int	(*APIFUNCTION2)( DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion );
 
-#endif EIFACE_H
+#endif //EIFACE_H

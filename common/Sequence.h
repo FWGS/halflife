@@ -48,7 +48,7 @@ enum sequenceModifierBits
 	SEQUENCE_MODIFIER_FXTIME_BIT		= (1 << 8),
 	SEQUENCE_MODIFIER_SPEAKER_BIT		= (1 << 9),
 	SEQUENCE_MODIFIER_LISTENER_BIT		= (1 << 10),
-	SEQUENCE_MODIFIER_TEXTCHANNEL_BIT	= (1 << 11),
+	SEQUENCE_MODIFIER_TEXTCHANNEL_BIT	= (1 << 11)
 };
 typedef enum sequenceModifierBits sequenceModifierBits_e ;
 
@@ -84,7 +84,7 @@ enum sequenceCommandEnum_
 	SEQUENCE_MODIFIER_FXTIME,
 	SEQUENCE_MODIFIER_SPEAKER,
 	SEQUENCE_MODIFIER_LISTENER,
-	SEQUENCE_MODIFIER_TEXTCHANNEL,
+	SEQUENCE_MODIFIER_TEXTCHANNEL
 };
 typedef enum sequenceCommandEnum_ sequenceCommandEnum_e;
 
@@ -97,7 +97,7 @@ typedef enum sequenceCommandEnum_ sequenceCommandEnum_e;
 enum sequenceCommandType_
 {
 	SEQUENCE_TYPE_COMMAND,
-	SEQUENCE_TYPE_MODIFIER,
+	SEQUENCE_TYPE_MODIFIER
 };
 typedef enum sequenceCommandType_ sequenceCommandType_e;
 

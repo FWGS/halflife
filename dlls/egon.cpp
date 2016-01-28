@@ -49,7 +49,7 @@ enum egon_e {
 	EGON_HOLSTER
 };
 
-LINK_ENTITY_TO_CLASS( weapon_egon, CEgon );
+LINK_ENTITY_TO_CLASS( weapon_egon, CEgon )
 
 void CEgon::Spawn( )
 {
@@ -563,6 +563,6 @@ class CEgonAmmo : public CBasePlayerAmmo
 		return FALSE;
 	}
 };
-LINK_ENTITY_TO_CLASS( ammo_egonclip, CEgonAmmo );
+LINK_ENTITY_TO_CLASS( ammo_egonclip, CEgonAmmo )
 
 #endif

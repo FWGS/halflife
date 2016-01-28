@@ -34,8 +34,8 @@ enum glock_e {
 	GLOCK_ADD_SILENCER
 };
 
-LINK_ENTITY_TO_CLASS( weapon_glock, CGlock );
-LINK_ENTITY_TO_CLASS( weapon_9mmhandgun, CGlock );
+LINK_ENTITY_TO_CLASS( weapon_glock, CGlock )
+LINK_ENTITY_TO_CLASS( weapon_9mmhandgun, CGlock )
 
 
 void CGlock::Spawn( )
@@ -255,8 +255,8 @@ class CGlockAmmo : public CBasePlayerAmmo
 		return FALSE;
 	}
 };
-LINK_ENTITY_TO_CLASS( ammo_glockclip, CGlockAmmo );
-LINK_ENTITY_TO_CLASS( ammo_9mmclip, CGlockAmmo );
+LINK_ENTITY_TO_CLASS( ammo_glockclip, CGlockAmmo )
+LINK_ENTITY_TO_CLASS( ammo_9mmclip, CGlockAmmo )
 
 
 

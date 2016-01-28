@@ -29,7 +29,7 @@
 int iHornetTrail;
 int iHornetPuff;
 
-LINK_ENTITY_TO_CLASS( hornet, CHornet );
+LINK_ENTITY_TO_CLASS( hornet, CHornet )
 
 //=========================================================
 // Save/Restore
@@ -41,7 +41,7 @@ TYPEDESCRIPTION	CHornet::m_SaveData[] =
 	DEFINE_FIELD( CHornet, m_flFlySpeed, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CHornet, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CHornet, CBaseMonster )
 
 //=========================================================
 // don't let hornets gib, ever.

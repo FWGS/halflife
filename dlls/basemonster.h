@@ -31,7 +31,7 @@ public:
 			SCRIPT_WAIT,				// Waiting on everyone in the script to be ready
 			SCRIPT_CLEANUP,					// Cancelling the script / cleaning up
 			SCRIPT_WALK_TO_MARK,
-			SCRIPT_RUN_TO_MARK,
+			SCRIPT_RUN_TO_MARK
 		} SCRIPTSTATE;
 
 

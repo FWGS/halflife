@@ -38,7 +38,7 @@ enum
 	SCHED_PANIC,
 	SCHED_STARTLE,
 	SCHED_TARGET_CHASE_SCARED,
-	SCHED_TARGET_FACE_SCARED,
+	SCHED_TARGET_FACE_SCARED
 };
 
 enum
@@ -49,7 +49,7 @@ enum
 	TASK_RUN_PATH_SCARED,
 	TASK_SCREAM,
 	TASK_RANDOM_SCREAM,
-	TASK_MOVE_TO_TARGET_RANGE_SCARED,
+	TASK_MOVE_TO_TARGET_RANGE_SCARED
 };
 
 //=========================================================
@@ -105,7 +105,7 @@ public:
 	virtual int		Restore( CRestore &restore );
 	static	TYPEDESCRIPTION m_SaveData[];
 
-	CUSTOM_SCHEDULES;
+	CUSTOM_SCHEDULES
 
 private:	
 	float m_painTime;
@@ -113,7 +113,7 @@ private:
 	float m_fearTime;
 };
 
-LINK_ENTITY_TO_CLASS( monster_scientist, CScientist );
+LINK_ENTITY_TO_CLASS( monster_scientist, CScientist )
 
 TYPEDESCRIPTION	CScientist::m_SaveData[] = 
 {
@@ -122,7 +122,7 @@ TYPEDESCRIPTION	CScientist::m_SaveData[] =
 	DEFINE_FIELD( CScientist, m_fearTime, FIELD_TIME ),
 };
 
-IMPLEMENT_SAVERESTORE( CScientist, CTalkMonster );
+IMPLEMENT_SAVERESTORE( CScientist, CTalkMonster )
 
 //=========================================================
 // AI Schedules Specific to this monster
@@ -421,7 +421,7 @@ DEFINE_CUSTOM_SCHEDULES( CScientist )
 };
 
 
-IMPLEMENT_CUSTOM_SCHEDULES( CScientist, CTalkMonster );
+IMPLEMENT_CUSTOM_SCHEDULES( CScientist, CTalkMonster )
 
 
 void CScientist::DeclineFollowing( void )
@@ -1120,7 +1120,7 @@ void CDeadScientist::KeyValue( KeyValueData *pkvd )
 	else
 		CBaseMonster::KeyValue( pkvd );
 }
-LINK_ENTITY_TO_CLASS( monster_scientist_dead, CDeadScientist );
+LINK_ENTITY_TO_CLASS( monster_scientist_dead, CDeadScientist )
 
 //
 // ********** DeadScientist SPAWN **********
@@ -1183,7 +1183,7 @@ public:
 	float	m_flResponseDelay;
 };
 
-LINK_ENTITY_TO_CLASS( monster_sitting_scientist, CSittingScientist );
+LINK_ENTITY_TO_CLASS( monster_sitting_scientist, CSittingScientist )
 TYPEDESCRIPTION	CSittingScientist::m_SaveData[] = 
 {
 	// Don't need to save/restore m_baseSequence (recalced)
@@ -1191,7 +1191,7 @@ TYPEDESCRIPTION	CSittingScientist::m_SaveData[] =
 	DEFINE_FIELD( CSittingScientist, m_flResponseDelay, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CSittingScientist, CScientist );
+IMPLEMENT_SAVERESTORE( CSittingScientist, CScientist )
 
 // animation sequence aliases 
 typedef enum

@@ -58,7 +58,7 @@ TYPEDESCRIPTION	CCycler::m_SaveData[] =
 	DEFINE_FIELD( CCycler, m_animate, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CCycler, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CCycler, CBaseMonster )
 
 
 //
@@ -69,7 +69,7 @@ class CGenericCycler : public CCycler
 public:
 	void Spawn( void ) { GenericCyclerSpawn( (char *)STRING(pev->model), Vector(-16, -16, 0), Vector(16, 16, 72) ); }
 };
-LINK_ENTITY_TO_CLASS( cycler, CGenericCycler );
+LINK_ENTITY_TO_CLASS( cycler, CGenericCycler )
 
 
 
@@ -82,7 +82,7 @@ class CCyclerProbe : public CCycler
 public:	
 	void Spawn( void );
 };
-LINK_ENTITY_TO_CLASS( cycler_prdroid, CCyclerProbe );
+LINK_ENTITY_TO_CLASS( cycler_prdroid, CCyclerProbe )
 void CCyclerProbe :: Spawn( void )
 {
 	pev->origin = pev->origin + Vector ( 0, 0, 16 );
@@ -235,7 +235,7 @@ public:
 	float		m_maxFrame;
 };
 
-LINK_ENTITY_TO_CLASS( cycler_sprite, CCyclerSprite );
+LINK_ENTITY_TO_CLASS( cycler_sprite, CCyclerSprite )
 
 TYPEDESCRIPTION	CCyclerSprite::m_SaveData[] = 
 {
@@ -244,7 +244,7 @@ TYPEDESCRIPTION	CCyclerSprite::m_SaveData[] =
 	DEFINE_FIELD( CCyclerSprite, m_maxFrame, FIELD_FLOAT ),
 };
 
-IMPLEMENT_SAVERESTORE( CCyclerSprite, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CCyclerSprite, CBaseEntity )
 
 
 void CCyclerSprite::Spawn( void )
@@ -319,7 +319,7 @@ public:
 	int m_iszModel;
 	int m_iModel;
 };
-LINK_ENTITY_TO_CLASS( cycler_weapon, CWeaponCycler );
+LINK_ENTITY_TO_CLASS( cycler_weapon, CWeaponCycler )
 
 
 void CWeaponCycler::Spawn( )
@@ -404,10 +404,10 @@ TYPEDESCRIPTION	CWreckage::m_SaveData[] =
 {
 	DEFINE_FIELD( CWreckage, m_flStartTime, FIELD_TIME ),
 };
-IMPLEMENT_SAVERESTORE( CWreckage, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CWreckage, CBaseMonster )
 
 
-LINK_ENTITY_TO_CLASS( cycler_wreckage, CWreckage );
+LINK_ENTITY_TO_CLASS( cycler_wreckage, CWreckage )
 
 void CWreckage::Spawn( void )
 {

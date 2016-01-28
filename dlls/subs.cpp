@@ -54,7 +54,7 @@ void CNullEntity :: Spawn( void )
 {
 	REMOVE_ENTITY(ENT(pev));
 }
-LINK_ENTITY_TO_CLASS(info_null,CNullEntity);
+LINK_ENTITY_TO_CLASS(info_null,CNullEntity)
 
 class CBaseDMStart : public CPointEntity
 {
@@ -66,9 +66,9 @@ private:
 };
 
 // These are the new entry points to entities. 
-LINK_ENTITY_TO_CLASS(info_player_deathmatch,CBaseDMStart);
-LINK_ENTITY_TO_CLASS(info_player_start,CPointEntity);
-LINK_ENTITY_TO_CLASS(info_landmark,CPointEntity);
+LINK_ENTITY_TO_CLASS(info_player_deathmatch,CBaseDMStart)
+LINK_ENTITY_TO_CLASS(info_player_start,CPointEntity)
+LINK_ENTITY_TO_CLASS(info_landmark,CPointEntity)
 
 void CBaseDMStart::KeyValue( KeyValueData *pkvd )
 {
@@ -138,7 +138,7 @@ TYPEDESCRIPTION	CBaseDelay::m_SaveData[] =
 	DEFINE_FIELD( CBaseDelay, m_iszKillTarget, FIELD_STRING ),
 };
 
-IMPLEMENT_SAVERESTORE( CBaseDelay, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CBaseDelay, CBaseEntity )
 
 void CBaseDelay :: KeyValue( KeyValueData *pkvd )
 {
@@ -209,7 +209,7 @@ void FireTargets( const char *targetName, CBaseEntity *pActivator, CBaseEntity *
 	}
 }
 
-LINK_ENTITY_TO_CLASS( DelayedUse, CBaseDelay );
+LINK_ENTITY_TO_CLASS( DelayedUse, CBaseDelay )
 
 
 void CBaseDelay :: SUB_UseTargets( CBaseEntity *pActivator, USE_TYPE useType, float value )
@@ -354,7 +354,7 @@ TYPEDESCRIPTION	CBaseToggle::m_SaveData[] =
 	DEFINE_FIELD( CBaseToggle, m_sMaster, FIELD_STRING),
 	DEFINE_FIELD( CBaseToggle, m_bitsDamageInflict, FIELD_INTEGER ),	// damage type inflicted
 };
-IMPLEMENT_SAVERESTORE( CBaseToggle, CBaseAnimating );
+IMPLEMENT_SAVERESTORE( CBaseToggle, CBaseAnimating )
 
 
 void CBaseToggle::KeyValue( KeyValueData *pkvd )

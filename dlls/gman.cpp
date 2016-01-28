@@ -51,7 +51,7 @@ public:
 	EHANDLE m_hTalkTarget;
 	float m_flTalkTime;
 };
-LINK_ENTITY_TO_CLASS( monster_gman, CGMan );
+LINK_ENTITY_TO_CLASS( monster_gman, CGMan )
 
 
 TYPEDESCRIPTION	CGMan::m_SaveData[] = 
@@ -59,7 +59,7 @@ TYPEDESCRIPTION	CGMan::m_SaveData[] =
 	DEFINE_FIELD( CGMan, m_hTalkTarget, FIELD_EHANDLE ),
 	DEFINE_FIELD( CGMan, m_flTalkTime, FIELD_TIME ),
 };
-IMPLEMENT_SAVERESTORE( CGMan, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CGMan, CBaseMonster )
 
 
 //=========================================================

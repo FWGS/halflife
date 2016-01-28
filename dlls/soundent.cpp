@@ -19,7 +19,7 @@
 #include	"soundent.h"
 
 
-LINK_ENTITY_TO_CLASS( soundent, CSoundEnt );
+LINK_ENTITY_TO_CLASS( soundent, CSoundEnt )
 
 CSoundEnt *pSoundEnt;
 

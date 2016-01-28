@@ -35,7 +35,7 @@ enum handgrenade_e {
 };
 
 
-LINK_ENTITY_TO_CLASS( weapon_handgrenade, CHandGrenade );
+LINK_ENTITY_TO_CLASS( weapon_handgrenade, CHandGrenade )
 
 
 void CHandGrenade::Spawn( )

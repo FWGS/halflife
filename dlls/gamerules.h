@@ -43,7 +43,7 @@ enum
 
 	GR_PLR_DROP_AMMO_ALL,
 	GR_PLR_DROP_AMMO_ACTIVE,
-	GR_PLR_DROP_AMMO_NO,
+	GR_PLR_DROP_AMMO_NO
 };
 
 // Player relationship return codes
@@ -53,7 +53,7 @@ enum
 	GR_TEAMMATE,
 	GR_ENEMY,
 	GR_ALLY,
-	GR_NEUTRAL,
+	GR_NEUTRAL
 };
 
 class CGameRules

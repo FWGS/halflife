@@ -143,7 +143,7 @@ private:
 
 
 
-LINK_ENTITY_TO_CLASS( monster_leech, CLeech );
+LINK_ENTITY_TO_CLASS( monster_leech, CLeech )
 
 TYPEDESCRIPTION	CLeech::m_SaveData[] = 
 {
@@ -161,7 +161,7 @@ TYPEDESCRIPTION	CLeech::m_SaveData[] =
 	DEFINE_FIELD( CLeech, m_attackSoundTime, FIELD_TIME ),
 };
 
-IMPLEMENT_SAVERESTORE( CLeech, CBaseMonster );
+IMPLEMENT_SAVERESTORE( CLeech, CBaseMonster )
 
 
 const char *CLeech::pAttackSounds[] =

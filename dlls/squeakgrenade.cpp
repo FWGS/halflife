@@ -28,7 +28,7 @@ enum w_squeak_e {
 	WSQUEAK_IDLE1 = 0,
 	WSQUEAK_FIDGET,
 	WSQUEAK_JUMP,
-	WSQUEAK_RUN,
+	WSQUEAK_RUN
 };
 
 enum squeak_e {
@@ -72,7 +72,7 @@ class CSqueakGrenade : public CGrenade
 
 float CSqueakGrenade::m_flNextBounceSoundTime = 0;
 
-LINK_ENTITY_TO_CLASS( monster_snark, CSqueakGrenade );
+LINK_ENTITY_TO_CLASS( monster_snark, CSqueakGrenade )
 TYPEDESCRIPTION	CSqueakGrenade::m_SaveData[] = 
 {
 	DEFINE_FIELD( CSqueakGrenade, m_flDie, FIELD_TIME ),
@@ -83,7 +83,7 @@ TYPEDESCRIPTION	CSqueakGrenade::m_SaveData[] =
 	DEFINE_FIELD( CSqueakGrenade, m_hOwner, FIELD_EHANDLE ),
 };
 
-IMPLEMENT_SAVERESTORE( CSqueakGrenade, CGrenade );
+IMPLEMENT_SAVERESTORE( CSqueakGrenade, CGrenade )
 
 #define SQUEEK_DETONATE_DELAY	15.0
 
@@ -409,7 +409,7 @@ void CSqueakGrenade::SuperBounceTouch( CBaseEntity *pOther )
 
 #endif
 
-LINK_ENTITY_TO_CLASS( weapon_snark, CSqueak );
+LINK_ENTITY_TO_CLASS( weapon_snark, CSqueak )
 
 
 void CSqueak::Spawn( )
