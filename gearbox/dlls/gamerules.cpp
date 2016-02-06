@@ -380,9 +380,9 @@ void CGameRules::RefreshSkillData ( void )
 	// Op4 Player weapons
 	//
 	gSkillData.plrDmgPWrench = GetSkillCvar("sk_plr_pipewrench");
-	gSkillData.plrDmgKnife = GetSkillCvar("sk_plr_knife1");
-	gSkillData.plrDmgGrapple = GetSkillCvar("sk_plr_grapple1");
-	gSkillData.plrDmgEagle = GetSkillCvar("sk_plr_eagle1");
+	gSkillData.plrDmgKnife = GetSkillCvar("sk_plr_knife");
+	gSkillData.plrDmgGrapple = GetSkillCvar("sk_plr_grapple");
+	gSkillData.plrDmgEagle = GetSkillCvar("sk_plr_eagle");
 	gSkillData.plrDmgDisplacer = GetSkillCvar("sk_plr_displacer_self");
 	gSkillData.plrDmgShockroach = GetSkillCvar("sk_plr_shockroachs");
 	gSkillData.plrDmgSpore = GetSkillCvar("sk_plr_spore");
