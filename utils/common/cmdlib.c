@@ -440,7 +440,7 @@ int Q_strcasecmp (char *s1, char *s2)
 }
 
 
-char *strupr (char *start)
+/*char *strupr (char *start)
 {
 	char	*in;
 	in = start;
@@ -450,7 +450,7 @@ char *strupr (char *start)
 		in++;
 	}
 	return start;
-}
+}*/
 
 char *strlower (char *start)
 {

@@ -97,6 +97,9 @@ Renders TT font into memory dc and creates appropriate qfont_t structure
 
 // YWB:  Sigh, VC 6.0's global optimizer causes weird stack fixups in release builds.  Disable the globabl optimizer for this function.
 #pragma optimize( "g", off )
+#define MAGIC_128 (h * charheight)
+#define MAGIC_16_WIDTH 20
+
 qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bUnderline, BOOL bBold, int *outsize )
 {
 	HDC hdc;
@@ -119,18 +122,25 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 	unsigned char *pPalette;
 	qfont_t *pqf = NULL;
 	int fullsize;
-	int w = 16;
-	int h = (128-32)/16;
+	int w = 16; // don't touch!
+	int h = (128-32)/16; // don't touch!
 	int charheight = nPointSize + 5;
-	int charwidth = 16;
+	int charwidth = nPointSize * 0.7;
 	RECT rcChar;
+
+	if( charwidth < 16 )
+		charwidth = 16;
+	
+	printf("Creating font: %i\n", nPointSize);
 
 	// Create the font
 	fnt = CreateFont( -nPointSize, 0, 0, 0, bBold ? FW_HEAVY : FW_MEDIUM, bItalic, bUnderline, 0, ANSI_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, VARIABLE_PITCH | FF_DONTCARE, pszFont );
 
 	bits = NULL;
 
-	fullsize = sizeof( qfont_t ) - 4 + ( 128 * w * charwidth ) + sizeof(short) + 768 + 64;
+	fullsize = sizeof( qfont_t ) - 4 + ( h * charheight * w * charwidth ) + sizeof(short) + 768 + 64;
+	
+	printf( "Font size: %i\n", fullsize);
 
 	// Store off final size
 	*outsize = fullsize;
@@ -138,7 +148,7 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 	pqf = ( qfont_t * )zeromalloc( fullsize );
 	pqdata = (unsigned char *)pqf + sizeof( qfont_t ) - 4;
 
-	pPalette = pqdata + ( 128 * w * charwidth );
+	pPalette = pqdata + ( h * charheight * w * charwidth );
 
 	// Configure palette
 	Draw_SetupConsolePalette( pPalette );
@@ -209,12 +219,14 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 	// Now read in bits
 	nScans = GetDIBits( hmemDC, hbm, 0, h * charheight, bits, pbmi, DIB_RGB_COLORS );
 
+	int maxbestwidth = 0;
+	char charmaxbestwidth = '\0';
 	if ( nScans > 0 )
 	{
 		// Now convert to proper raw format
 		//
 		// Now get results from dib
-		pqf->height = 128; // Always set to 128
+		pqf->height = h * charheight; // Always set to 128
 		pqf->width = charwidth;
 		pqf->rowheight = charheight;
 		pqf->rowcount = h;
@@ -360,10 +372,18 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 				
 				// Store off width
 				pqf->fontinfo[ c ].charwidth = bestwidth;
+				
+				if( maxbestwidth < bestwidth ) 
+				{
+					maxbestwidth = bestwidth;
+					charmaxbestwidth = c;
+				}
 			}
 		}
 	}
-
+	
+	printf( "Biggest char is %c: %i", charmaxbestwidth, maxbestwidth );
+	
 	// Free memory bits
 	free ( pbmi );
 
@@ -377,6 +397,8 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 	DeleteDC( hmemDC );
 	ReleaseDC( NULL, hdc );
 
+	printf( "Finished creating font for %i\n", nPointSize);
+	
 	return pqf;
 }
 
@@ -399,6 +421,7 @@ int main(int argc, char* argv[])
 	qfont_t *fonts[ 3 ];
 
 	strcpy( fontname, DEFAULT_FONT );
+
 
 	printf("makefont.exe Version 1.0 by valve (%s)\n", __DATE__ );
 	
